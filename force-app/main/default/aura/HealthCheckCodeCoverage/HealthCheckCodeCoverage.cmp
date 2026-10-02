@@ -1,0 +1,8 @@
+<aura:component controller="HealthCheckCodeCoverageCtrl" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome" access="global" >
+	<aura:attribute name="restRequest" type="RESTRequestUtil"/>
+	<aura:attribute name="percentCovered" type="Decimal" />
+    <aura:handler event="c:HealthCheckLoginEvent" action="{!c.doInit}"/>
+	<aura:renderIf isTrue="{!not(empty(v.percentCovered))}">
+		<c:HealthcheckLiquidGauge title="{!'Org Wide Code Coverage'}" percentValue="{!v.percentCovered}" svgId="percentCodeCovered" yellow="75" red="50" comparison="pos"/>
+	</aura:renderIf>
+</aura:component>

@@ -1,0 +1,51 @@
+<apex:page showHeader="false" id="SiteTemplate" title="How to use Salesforce.com to lay the foundation for rapid growth | Douglas Scientific Case Study" standardStylesheets="true">
+  <html>
+<head>
+    <title>How to Use Salesforce.com to Lay Foundation for Rapid Growth | Douglas Scientific Case Study</title>
+    
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   </head>
+   <body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				    	 <c:leftLinks navigation="clients" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS knowledge of on-demand CRM made it easy for them to seamlessly integrate great sales tools with our lead generation and property management systems. Now, when our sales people enter sales opportunity information our meeting professionals are right on it. That helps us close sales more efficiently and deliver outstanding customer service," said Dee Gullikson, Carlson Hotels Worldwide."<br />
+				   		</span>
+				   		</apex:outputText>	
+				   		<br/>
+				   		<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">Douglas Scientific</div>
+						<br/>
+						<div align="left">
+							<p>
+								<strong>How to use Salesforce.com to lay the foundation for rapid growth</strong>
+							</p>
+							<p><i>Douglas Scientific sells a revolutionary fluid dispensing and array tape platform for genetic screening and discovery. A newly formed division of Minnesota-based Douglas Machine, the company has sold its groundbreaking technology to the world's leading ag biotech companies. </i></p>
+							<p>But Douglas Scientific has no intention of stopping there. Over the next few years, the company intends to expand its customer base and revenues many-fold. The company is determined, however, to avoid the growing pains that often accompany a start-up's rapid expansion. That's why Douglas turned to DCS for a Salesforce.com implementation to ensure that no matter how fast its sales activities and customer relationship requirements grew, they'd never outstrip the company¿s ability to scale operations. </p>
+							<p>Before this DCS implementation, Douglas's sales and customer service team relied on contact management software and spreadsheets to monitor pipeline activity and customer service requests. That worked for dozens of contacts but certainly not hundreds or even thousands. Now, with Salesforce.com, the company has a centralized database of all customer activity. This allows sales reps to strategically plan their sales efforts and ensure they are never blindsided by customer service issues. It also allows the company to monitor its performance against the demanding service level agreements in place with its biotech laboratory scientists.</p>
+							<p>The next phase for Douglas Scientific will be the implementation of Salesforce.com's customer self-service portal. This Douglas-branded portal will allow customers, who have facilities all around the world, to log cases 24x7, instead of using emails or phone calls.</p>
+							
+							<p>"We intend to support our markets with the most responsive service, whether they are customers, prospects, or industry influencers" says Dan Malmstrom, Douglas Scientific General Manager. "We also want our client and service executives equipped with the best information available as they serve those relationships. DCS has done a great job to quickly implement a system that elevates our market acumen."
+							</p>	
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

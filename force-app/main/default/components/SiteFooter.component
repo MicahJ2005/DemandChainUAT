@@ -1,0 +1,5 @@
+<apex:component id="footerComponent">
+<apex:image id="Banner2"  value="{!$Resource.footer}"/>
+
+        <apex:image id="Banne2"  value="{!$Resource.footer2}"/>
+</apex:component>

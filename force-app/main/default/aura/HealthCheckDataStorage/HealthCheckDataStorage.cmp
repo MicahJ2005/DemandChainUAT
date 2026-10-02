@@ -1,0 +1,7 @@
+<aura:component controller="HealthCheckLimitsCtrl" implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="limitRpt" type="HealthCheckLimitsCtrl.LimitReport" />
+	<aura:handler event="c:HealthCheckLoginEvent" action="{!c.doInit}"/>
+    <aura:renderIf isTrue="{!not(empty(v.limitRpt))}">
+		<c:HealthcheckLiquidGauge title="{!'Available Data Storage: ' + v.limitRpt.remainingDataSize +'MB / ' + v.limitRpt.totalDataSize + 'MB'}" percentValue="{!v.limitRpt.percentDataSizeRemaining}" svgId="dataStorageGauge" yellow="75" red="50" comparison="pos"/>
+	</aura:renderIf>
+</aura:component>

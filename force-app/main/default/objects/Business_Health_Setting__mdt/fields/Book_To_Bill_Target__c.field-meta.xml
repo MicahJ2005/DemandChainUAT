@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Book_To_Bill_Target__c</fullName>
+    <description>New bookings divided by delivered revenue (trailing 3 months). Above 1.0 means the backlog is growing.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>New bookings divided by delivered revenue (trailing 3 months). Above 1.0 means the backlog is growing.</inlineHelpText>
+    <label>Book-to-Bill Target</label>
+    <precision>16</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

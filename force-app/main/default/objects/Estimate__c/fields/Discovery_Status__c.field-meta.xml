@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Discovery_Status__c</fullName>
+    <label>Discovery Status</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Not Started</fullName>
+                <default>true</default>
+                <label>Not Started</label>
+            </value>
+            <value>
+                <fullName>Fee Collected</fullName>
+                <default>false</default>
+                <label>Fee Collected</label>
+            </value>
+            <value>
+                <fullName>Sessions Complete</fullName>
+                <default>false</default>
+                <label>Sessions Complete</label>
+            </value>
+            <value>
+                <fullName>Report Delivered</fullName>
+                <default>false</default>
+                <label>Report Delivered</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

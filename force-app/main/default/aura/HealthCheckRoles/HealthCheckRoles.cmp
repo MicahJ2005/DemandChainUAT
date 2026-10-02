@@ -1,0 +1,49 @@
+<aura:component controller="HealthCheckRolesCtrl" implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="userRoleWrappers" type="HealthCheckRolesCtrl.UserRoleWrapper[]" />
+    <aura:handler event="c:HealthCheckLoginEvent" action="{!c.loadRoles}" />
+    <aura:handler event="c:HealthCheckUpdateLeadRolesEvent" action="{!c.updateLeadHelper}" />
+    <aura:renderIf isTrue="{!not(empty(v.userRoleWrappers))}">
+        <div class="slds-page-header" role="banner">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-media--center slds-no-space slds-grow">
+                        <div class="slds-media__figure">
+                            <c:svgIcon class="slds-icon slds-icon-standard-account" svgPath="standard-sprite/svg/symbols.svg#account" />
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-heading--label">User Roles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table--bordered">
+            <thead>
+                <tr class="slds-text-heading--label">
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate">User Role Name</div>
+                    </th>
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate"># Direct Users</div>
+                    </th>
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate"># Users in Hierarchy</div>
+                    </th>
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate"># Roles in Hierarchy</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.userRoleWrappers}" var="userRoleWrapper">
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Name">{!userRoleWrapper.Name}</td>
+                        <td class="slds-truncate" data-label="Child Count">{!userRoleWrapper.childrenCount}</td>
+                        <td class="slds-truncate" data-label="Hierarchy User Count">{!userRoleWrapper.hierarchyCount}</td>
+                        <td class="slds-truncate" data-label="Hierarchy Role Count">{!userRoleWrapper.childrenRoleCount}</td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+    </aura:renderIf>
+</aura:component>

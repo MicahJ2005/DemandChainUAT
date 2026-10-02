@@ -1,0 +1,48 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Successful CRM Implementation | DCS Provides the Technology for Successful CRM" standardStylesheets="true">
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+                
+                    <apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >         
+                        <c:leftLinks navigation="successfulCRM"/>
+                        <apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+                        <apex:outputText ><span style="font-size:10px">"DCS made it easy for our Navision and Salesforce.com systems to 'talk' to each other like they were one application,¿ said Keith Lewis, VP of Business Development at GN ReSound.  ¿That gives our sales representatives a complete picture on how their accounts are trending and enables them to provide exceptional customer service. DCS's knowledge of how to integrate the best CRM tools with ERP and other back-end systems is outstanding. And their ability to execute fast and efficiently is exceptional."  </span> 
+                        <br />
+                        <br />
+                            <c:gd />
+                        </apex:outputText>
+                    </apex:panelGrid>
+                    <apex:panelGrid cellpadding="0" cellspacing="0">
+                        <div class="Title" align="left">Successful CRM Implementation</div>
+                        <br/>
+                        <div align="left">
+                          <p>Over the past decade, CRM has become a dirty word. Few companies have realized the value they expected from their investment. Other companies still limp along with outdated sales force automation applications like Goldmine and ACT, or inefficient homegrown systems. In both cases, sales cycles drag out, forecasts are inaccurate, deals are lost, and money is left on the table because salespeople can't get their customers the information they need.</p>
+                          <p>Today, things have changed. On-demand software-as-a-service (SaaS) CRM applications like Salesforce.com make foolproof and comprehensive CRM systems within reach of even the smallest companies. But success is never guaranteed and there are still challenges to overcome. </p>
+                          <p>DCS has helped hundreds of companies in Minnesota and the upper midwest properly migrate from older CRM systems to newer on-demand systems. And along the way, we've learned a few key things about what's required for a successful CRM implementation: </p>
+                          <p><strong>You need results, not endless consultation.</strong><br />Are you missing opportunities or losing customers to rivals with better organized and more efficient sales forces and processes? Then you can't afford to wait forever for a solution. You've got to start tackling your biggest CRM problems quickly. You need to find a way to: </p>
+                          <ul>
+                              <li><p>Quickly and accurately measure your most critical customer-facing capabilities and prioritize your top improvement initiatives for fast results. </p></li>
+                              <li><p>Keep the time, cost and disruption of implementing a new CRM system-or fixing your existing one-to a minimum while getting high-values features in place quickly. </p></li>
+                              <li><p>Use proven, repeatable processes and tools to migrate to newer <a href="http://demandchainsystems.force.com/dcs/fastPainlessImplementations">on-demand CRM</a> systems quickly and efficiently.</p></li>
+                          </ul>
+                          <p><strong>A one-size-fits-all approach probably won't fit you.</strong><br/>There are a lot of CRM technologies on the market. Some are hugely complex enterprise applications; others are the latest incarnations of SFA applications that have been around for decades in one form or another. The best ones in terms of value, flexibility and ease of implementation are on-demand (SAAS) tools. They give you what you need when you need it, and they can be tailored easily to meet almost any business challenge.</p>
+
+                          <p>But despite what most CRM vendors say, you can't just switch them on and expect to realize value. That's because there's more to CRM than technology. In fact, CRM is just an enabler that requires a sound business process foundation as well as a proven deployment approach. The latter requires extensive knowledge of both your old CRM technology and the new ones, so you can minimize the time, cost and disruption to your business during the migration, and achieve the goal of a succesful CRM implementation.</p>
+                          <p><a href="http://demandchainsystems.force.com/dcs/usefulLinks">Learn more about how to succeed with CRM</a>.</p>
+
+           
+                        </div>
+                    </apex:panelGrid>
+                 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+</apex:page>

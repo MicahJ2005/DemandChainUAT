@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CSAT_Target__c</fullName>
+    <description>Average client satisfaction at project close, 5-point scale.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Average client satisfaction at project close, 5-point scale.</inlineHelpText>
+    <label>CSAT Target (1-5)</label>
+    <precision>8</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,54 @@
+.tbl-wrap {
+    overflow-x: auto;
+}
+table.weekly-grid {
+    border-collapse: collapse;
+    font-size: 12px;
+    user-select: none;
+}
+table.weekly-grid th,
+table.weekly-grid td {
+    padding: 3px 4px;
+    text-align: center;
+    border: 1px solid #efedeb;
+    white-space: nowrap;
+}
+th.wg-resource,
+td.wg-resource {
+    position: sticky;
+    left: 0;
+    background: #fff;
+    text-align: left;
+    min-width: 140px;
+    padding: 6px 8px;
+    border-right: 2px solid #eaeaea;
+}
+th.wg-week {
+    font-size: 10px;
+    color: #595959;
+    font-weight: normal;
+    min-width: 44px;
+}
+td.wg-cell input {
+    width: 40px;
+    padding: 3px 2px;
+    text-align: center;
+    font-size: 12px;
+    border: 1px solid #e3e0dc;
+    border-radius: 4px;
+    cursor: cell;
+}
+td.wg-cell input:focus {
+    outline: none;
+    border-color: #912121;
+    box-shadow: 0 0 0 2px rgba(145, 33, 33, 0.15);
+}
+td.wg-total,
+th.wg-total {
+    font-weight: bold;
+    background: #fbfaf9;
+}
+.hint {
+    font-size: 12px;
+    color: #595959;
+}

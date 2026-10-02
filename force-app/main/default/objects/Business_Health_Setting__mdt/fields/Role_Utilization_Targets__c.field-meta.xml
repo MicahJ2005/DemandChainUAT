@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Role_Utilization_Targets__c</fullName>
+    <description>Semicolon-separated Role=Target% pairs, matched against Contact Resource Role.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Semicolon-separated Role=Target% pairs, matched against Contact Resource Role.</inlineHelpText>
+    <label>Role Utilization Targets</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

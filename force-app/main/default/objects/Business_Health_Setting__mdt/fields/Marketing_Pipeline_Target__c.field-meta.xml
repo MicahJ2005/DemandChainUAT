@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Marketing_Pipeline_Target__c</fullName>
+    <description>Share of new opportunity pipeline sourced by marketing channels or campaigns.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Share of new opportunity pipeline sourced by marketing channels or campaigns.</inlineHelpText>
+    <label>Marketing-Sourced Pipeline Target %</label>
+    <precision>16</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

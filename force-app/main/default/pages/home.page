@@ -1,0 +1,82 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Successful CRM Implementation | DCS Provides the Technology for Successful CRM" standardStylesheets="true">
+<html>
+<head>
+    <title>CRM Implementation Consultants Minnesota | Demand Chain Systems On-Demand CRM Consulting Firm</title>
+<meta name="description" content="DCS is a CRM consulting and implementation company that designs, implements and supports on-demand CRM systems. DCS is a leading consulting firm for CRM implementations Minnesota." />
+<meta name="keywords" content="crm system Minnesota, systems, CRM consulting Minnesota, on demand, on-demand, consultants, CRM implementations Minnesota, implementation, company, companies, firm, firms, Demand Chain Systems, DCS" />
+
+	<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+</head>
+<body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                
+                <apex:panelGrid styleClass="whtBk"  cellpadding="0" cellspacing="0" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+ <table align="center" id="Table_01" width="973px" border="0" cellpadding="0" cellspacing="0">
+       
+        <tr>
+            <td valign=top bgcolor=white>
+                <img src="https://ssl.salesforce.com/servlet/servlet.ImageServer?id=01500000000Yzbi&oid=00D00000000hiYB" width="974" alt="CRM consulting firm Minnesota">            </td>
+      </tr>
+        <tr>
+            <td bgcolor=white>
+                <table cellpadding=0 cellspacing=0 align="left">
+              <tr>
+                        <td rowspan=2 valign=top><img src="https://ssl.salesforce.com/servlet/servlet.ImageServer?id=01500000000Yzbn&oid=00D00000000hiYB" width="311" height="178"></td>
+                <td colspan="2" valign=top><img src="https://ssl.salesforce.com/servlet/servlet.ImageServer?id=01500000000Yzbx&oid=00D00000000hiYB" /></td>
+                  </tr>
+                    <tr>
+                    	<td height="135" colspan="2" valign="top">
+						  <div class="homePadding ">
+                            <h1 class='Title'>
+                            Minimize the time, cost and disruption of your CRM<br />implementation with Demand Chain Systems                       			</h1><br/>
+                           
+                         
+                        Demand Chain Systems is a CRM consulting and implementation firm that designs,<br />
+                        deploys and supports <a href="/dcs/fastPainlessImplementations">on-demand CRM</a> systems. We can mitigate the time, cost and<br /> 
+                        disruption of transitioning to a new <a href="/dcs/crmServices">CRM software</a> system. And we have the know-how<br />
+                        and <a href="/dcs/whyDCS">CRM experience</a> to help you implement high-value features quickly.
+                  </div> </td></tr>
+                    <tr>
+                      <td width="311" height="140" rowspan=2 align="left" valign=top background="https://ssl.salesforce.com/servlet/servlet.ImageServer?id=01500000000Yzbs&oid=00D00000000hiYB" bgcolor="#FFFFFF">
+                      <div class="bniPadding">Introducing our <a href="/dcs/crmDiagnostic">CRM Diagnostic</a>, a fast and free online tool that quickly identifies what you need to focus on to grow revenues and improve customer relationships.  <a href="/dcs/crmDiagnostic">Learn more now</a> -- or <a href="http://www.growthdiagnostic.com/growthdiagnostic/index.php?p=DCS">try it today for free</a>¿</div></td>
+                      <td height="62" align="left" valign=top bgcolor="#FFFFFF"><img src="https://ssl.salesforce.com/servlet/servlet.ImageServer?id=01500000000Yzbo&oid=00D00000000hiYB" width="368" height="62"></td>
+                      
+
+
+<td width="289" height="62" align="left" valign=top><img src="https://ssl.salesforce.com/servlet/servlet.ImageServer?id=01500000000Yzbt&oid=00D00000000hiYB" alt="" width="289" height="61"></td>                
+
+</tr>
+        
+                     
+
+<tr>
+                      <td width="368" height="78" valign=top bgcolor="#FFFFFF" class="homeBlurbPadding">Are your sales reps talking to the right people&mdash;the lunkers, not the minnows? At Demand Chain Systems, we're experts at leveraging your CRM system to <a href="/dcs/landMoreLunkers">make your team more effective</a>.</td>
+  
+
+                    <td valign=top class="homeBlurbPadding">
+
+
+Demand Chain's Tim Inman wins a prestigious <a href="/dcs/devChallengeAnnouncement">Salesforce.com award</a> for his Force.com application.
+
+ Read all the latest <a href="/dcs/crmNewsQ409">CRM news</a> from DCS.</td>
+                  </tr>                    
+              </table>                
+          </td>
+	</tr>
+       
+    </table>
+                      
+                       </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

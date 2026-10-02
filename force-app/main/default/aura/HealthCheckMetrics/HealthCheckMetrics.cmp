@@ -1,0 +1,65 @@
+<aura:component controller="HealthCheckMetricsCtrl" implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="metricsWrapper" type="HealthCheckMetricsCtrl.MetricsWrapper" />
+    <aura:attribute name="restRequest" type="RESTRequestUtil" />
+    <aura:handler event="c:HealthCheckLoginEvent" action="{!c.loadMetrics}" />
+    <aura:handler event="c:HealthCheckUpdateLeadMetricsEvent" action="{!c.updateLeadHelper}" />
+    <!-- We only need to insert/update the newly created lead once.  Adding this to the metrics component, because... random. -->
+    <!--<aura:handler event="aura:doneRendering" action="{!c.doneRendering}"/>-->
+    
+	<aura:renderIf isTrue="{!not(empty(v.metricsWrapper))}">
+        <div class="slds-page-header" role="banner">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-media--center slds-no-space slds-grow">
+                        <div class="slds-media__figure">
+                            <c:svgIcon class="slds-icon slds-icon-standard-account" svgPath="standard-sprite/svg/symbols.svg#account" />
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-heading--label">CRM Metrics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table--bordered">
+            <tbody>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Profiles">Profiles:</td>
+                        <td class="slds-truncate" data-label="Profile Count">{!v.metricsWrapper.profiles}</td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Roles">Roles:</td>
+                        <td class="slds-truncate" data-label="Role Count">{!v.metricsWrapper.roles}</td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Permission Sets">Permission Sets:</td>
+                        <td class="slds-truncate" data-label="Permission Set Count">{!v.metricsWrapper.permissionSets}</td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Managed Custom Objects">Managed Custom Objects:</td>
+                        <td class="slds-truncate" data-label="custom object count">{!v.metricsWrapper.managedCustomObjects}</td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Custom Objects">Total Custom Objects:</td>
+                        <td class="slds-truncate" data-label="custom object count">{!v.metricsWrapper.customObjects}</td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Custom Objects">Managed Apex Classes:</td>
+                        <td class="slds-truncate" data-label="custom object count">{!v.metricsWrapper.managedClasses}</td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Custom Objects">Total Apex Classes:</td>
+                        <td class="slds-truncate" data-label="custom object count">{!v.metricsWrapper.classes}</td>
+                    </tr>
+                	<tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="VF Pages">Visualforce Pages:</td>
+                        <td class="slds-truncate" data-label="custom object count">{!v.metricsWrapper.pages}</td>
+                    </tr>
+               		<tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Triggers">Apex Triggers:</td>
+                        <td class="slds-truncate" data-label="custom object count">{!v.metricsWrapper.triggers}</td>
+                    </tr>
+            </tbody>
+        </table>
+    </aura:renderIf>
+</aura:component>

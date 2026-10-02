@@ -1,0 +1,8 @@
+<aura:component controller="AttendeeListCtrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"  access="global">
+    <aura:attribute name="attendees" type="List" default="[]" />
+    <aura:attribute name="iconName" type="String" />
+    <aura:attribute name="title" type="String" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <c:UserList users="{!v.attendees}" title="{!v.title}" iconName="{!v.iconName}" />
+</aura:component>

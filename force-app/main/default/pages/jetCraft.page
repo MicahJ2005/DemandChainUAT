@@ -1,0 +1,53 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Case Studies" standardStylesheets="true">
+  <html>
+<head>
+    <title>Mobile CRM Platforms | How DCS Provides Mobile CRM for Jetcraft</title>
+<meta name="description" content="Learn how DCS helped Jetcraft deploy Salesforce.com to sales reps via Blackberries as mobile CRM platforms for use all around the world." />
+<meta name="keywords" content="DCS, Jetcraft, mobile crm platforms, mobile crm platform" />
+  
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+  </head>
+  <body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				    	 <c:leftLinks navigation="clients" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS knowledge of on-demand CRM made it easy for them to seamlessly integrate great sales tools with our lead generation and property management systems. Now, when our sales people enter sales opportunity information our meeting professionals are right on it. That helps us close sales more efficiently and deliver outstanding customer service," said Dee Gullikson, Carlson Hotels Worldwide."<br />
+				   		</span>
+				   		</apex:outputText>	
+				   		<br/>
+				   		<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">DCS Provides Mobile CRM for JetCraft</div>
+						<br/>
+						<div align="left">
+							<p>
+								<strong>How to turn Blackberries into mobile CRM platforms</strong>
+							</p>
+							<p><i>Jetcraft buys and sells airplanes. Its industry position is unique. With 45 years of experience and considerable financial resources, technical expertise and trading savvy, Jetcraft actively buys and sells aircraft for its own account and also facilitates trades for an exclusive list of clients. Most other aircraft companies have long been scared off by the financial risks and timing involved and have settled instead for merely acting as brokers.
+							</i></p>
+							<p>When you take a principal position in something as expensive as an aircraft, you'd better make sure your mobile sales force has the information at hand to track inventory against buyers and sellers with split-second precision. The perfect tools for this are the Blackberries that Jetcraft sales reps use. The perfect technology is on-demand Salesforce.com. As a leading Salesforce.com partner with extensive mobile communications technology expertise, DCS helped Jetcraft deploy Salesforce.com to sales reps via Blackberries for use as mobile CRM platforms all around the world. Now they can easily track calls and emails anywhere, any time.
+							</p>
+							<p>Jetcraft sales people now have visibility into the company's inventory and individual aircraft pipeline activity. That means they can quickly and easily present partners with reports showing the activity on the planes they are selling. In addition, seasonal direct mail campaigns are easily executed, thanks to all the data being neatly organized in one place.</p>
+							<p>"DCS's knowledge of CRM and mobile platforms gives our global sales force almost instant insight into deal activity,¿ said Chad Anderson of Jetcraft. ¿And when the deals involve buying and selling expensive aircraft, our sales people need to act with split-second timing. Thanks to DCS, we've got the technology to do just that."</p>
+							
+								</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

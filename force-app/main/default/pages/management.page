@@ -1,0 +1,55 @@
+<apex:page showHeader="false" id="SiteTemplate" title="CRM Strategy Practices | DCS Management" standardStylesheets="true">
+  <html>
+	<head>
+    	<title>CRM Strategy Practices | DCS Management - Christian Dahlberg and Mike Paradis</title>
+   		<meta name="description" content="Demand Chain Systems was founded in 2007 by Mike Paradis, Chris Dahlberg and David Coudron to focus on CRM strategy, building SFA and CRM systems and managing CRM practices." />
+		<meta name="keywords" content="CRM strategy, CRM practice, managing CRM practices, SFA, CRM systems, Mike Paradis, Chris Dahlberg, David Coudron" />
+
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+	</head>
+	<body>  
+<apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				     	<c:leftLinks navigation="aboutDCS"/>
+
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS consultants know programs like Salesforce.com better than almost anyone. When we need to solve yet another business challenge, I rely on their understanding of Salesforce to help plan our strategy for implementation, and to understand what the roadmap to completing the integration with Salesforce will look like. They've become a trusted partner in our use of technology to support our sales organization,¿ said Tracy Peloquin, Ebusiness Manager, North America Commercial Division, Imation Corp.</span> </apex:outputText>
+				   			<br />
+				   			<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">Management
+</div>
+						<br/>
+						<div align="left">
+							<p>
+								<strong>Christian Dahlberg, Co-founder and Managing Partner</strong><br/>
+								Chris Dahlberg has 15 years of experience building SFA and CRM systems and managing CRM practices. While at 3M early in his career, he implemented the company's first-generation SFA system in several departments.  Later, as a senior consultant at GE Capital Consulting (Ambient Consulting), he was one of the firm¿s most highly utilized resources, implementing SFA and CRM solutions for hundreds of clients in the financial, transportation, manufacturing and healthcare markets.  He also served as the firm¿s CRM practice manager. 
+								
+							</p>
+							<p>In 2002, Chris helped establish the <a href="http://demandchainsystems.force.com/dcs/expConsultants">CRM technology</a> implementation team at BenNevis, a strategic CRM consultancy.  In 2007, along with David Coudron and Mike Paradis, Chris started an independent firm, Demand Chain Systems, where he is a managing partner.</p>
+							<p><strong>Mike Paradis, Co-founder
+							</strong><br/>Mike Paradis is an entrepreneur who is nationally recognized for his expertise in business-to-business sales, marketing, service excellence and channel management. As a consultant, Mike worked with Cargill for 10 years on customer-centric projects and formed a partnership with Cargill's founding family, the MacMillans, who shared his vision for creating the first consulting services company (BenNevis) dedicated solely to increasing the growth and profitability of businesses by providing a strategic customer-centric framework. As a natural extension of that <a href="/dcs/crmStrategyConsulting">CRM strategy</a> work, Mike and two partners founded Demand Chain Systems in 2007 as an independent company to focus exclusively on <a href="http://demandchainsystems.force.com/dcs/fastPainlessImplementations">on-demand CRM</a> implementations. 
+							
+							
+							</p>
+							<p>Mike was previously executive vice president of GE's Customer Relationship Solutions Division, where he helped build and lead their <a href="http://demandchainsystems.force.com/dcs/crmImplementations">CRM system integration</a> organization of 80 consultants.</p>
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

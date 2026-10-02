@@ -1,0 +1,61 @@
+<apex:page showHeader="false" id="SiteTemplate" title="On-Demand CRM Clients | Demand Chain Systems" standardStylesheets="true">
+  <html>
+	<head>
+    <title>On-Demand CRM Clients | Demand Chain Systems</title>
+	<meta name="description" content="DCS has worked with hundreds of companies to implement on-demand CRM systems." />
+  	<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   </head>
+   <body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				    	 <c:leftLinks navigation="clients" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS knowledge of on-demand CRM made it easy for them to seamlessly integrate great sales tools with our lead generation and property management systems. Now, when our sales people enter sales opportunity information our meeting professionals are right on it. That helps us close sales more efficiently and deliver outstanding customer service," said Dee Gullikson, Carlson Hotels Worldwide."<br />
+				   		</span>
+				   		</apex:outputText>	
+				   			<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">Clients</div>
+						<br/>
+						<div align="left">
+							<p>DCS has worked with hundreds of companies throughout the region, both large and small, to solve their toughest CRM challenges and implement on-demand CRM systems fast and efficiently. A partial list of our clients is below. </p>
+							<ul>
+								<li>ADC Telecommunications </li>
+								<li>Blue Cross Blue Shield of Minnesota </li>
+								<li>Cargill </li>
+								<li>Carlson Companies </li>
+								<li>Center for Diagnostic Imaging </li>
+								<li>Douglas Scientific </li>
+								<li>GN ReSound </li>
+								<li>Imation </li>
+								<li>Interton </li>
+								<li>JetCraft </li>
+								<li>Lifetouch Inc. </li>
+								<li>MTS Corporation </li>
+								<li>Northwest Airlines</li>
+								<li>Tennant Company </li>
+								<li>UnitedHealth Group </li>
+								<li>Virtual Radiologic </li>
+								<li>Wolters Kluwer Financial Services  </li>
+								<li>Zinpro Performance Materials  </li>
+							</ul>
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

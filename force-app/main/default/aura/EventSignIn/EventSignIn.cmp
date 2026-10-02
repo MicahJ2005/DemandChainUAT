@@ -1,0 +1,130 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="EventSignIn_Cntrl">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:attribute name="FirstName" type="String"/>
+	<aura:attribute name="LastName" type="String"/>
+	<aura:attribute name="CompanyName" type="String"/>
+	<aura:attribute name="Title" type="String"/>
+	<aura:attribute name="contEmail" type="String"/>
+	<aura:attribute name="cmembers" type="CampaignMember[]"/>
+	<div class="slds">
+		<div class="slds-page-header" role="banner">
+			<div class="slds-media slds-media--center">
+				<div class="slds-media__figure">
+					<lightning:icon iconName="custom:custom103" size="large"/> 
+				</div>
+				<div class="slds-media__body">
+					<p class="slds-page-header__title slds-truncate" title="New Scenario">DCS Lightning Event</p>
+				</div>
+				<div class="slds-media__figure slds-media__figure--reverse">
+					<lightning:button label="New Registrant" onclick="{!c.newReg}"/>
+				</div>
+			</div>
+		</div>
+		<div class="slds-grid slds-wrap slds-grid--pull-padded">
+			<div aura:id="CampMemLst" class="slds-align--absolute-center">
+				<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+					<thead>
+						<tr class="slds-text-title--caps">
+							<th scope="col">
+								<div class="slds-truncate tableHeader" title="scenarioName">Last Name</div>
+							</th>
+							<th scope="col">
+								<div class="slds-truncate tableHeader" title="Territory">First Name</div>
+							</th>
+							<th scope="col">
+								<div class="slds-truncate tableHeader" title="Reps">Company</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<aura:iteration items="{!v.cmembers}" var="cm">
+							<tr onclick="{!c.signin}" data-cmID="{!cm.Id}">
+								<th scope="row" data-label="scenarioName">
+									<div class="slds-truncate tabledata">
+										{!cm.Contact.LastName}
+									</div>
+								</th>
+								<th scope="row" data-label="Territory">
+									<div class="slds-truncate tabledata">
+										{!cm.Contact.FirstName}
+									</div>
+								</th>
+								<th scope="row" data-label="Reps">
+									<div class="slds-truncate tabledata">
+										{!cm.Contact.Account.Name}
+									</div>
+								</th>
+							</tr>
+						</aura:iteration>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div aura:id="successmessage" class="slds-hide">
+			<div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal" aria-labelledby="header43">
+				<div class="slds-modal__container">
+					<div class="slds-modal__header">
+						<div align="right">
+							<lightning:buttonIcon iconName="utility:close" variant="bare" onclick="{!c.closeModal}" alternativeText="Close window."/>
+						</div>
+						<h2 id="header43" class="slds-text-heading--medium">Success</h2>
+					</div>
+					<div class="slds-modal__content" style="height: 50%;">
+						<div class="slds-grid slds-wrap slds-grid--pull-padded">
+							<div class="slds-col--padded slds-size--3-of-6 slds-p-bottom--large">
+								<div class="slds-box sldx-box--small slds-theme--shade">
+									You have successfully registered
+									<div class="slds-box sldx-box--small slds-theme--shade">
+										<lightning:button label="OK" onclick="{!c.closeModal}"/>
+									</div> 
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="slds-backdrop slds-backdrop--open">
+			</div>
+		</div>
+		<div aura:id="NewReg" class="slds-hide">
+			<div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal" aria-labelledby="header43">
+				<div class="slds-modal__container">
+					<div class="slds-modal__header">
+						<div align="right">
+							<lightning:buttonIcon iconName="utility:close" variant="bare" onclick="{!c.closeRegModal}" alternativeText="Close window."/>
+						</div>
+						<h2 id="header43" class="slds-text-heading--medium">Register</h2>
+					</div>
+					<div class="slds-modal__content" style="height: 50%;">
+						<div class="slds-grid slds-wrap slds-grid--pull-padded">
+							<div class="slds-col--padded slds-size--3-of-6 slds-p-bottom--large">
+								<div class="slds-box sldx-box--small slds-theme--shade">
+									<div>
+										<ui:inputText label="First Name: " value="{!v.FirstName}"/>
+									</div>
+									<div>
+										<ui:inputText label="Last Name: " value="{!v.LastName}"/>
+									</div>
+									<div>
+										<ui:inputText label="Email: " value="{!v.contEmail}"/>
+									</div>
+									<div>
+										<ui:inputText label="Company Name: " value="{!v.CompanyName}"/>
+									</div>
+									<div>
+										<ui:inputText label="Title: " value="{!v.Title}"/>
+									</div>
+									<div class="slds-box sldx-box--small slds-theme--shade">
+										<lightning:button label="Register" onclick="{!c.register}"/>
+									</div> 
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="slds-backdrop slds-backdrop--open">
+			</div>
+		</div>
+	</div>
+</aura:component>

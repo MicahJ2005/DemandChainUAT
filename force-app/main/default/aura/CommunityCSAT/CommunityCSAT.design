@@ -1,0 +1,4 @@
+<design:component label="CSAT Component">
+	<design:attribute name="surveyRecordId" label="Survey URL Parameter" />
+    <design:attribute name="flowDevName" label="Flow Developer Name" />
+</design:component>

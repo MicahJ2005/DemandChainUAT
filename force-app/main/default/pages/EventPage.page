@@ -1,0 +1,4 @@
+<apex:page sidebar="false" showHeader="false">
+    <flow:interview name="EventLog">
+    </flow:interview>
+</apex:page>

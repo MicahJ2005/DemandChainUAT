@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Organization-wide financial health snapshot: current projects with revenue remaining, and Opportunities likely to close soon.</description>
+    <flexiPage>Financial_Health_Dashboard</flexiPage>
+    <label>Financial Health</label>
+    <motif>Custom263: TV Widescreen</motif>
+</CustomTab>

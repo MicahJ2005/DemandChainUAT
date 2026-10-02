@@ -1,0 +1,8 @@
+<aura:component >
+  	<aura:attribute name="svgPath" default="" type="String"/>
+  	<aura:attribute name="class" default="" type="String"/>
+    <aura:attribute name="pathToResource" default="{!$Resource.slds + '/assets/icons/'}" type="String" />
+  	<span aura:id="container">
+    	<span aura:id="assistiveText" class="slds-assistive-text">Icon</span>
+  	</span>
+</aura:component>

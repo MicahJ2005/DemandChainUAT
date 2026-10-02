@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Influenced_Pipeline_Target__c</fullName>
+    <description>Share of new pipeline at accounts that responded to a campaign in the prior 180 days.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Share of new pipeline at accounts that responded to a campaign in the prior 180 days.</inlineHelpText>
+    <label>Campaign-Influenced Pipeline Target %</label>
+    <precision>8</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

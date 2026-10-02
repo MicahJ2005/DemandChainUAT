@@ -1,0 +1,658 @@
+<apex:page controller="SanuWaveQuoteController" renderAs="PDF" applyBodyTag="false" showHeader="false" sidebar="false" standardStylesheets="false">
+    <head>
+        <style>
+            @page {
+                margin: 0.75in 0.5in 0.5in 0.5in;
+                size: letter;
+                
+                @bottom-right {
+                    /* Note: This footer is now set up to be flexible */
+                    content: "Page " counter(page) " of " counter(pages);
+                    font-family: Arial, sans-serif;
+                    font-size: 9pt;
+                    color: #333;
+                }
+            }
+            
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 10pt;
+                margin: 0;
+                padding: 0;
+                color: #333;
+                line-height: 1.3;
+            }
+            
+            /* Header Styles */
+            .page-header {
+                width: 100%;
+                margin-bottom: 25px;
+                position: relative;
+                min-height: 100px;
+            }
+            
+            .logo-section {
+                float: left;
+                width: 45%;
+            }
+            
+            .logo-container {
+                margin-bottom: 10px;
+            }
+            
+            .company-info {
+                font-size: 9pt;
+                line-height: 1.3;
+                color: #333;
+                margin-top: 10px;
+            }
+            
+            .quote-header {
+    			float: right;
+    			text-align: right;
+    			width: 50%;
+    			padding-top: 10px;
+			}
+            
+            .quote-title {
+                font-size: 32pt;
+                font-weight: normal;
+                color: #C00000;
+                margin-bottom: 5px;
+            }
+            
+            .quote-number {
+                font-size: 11pt;
+                color: #333;
+                margin-bottom: 3px;
+            }
+            
+            .quote-date {
+                font-size: 10pt;
+                color: #333;
+            }
+            
+            /* Address and Total Section */
+            .address-total-wrapper {
+                width: 100%;
+                margin-bottom: 20px;
+                clear: both;
+                display: table;
+            }
+            
+            .addresses-container {
+                display: table-cell;
+                width: 60%;
+                vertical-align: top;
+            }
+            
+            .address-row {
+                width: 100%;
+                display: table;
+            }
+            
+            .address-block {
+                display: table-cell;
+                width: 48%;
+                vertical-align: top;
+                padding-right: 15px;
+            }
+            
+            .address-header {
+                font-weight: bold;
+                font-size: 10pt;
+                margin-bottom: 5px;
+                color: #333;
+            }
+            
+            .address-content {
+                font-size: 9pt;
+                line-height: 1.3;
+                color: #333;
+            }
+            
+            .total-container {
+                display: table-cell;
+                width: 38%;
+                vertical-align: top;
+                text-align: center;
+            }
+            
+            .total-box {
+                background-color: #E8E8E8;
+                padding: 20px;
+                text-align: center;
+            }
+            
+            .total-label {
+                font-size: 13pt;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+                letter-spacing: 1px;
+            }
+            
+            .total-amount {
+                font-size: 26pt;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            
+            .expiration-text {
+                font-size: 9pt;
+                color: #333;
+                font-weight: bold;
+            }
+            
+            /* Quote Details Table */
+            .details-section {
+                width: 100%;
+                margin: 20px 0;
+                clear: both;
+            }
+            
+            .details-table {
+                width: 100%;
+                border-collapse: collapse;
+                background-color: #F5F5F5;
+            }
+            
+            .details-table td {
+                padding: 6px 10px;
+                font-size: 9pt;
+                border-right: 1px solid white;
+                border-bottom: 1px solid white;
+            }
+            
+            .detail-label {
+                font-weight: bold;
+                background-color: #E0E0E0;
+                white-space: nowrap;
+            }
+            
+            .detail-value {
+                background-color: #F8F8F8;
+            }
+            
+            /* Line Items Table */
+            .line-items-section {
+                width: 100%;
+                margin: 20px 0;
+            }
+            
+            .line-items-table {
+                width: 100%;
+                border-collapse: collapse;
+                border: 1px solid #333;
+            }
+            
+            .line-items-table th,
+            .line-items-table td {
+                border-right: 1px solid #333;
+            }
+            
+            .line-items-table th {
+                background-color: #E8E8E8;
+                border: 1px solid #333;
+                padding: 8px 6px;
+                text-align: center;
+                font-weight: bold;
+                font-size: 9pt;
+            }
+            
+            .line-items-table td {
+                border: 1px solid #333;
+                padding: 6px;
+                vertical-align: top;
+                font-size: 9pt;
+            }
+            
+            .qty-col { width: 10%; text-align: center; }
+            .item-col { width: 38%; }
+            .price-col { width: 13%; text-align: right; }
+            
+            .item-name {
+                font-weight: bold;
+                margin-bottom: 2px;
+            }
+            
+            .item-description {
+                font-size: 8.5pt;
+                color: #555;
+                line-height: 1.2;
+            }
+            
+            /* Totals Section */
+            .totals-section {
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .totals-wrapper {
+                width: 100%;
+                text-align: right;
+            }
+            
+            .totals-table {
+                width: 35%;
+                margin-left: auto;
+            }
+            
+            .total-row {
+                padding: 5px 0;
+            }
+            
+            .total-row-label {
+                display: inline-block;
+                width: 60%;
+                text-align: right;
+                padding-right: 15px;
+                font-weight: bold;
+            }
+            
+            .total-row-value {
+                display: inline-block;
+                width: 35%;
+                text-align: right;
+            }
+            
+            .final-total-row {
+                border-top: 2px solid #333;
+                padding-top: 8px;
+                margin-top: 5px;
+                font-weight: bold;
+                font-size: 11pt;
+            }
+            
+            .shipping-note {
+                margin-top: 15px;
+                font-size: 10pt;
+                color: #333;
+                font-weight: bold;
+            }
+            
+            /* Page Breaks  Terms Content */
+            .page-break {
+                page-break-before: always;
+            }
+            
+            .terms-content {
+                font-size: 9pt;
+                line-height: 1.4;
+                margin: 15px 0;
+                text-align: justify;
+            }
+            
+            .terms-content p {
+                margin: 10px 0;
+            }
+            
+            .terms-content ul {
+                margin: 10px 0;
+                padding-left: 20px;
+            }
+            
+            .terms-content li {
+                margin: 3px 0;
+            }
+            
+            .terms-content strong {
+                font-weight: bold;
+            }
+            
+            /* Signature Section */
+            .signature-section {
+                margin-top: 30px;
+                page-break-inside: avoid;
+            }
+            
+            .signature-customer {
+                font-weight: bold;
+                margin-bottom: 15px;
+                font-size: 10pt;
+            }
+            
+            .signature-line {
+                border-bottom: 1px solid #333;
+                margin: 25px 0 5px 0;
+                width: 250px;
+            }
+            
+            .signature-label {
+                font-size: 9pt;
+                margin-bottom: 25px;
+                display: block;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div class="page-header">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <apex:image url="{!URLFOR($Resource.SanuWave_Logo)}" height="45" style="vertical-align: middle;" />
+                </div>
+                <div class="company-info">
+                    SANUWAVE, Inc.<br/>
+                    9600 W 76th St<br/>
+                    Suite 118<br/>
+                    Eden Prairie MN 55344<br/>
+                    United States
+                </div>
+            </div>
+
+            <div class="quote-header">
+                <div class="quote-title">Example Quote</div>
+                <div class="quote-number">#{!quote.QuoteNumber}</div>
+                <div class="quote-date">
+                    <apex:outputText value="{0,date,MM/dd/yyyy}">
+                        <apex:param value="{!quote.CreatedDate}"/>
+                    </apex:outputText>
+                </div>
+            </div>
+        </div>
+        
+        <div style="clear: both;"></div>
+        
+        <div class="address-total-wrapper">
+            <div class="addresses-container">
+                <div class="address-row">
+                    <div class="address-block">
+                        <div class="address-header">Bill To</div>
+                        <div class="address-content">
+                            {!quote.Account.Name}<br/>
+                            <apex:outputText value="{!quote.Account.BillingStreet}" rendered="{!NOT(ISBLANK(quote.Account.BillingStreet))}"/><br/>
+                            <apex:outputText value="{!quote.Account.BillingCity}" rendered="{!NOT(ISBLANK(quote.Account.BillingCity))}"/>
+                            <apex:outputText value=" {!quote.Account.BillingState}" rendered="{!NOT(ISBLANK(quote.Account.BillingState))}"/>
+                            <apex:outputText value=" {!quote.Account.BillingPostalCode}" rendered="{!NOT(ISBLANK(quote.Account.BillingPostalCode))}"/>
+                        </div>
+                    </div>
+                    
+                    <div class="address-block">
+                        <div class="address-header">Ship To</div>
+                        <div class="address-content">
+                            {!quote.Account.Name}<br/>
+                            {!ShippingStreet}<br/>
+                            {!ShippingCity} {!ShippingState} {!ShippingPostalCode}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="total-container">
+                <div class="total-box">
+                    <div class="total-label">TOTAL</div>
+                    <div class="total-amount">
+                        <apex:outputText value="{0,number,currency}">
+                            <apex:param value="{!quote.TotalPrice}"/>
+                        </apex:outputText>
+                    </div>
+                    <div class="expiration-text">
+                        Expiration Date: <apex:outputText value="{0,date,MM/dd/yyyy}">
+                            <apex:param value="{!quote.ExpirationDate}"/>
+                        </apex:outputText>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="details-section">
+            <table class="details-table">
+                <tr>
+                    <td class="detail-label">Expiration Date</td>
+                    <td class="detail-label">Exp. Close</td>
+                    <td class="detail-label">Job</td>
+                    <td class="detail-label">Sales Rep</td>
+                    <td class="detail-label">Shipping Method</td>
+                </tr>
+                <tr>
+                    <td class="detail-value">
+                        <apex:outputText value="{0,date,MM/dd/yyyy}">
+                            <apex:param value="{!quote.ExpirationDate}"/>
+                        </apex:outputText>
+                    </td>
+                    <td class="detail-value">
+                        <apex:outputText value="{0,date,MM/dd/yyyy}">
+                            <apex:param value="{!quote.CreatedDate}"/>
+                        </apex:outputText>
+                    </td>
+                    <td class="detail-value">
+                        V1001 Tax Agency<br/>GA
+                    </td>
+                    <td class="detail-value"> Need data
+					</td>
+                    <td class="detail-value">Truck – Local</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="line-items-section">
+            <table class="line-items-table">
+                <thead>
+                    <tr>
+                        <th class="qty-col">Quantity</th>
+                        <th class="item-col">Item</th>
+                        <th class="price-col">List Price</th>
+                        <th class="price-col">Discount</th>
+                        <th class="price-col">Your Price</th>
+                        <th class="price-col">$Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+    <apex:repeat value="{!quote.QuoteLineItems}" var="lineItem">
+        <tr>
+            <!-- Quantity -->
+            <td class="qty-col">
+                <apex:outputText value="{0,number,###,##0.##}">
+                    <apex:param value="{!lineItem.Quantity}"/>
+                </apex:outputText>
+            </td>
+
+            <!-- Product Name + Product Description -->
+            <td class="item-col">
+                <div class="item-name">
+                    {!lineItem.PricebookEntry.Product2.Name}
+                </div>
+
+                <apex:outputPanel rendered="{!NOT(ISBLANK(lineItem.PricebookEntry.Product2.Description))}">
+                    <div class="item-description">
+                        {!lineItem.PricebookEntry.Product2.Description}
+                    </div>
+                </apex:outputPanel>
+            </td> <td class="price-col"> 
+            <apex:outputText value="{0,number,currency}"> 
+                <apex:param value="{!IF(ISBLANK(lineItem.ListPrice), lineItem.UnitPrice, lineItem.ListPrice)}"/> 
+            </apex:outputText> 
+            </td> <td class="price-col"> 
+            <apex:outputText value="{0,number,currency}">
+               <apex:param value="{!IF(ISBLANK(lineItem.Discount), 0, lineItem.Discount)}"/> 
+            </apex:outputText> </td> 
+            <td class="price-col"> 
+                <apex:outputText value="{0,number,currency}"> 
+                    <apex:param value="{!lineItem.UnitPrice}"/> 
+                </apex:outputText> </td> <td class="price-col"> 
+            <apex:outputText value="{0,number,currency}"> 
+                <apex:param value="{!lineItem.TotalPrice}"/> 
+            </apex:outputText> 
+            </td> 
+        </tr> 
+                    </apex:repeat> 
+                </tbody>
+
+            </table>
+        </div>
+        
+        <div class="shipping-note">*Shipping Cost Not Include</div>
+        
+        <div class="totals-section">
+            <div class="totals-wrapper">
+                <div class="totals-table">
+                    <apex:outputPanel rendered="{!TaxAmount > 0}" styleClass="total-row">
+                        <span class="total-row-label">Tax Amount:</span>
+                        <span class="total-row-value">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!TaxAmount}"/>
+                            </apex:outputText>
+                        </span>
+                    </apex:outputPanel>
+                    
+                    <div class="total-row final-total-row">
+                        <span class="total-row-label">Total:</span>
+                        <span class="total-row-value">
+                            <apex:outputText value="{0,number,currency}">
+                                <apex:param value="{!quote.TotalPrice}"/>
+                            </apex:outputText>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="page-break"></div>
+        
+        <div class="page-header">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <apex:image url="{!URLFOR($Resource.SanuWave_Logo)}" height="45" style="vertical-align: middle;" />
+                </div>
+            </div>
+            <div class="quote-header">
+                <div class="quote-title">Example Quote</div>
+                <div class="quote-number">#{!quote.QuoteNumber}</div>
+                <div class="quote-date">
+                    <apex:outputText value="{0,date,MM/dd/yyyy}">
+                        <apex:param value="{!quote.CreatedDate}"/>
+                    </apex:outputText>
+                </div>
+            </div>
+        </div>
+        
+        <div style="clear: both;"></div>
+
+
+        <apex:outputPanel rendered="{!RecordTypeName == 'Customer Quote'}">
+            <div class="terms-content">
+                <p><strong>AUTHORIZED CUSTOMER FACILITIES.</strong> Only the Customer locations set forth on this document are authorized to purchase and receive products. Additional Customer Facilities may be added per the customer request in writing. Customer represents and warrants that it has the legal right and authority to bind all Customer Facilities to the obligations set forth in this Agreement, including without limitation the "own use" requirements set forth in Section 8.</p>
+                <p><strong>VALIDITY</strong> The pricing provided in this quote is effective for 30 days from the date provided on the quote, and is specifically provided for the customer, identified by name and address as listed above.</p>
+                <p><strong>TAXES:</strong> The client will be responsible for payment of all applicable federal, state, and local taxes and assessments (including sales, use, and similar) levied on the transaction. No tax exemption will be recognized unless a valid exemption certificate is provided.</p>
+                <p><strong>Payment Terms:</strong> All invoices for services described in the estimate are payable within thirty (30) days of the invoice date (i.e., net 30).</p>
+                <p><strong>Late Charges &amp; Interest:</strong> Any invoices unpaid on or before the due date will begin to accrue interest after the due date until the invoice is paid at the lesser of twelve (12%) percent per annum or the highest lawful rate. Credit Card Payments are subject to 3.5% fee of total product cost.</p>
+                <p><strong>TRANSPORTATION AND RISK OF LOSS. Transportation.</strong> All orders will be shipped via a carrier selected by SANUWAVE. Products shall be shipped FOB Origin, and the Customer shall pay all standard charges for freight, insurance, fees and all other packing and shipping charges related to delivery of the Products. Title and risk of loss pass to the Customer upon the shipment of products. Products that are lost, damaged, misused or not returned by Customer will be charged to Customer at the retail price in effect at the time such loss, damage or misuse was made known to SANUWAVE.</p>
+                <p><strong>LOSS OR DAMAGE</strong> If the Products arrive in visibly damaged condition, Customer must notify the delivering carrier at the time of delivery. Inspection reports must be supplied to SANUWAVE Customer Service within five (5) business days of delivery to assure appropriate action. If concealed damage is discovered after delivery, Customer must notify the delivering carrier immediately upon discovery and complete an an inspection report.</p>
+                <p><strong>OWN USE.</strong> Customer agrees to purchase Applicators solely for its "own use" and such Applicators shall be used solely for such purposes. "Own use" shall mean such uses that are part of and promote the intended institutional operation of providing care to persons who are patients of the Customer Facilities prior to such patients' discharge from such Customer Facilities. In furtherance and not limitation of the foregoing, Customer shall not purchase Applicators for resale or barter to sites or any other entities that are not patients of the Customer Facilities without SANUWAVE's prior written approval. Customer shall not permit or condone violations of this Section by anyone affiliated with it.</p>
+                <p><strong>INDEMNIFICATION.</strong> Customer shall indemnify, defend, and hold SANUWAVE harmless from and against any and all losses, claims, suits, damages, liabilities and expenses (including, without limitation, reasonable attorneys' fees) of any nature or kind whatsoever arising out of or resulting from, directly or indirectly: (a) Customer's breach of this Agreement and (b) any alleged negligent or intentional acts or omissions of Customer, its agents or employees, based upon, arising out of or attributable to the use of the Products. The indemnification rights provided herein are in addition to any other rights SANUWAVE may have against the Customer. This Section shall survive the expiration or termination of this Agreement.</p>
+                <p><strong>LIMITED WARRANTY AND DISCLAIMER.</strong> SANUWAVE warrants to Customer that the Equipment will be free from defects in title, material and workmanship under normal use and service for a period of one (1) year from the date of delivery. An additional Extended Warranty may be purchased by Customer prior to the expiration of the initial warranty term. Applicators carry a warranty of the earlier of first use or the Applicator's expiration date. As Customer's sole remedy and SANUWAVE's sole liability for a breach of the foregoing warranty, SANUWAVE shall, in its discretion, either replace the Product that fails to conform to the foregoing warranty or, as it relates to the Applicators only, refund the amount actually paid by the Customer for such non-conforming Applicators. The reuse of single use, disposable Applicators voids this warranty for all warranted product (including the Equipment) otherwise covered. No warranties apply to Equipment that has been misused or improperly maintained. EXCEPT FOR THE WARRANTY SET FORTH IN THIS SECTION SANUWAVE MAKES NO WARRANTY WHATSOEVER WITH RESPECT TO THIS AGREEMENT, INCLUDING ANY (i) WARRANTY OF MERCHANTABILITY; (ii) WARRANTY OF FITNESS FOR A PARTICULAR PURPOSE; (iii) WARRANTY OF TITLE; OR (iv) WARRANTY AGAINST INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS OF A THIRD PARTY; WHETHER EXPRESS OR IMPLIED BY LAW, COURSE OF DEALING, COURSE OF PERFORMANCE, USAGE OF TRADE OR OTHERWISE. Lack of insurance coverage shall not relieve Customer of any of its liabilities under this Agreement.</p>
+                <p><strong>USE AND HANDLING OF EQUIPMENT.</strong> Customer shall use the Products for its intended purpose in accordance with the Instructions for Use. To prevent repair fees due to damage to the equipment beyond ordinary wear and tear, Customer must:</p>
+                <ul>
+                    <li>Comply with all laws and regulations applicable to the use and possession of the Products.</li>
+                    <li>Avoid dropping, impact, or abrasion to transducer.</li>
+                    <li>Never carry or transport the system using the cable, treatment wand or treatment wand holder.</li>
+                    <li>Avoid excessive twisting, pulling, pinching or kinking of treatment wand cable assemblies.</li>
+                    <li>Never use any abrasive cleaning solutions or wipes.</li>
+                    <li>Never apply excessive force on any component of the system (e.g., depressing key switches with anything other than a fingertip).</li>
+                    <li>Never immerse or soak treatment wand in any liquid.</li>
+                    <li>Never energize or operate the system without properly grounded input power (120/220V).</li>
+                    <li>Review the Instructions for Use for proper care and handling of the Products.</li>
+                </ul>
+                <p><strong>GOVERNING LAW</strong> This Agreement shall be governed, construed, and enforced in accordance with the laws of the state of Delaware and this choice of law by the parties shall survive the expiration or other termination of this Agreement.</p>
+                <p><strong>FORCE MAJURE</strong> Neither Party shall be liable for failure to perform due to a strike, fire, flood, unavoidable accidents, acts of God, acts of war, acts of terrorism, acts of governmental authorities or agencies or any other cause beyond its control.</p>
+                <p><strong>WAIVER.</strong> No waiver by either Party of any provision or breach of this Agreement shall constitute a waiver by such Party of any other provision or breach, and no such waiver shall be effective unless made in writing and signed by an authorized representative of the Party against whom waiver is sought. Either Party's consent to, or approval of, any act of the other Party shall not be deemed to render unnecessary the obtaining of that Party's consent to, or approval of, any subsequent act by the other Party.</p>
+                <p><strong>ENTIRE AGREEMENT.</strong> This Agreement and attachments constitute the final, complete, and exclusive agreement between the parties relating to the subject matter hereof, supersede all prior conversations, understandings, promises and agreements relating to the subject matter hereof. Neither Party has relied upon any communications, representations, terms or promises, verbal or written, not set forth herein.</p>
+            </div>
+        </apex:outputPanel>
+
+
+        <apex:outputPanel rendered="{!RecordTypeName == 'Reseller/Distributor Quote'}">
+            <div class="terms-content">
+                <p><strong>AUTHORIZED RESELLER FACILITIES.</strong> Only the Reseller locations set forth on this document are authorized to purchase and receive products. Additional Reseller Facilities may be added upon written request and approval by SANUWAVE. Reseller represents and warrants that it has the legal right and authority to bind all Reseller Facilities to the obligations set forth in this Agreement. The "own use" clause does not apply to Resellers operating under SANUWAVE’s approved resale terms. [cite: 27, 28, 29, 30, 43]</p>
+                
+                <p><strong>VALIDITY</strong> The pricing provided in this quote is effective for 30 days from the date provided on the quote, and is speciﬁcally provided for the customer, identiﬁed by name and address as listed above. [cite: 30]</p>
+                
+                <p><strong>TAXES:</strong> The client will be responsible for payment of all applicable federal, state, and local taxes and assessments (including sales, use, and similar) levied on the transaction. No tax exemption will be recognized unless a valid exemption certiﬁcate is provided. [cite: 31, 32]</p>
+                
+                <p><strong>Payment Terms:</strong> All invoices for services described in the estimate are payable within thirty (30) days of the invoice date (i.e., net 30). [cite: 33] <strong>Late Charges &amp; Interest:</strong> Any invoices unpaid on or before the due date will begin to accrue interest after the due date until the invoice is paid at the lesser of twelve (12%) percent per annum or the highest lawful rate. [cite: 34] Credit Card Payments are subject to 3.5% fee of total product cost. [cite: 35]</p>
+                
+                <p><strong>TRANSPORTATION AND RISK OF LOSS. Transportation.</strong> All orders will be shipped via a carrier selected by SANUWAVE. [cite: 36] Products shall be shipped FOB Origin, and the Customer shall pay all standard charges for freight, insurance, fees and all other packing and shipping charges related to delivery of the Products. [cite: 37] Title and risk of loss pass to the Customer upon the shipment of products. [cite: 38] Products that are lost, damaged, misused or not returned by Customer will be charged to Customer at the retail price in effect at the time such loss, damage or misuse was made known to SANUWAVE. [cite: 39]</p>
+                
+                <p><strong>LOSS OR DAMAGE</strong> If the Products arrive in visibly damaged condition, Customer must notify the delivering carrier at the time of delivery. [cite: 40] Inspection reports must be supplied to SANUWAVE Customer Service within ﬁve (5) business days of delivery to assure appropriate action. [cite: 41] If concealed damage is discovered after delivery, Customer must notify the delivering carrier immediately upon discovery and complete an inspection report. [cite: 42]</p>
+                
+                <p><strong>OWN USE.</strong> This section is not applicable to authorized Resellers operating under an approved Reseller Agreement with SANUWAVE. Authorized Resellers are permitted to resell Hardware to third parties, provided they have received prior written approval for each such sale from SANUWAVE. Applicators must still be purchased directly by end users from SANUWAVE. Resellers may not sell into restricted territories or to unauthorized accounts without SANUWAVE’s written consent. [cite: 43, 44, 45, 46]</p>
+                
+                <p><strong>PRODUCT USAGE.</strong> The product must be used in strict compliance with the Instructions For Use, including that it is to be used with single use disposable applicators on a one per patient per treatment basis. Failure to do so is a breach of the contract and may lead to injury or infection for patients. Sanuwave reserves the right to monitor Customer's (or Customer's agents) usage of the product to ensure compliance with the Instructions For Use and any other directions provided by Sanuwave. Customer agrees to make any and all Sanuwave equipment and products owned or in use by Customer available for such inspection upon request. Failure to do so shall constitute breach of contract and may void warranties. [cite: 62, 63]</p>
+                
+                <p><strong>INDEMNIFICATION.</strong> Customer shall indemnify, defend, and hold SANUWAVE harmless from and against any and all losses, claims, suits, damages, liabilities and expenses (including, without limitation, reasonable attorneys’ fees) of any nature or kind whatsoever arising out of or resulting from, directly or indirectly: (a) Customer’s breach of this Agreement and (b) any alleged negligent or intentional acts or omissions of Customer, its agents or employees, based upon, arising out of or attributable to the use of the Products. [cite: 47] The indemniﬁcation rights provided herein are in addition to any other rights SANUWAVE may have against the Customer. [cite: 48] This Section shall survive the expiration or termination of this Agreement. [cite: 49]</p>
+                
+                <p><strong>LIMITED WARRANTY AND DISCLAIMER.</strong> SANUWAVE warrants to Reseller that the Equipment will be free from defects in title, material, and workmanship under normal use and service for a period of one (1) year from the date of delivery. [cite: 50] An additional Extended Warranty may be purchased by the end customer prior to the expiration of the initial warranty term. [cite: 51] Applicators carry a warranty of the earlier of first use or the Applicator’s expiration date. [cite: 52] This warranty is fully transferable to the end customer purchasing from an Authorized Reseller, provided the Equipment has not been misused, modified, or used in a manner inconsistent with the Instructions for Use. As the sole remedy for breach of this warranty, SANUWAVE shall, at its discretion, repair or replace the defective Product or refund the purchase price paid. [cite: 53] No warranties apply to Equipment that has been misused or improperly maintained. [cite: 55] EXCEPT FOR THE EXPRESS WARRANTIES STATED HEREIN, SANUWAVE DISCLAIMS ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. [cite: 56, 57, 58, 59, 60] Lack of insurance coverage shall not relieve Customer of any of its liabilities under this Agreement. [cite: 61]</p>
+                
+                <p><strong>USE AND HANDLING OF EQUIPMENT.</strong> Customer shall use the Products for its intended purpose in accordance with the Instructions for Use. [cite: 62] To prevent repair fees due to damage to the equipment beyond ordinary wear and tear, Customer must: </p>
+                <ul>
+                    <li>Comply with all laws and regulations applicable to the use and possession of the Products.</li>
+                    <li>Avoid dropping, impact, or abrasion to transducer.</li>
+                    <li>Never carry or transport the system using the cable, treatment wand or treatment wand holder.</li>
+                    <li>Avoid excessive twisting, pulling, pinching or kinking of treatment wand cable assemblies.</li>
+                    <li>Never use any abrasive cleaning solutions or wipes.</li>
+                    <li>Never apply excessive force on any component of the system (e.g., depressing key switches with anything other than a ﬁngertip).</li>
+                    <li>Never immerse or soak treatment wand in any liquid.</li>
+                    <li>Never energize or operate the system without properly grounded input power (120/220V).</li>
+                    <li>Review the Instructions for Use for proper care and handling of the Product</li>
+                </ul>
+                
+                <p><strong>GOVERNING LAW</strong> This Agreement shall be governed, construed, and enforced in accordance with the laws of the state of Delaware and this choice of law by the parties shall survive the expiration or other termination of this Agreement. [cite: 79]</p>
+                
+                <p><strong>FORCE MAJURE</strong> Neither Party shall be liable for failure to perform due to a strike, ﬁre, ﬂood, unavoidable accidents, acts of God, acts of war, acts of terrorism, acts of governmental authorities or agencies or any other cause beyond its control. [cite: 80]</p>
+                
+                <p><strong>WAIVER.</strong> No waiver by either Party of any provision or breach of this Agreement shall constitute a waiver by such Party of any other provision or breach, and no such waiver shall be effective unless made in writing and signed by an authorized representative of the Party against whom waiver is sought. [cite: 81] Either Party’s consent to, or approval of, any act of the other Party shall not be deemed to render unnecessary the obtaining of that Party’s consent to, or approval of, any subsequent act by the other Party. [cite: 82]</p>
+                
+                <p><strong>ENTIRE AGREEMENT.</strong> This Agreement and attachments constitute the ﬁnal, complete, and exclusive agreement between the parties relating to the subject matter hereof, supersede all prior conversations, understandings, promises and agreements relating to the subject matter hereof. [cite: 83] Neither Party has relied upon any communications, representations, terms or promises, verbal or written, not set forth herein. [cite: 84]</p>
+            </div>
+        </apex:outputPanel>
+
+        
+        <div class="page-break"></div>
+
+        <div class="page-header">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <apex:image url="{!URLFOR($Resource.SanuWave_Logo)}" height="45" style="vertical-align: middle;" />
+                </div>
+            </div>
+            <div class="quote-header">
+                <div class="quote-title">Example Quote</div>
+                <div class="quote-number">#{!quote.QuoteNumber}</div>
+                <div class="quote-date">
+                    <apex:outputText value="{0,date,MM/dd/yyyy}">
+                        <apex:param value="{!quote.CreatedDate}"/>
+                    </apex:outputText>
+                </div>
+            </div>
+        </div>
+        <div style="clear: both;"></div>
+
+        <div class="signature-section">
+            <div class="signature-customer">
+                <br/>
+                <p style="font-weight:bold; font-size:14px; margin-top:20px;">
+    			Customer: {!quote.Account.Name}
+				</p>
+                <br/><br/>
+            </div>
+            
+            <div class="signature-line"></div>
+            <span class="signature-label">Signature</span>
+            
+            <div class="signature-line"></div>
+            <span class="signature-label">Printed Name</span>
+            
+            <div class="signature-line"></div>
+            <span class="signature-label">Title</span>
+            
+            <div class="signature-line"></div>
+            <span class="signature-label">Date</span>
+            
+            <div class="signature-line"></div>
+            <span class="signature-label">Email</span>
+        </div>
+    </body>
+</apex:page>

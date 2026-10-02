@@ -1,0 +1,258 @@
+<template>
+    <div class="dashboard">
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
+
+        <div class="header">
+            <h1>Financial Health</h1>
+            <p class="sub">Current projects with revenue remaining, and Opportunities likely to close soon.</p>
+        </div>
+
+        <div class="tabs">
+            <button class={overviewTabClass} onclick={handleOverviewTabClick}>Overview</button>
+            <button class={resourceCapacityTabClass} onclick={handleResourceCapacityTabClick}>Resource Capacity</button>
+        </div>
+
+        <template lwc:if={isOverviewTab}>
+        <div class="kpi-hero-row">
+            <div class="kpi-hero">
+                <div class="label">Combined Financial Outlook</div>
+                <div class="value"><lightning-formatted-number value={combinedTotal} format-style="currency" currency-code="USD"></lightning-formatted-number></div>
+                <div class="kpi-note">{combinedTotalExplanation}</div>
+            </div>
+            <div class="kpi-hero">
+                <div class="label">Combined Hours Outlook</div>
+                <div class="value"><lightning-formatted-number value={combinedHoursTotal} maximum-fraction-digits="0"></lightning-formatted-number> hrs</div>
+                <div class="kpi-note">{combinedHoursExplanation}</div>
+            </div>
+        </div>
+
+        <div class="kpis">
+            <div class="kpi">
+                <div class="label">Current Projects</div>
+                <div class="value">{projectCount}</div>
+            </div>
+            <div class="kpi">
+                <div class="label">Total Remaining Budget</div>
+                <div class="value"><lightning-formatted-number value={totalRemainingBudget} format-style="currency" currency-code="USD"></lightning-formatted-number></div>
+                <div class="kpi-note">{remainingBudgetExplanation}</div>
+            </div>
+            <div class="kpi">
+                <div class="label">Total Hours Remaining</div>
+                <div class="value"><lightning-formatted-number value={totalProjectHours} maximum-fraction-digits="0"></lightning-formatted-number> hrs</div>
+                <div class="kpi-note">{projectHoursExplanation}</div>
+            </div>
+            <div class="kpi">
+                <div class="label">Opportunities Near Close</div>
+                <div class="value">{opportunityCount}</div>
+            </div>
+            <div class="kpi">
+                <div class="label">Near-Close Amount</div>
+                <div class="value"><lightning-formatted-number value={totalNearCloseAmount} format-style="currency" currency-code="USD"></lightning-formatted-number></div>
+                <div class="kpi-note">{nearCloseExplanation}</div>
+            </div>
+            <div class="kpi">
+                <div class="label">Total Estimated Hours</div>
+                <div class="value"><lightning-formatted-number value={totalOpportunityHours} maximum-fraction-digits="0"></lightning-formatted-number> hrs</div>
+                <div class="kpi-note">{opportunityHoursExplanation}</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Current Projects</h2>
+            <p class="sub">Client projects in the stage(s) selected below, sorted by revenue remaining.</p>
+            <div class="stage-filter">
+                <span class="stage-filter-label">Stage:</span>
+                <template for:each={stageOptions} for:item="opt">
+                    <label class="stage-checkbox" key={opt.value}>
+                        <input type="checkbox" data-value={opt.value} checked={opt.checked} onchange={handleStageToggle} />
+                        {opt.label}
+                    </label>
+                </template>
+            </div>
+            <template lwc:if={hasProjects}>
+                <div class="tbl-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>Account</th>
+                                <th>Stage</th>
+                                <th>Financial Status</th>
+                                <th class="num">Hours Remaining</th>
+                                <th class="num">Remaining Budget</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={projects} for:item="p">
+                                <tr key={p.key}>
+                                    <td>
+                                        <button class="link-btn" aria-label={p.name} data-id={p.id} onclick={handleOpenProject}>{p.name}</button>
+                                    </td>
+                                    <td>{p.accountName}</td>
+                                    <td>{p.stage}</td>
+                                    <td><span class={p.statusClass}>{p.financialStatus}</span></td>
+                                    <td class="num"><lightning-formatted-number value={p.hoursRemaining} maximum-fraction-digits="0"></lightning-formatted-number></td>
+                                    <td class="num"><lightning-formatted-number value={p.remainingBudget} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+            <template lwc:else>
+                <p class="empty-state">No current client projects found for the selected stage(s).</p>
+            </template>
+        </div>
+
+        <div class="card">
+            <h2>Opportunities Near Close</h2>
+            <p class="sub">Open Opportunities at or above the probability threshold, closing within the window below.</p>
+            <div class="controls">
+                <div class="field">
+                    <label for="months-out">Months out</label>
+                    <input id="months-out" type="number" min="1" value={monthsOut} onchange={handleMonthsOutChange} />
+                </div>
+                <div class="field">
+                    <label for="min-probability">Min probability (%)</label>
+                    <input id="min-probability" type="number" min="0" max="100" value={minProbability} onchange={handleMinProbabilityChange} />
+                </div>
+                <div class="window-note">Showing opportunities closing in the {opportunitiesWindowLabel} at {minProbability}%+ probability.</div>
+            </div>
+            <template lwc:if={hasOpportunities}>
+                <div class="tbl-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Opportunity</th>
+                                <th>Account</th>
+                                <th>Owner</th>
+                                <th>Stage</th>
+                                <th class="num">Probability</th>
+                                <th class="num">Close Date</th>
+                                <th class="num">Est. Hours</th>
+                                <th class="num">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={opportunities} for:item="o">
+                                <tr key={o.key}>
+                                    <td>
+                                        <button class="link-btn" aria-label={o.name} data-id={o.id} onclick={handleOpenOpportunity}>{o.name}</button>
+                                    </td>
+                                    <td>{o.accountName}</td>
+                                    <td>{o.ownerName}</td>
+                                    <td>{o.stageName}</td>
+                                    <td class="num">{o.probability}%</td>
+                                    <td class="num"><lightning-formatted-date-time value={o.closeDate} year="numeric" month="short" day="2-digit" time-zone="UTC"></lightning-formatted-date-time></td>
+                                    <td class="num"><lightning-formatted-number value={o.estimatedHours} maximum-fraction-digits="0"></lightning-formatted-number></td>
+                                    <td class="num"><lightning-formatted-number value={o.amount} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+            <template lwc:else>
+                <p class="empty-state">No open opportunities at {minProbability}%+ probability are scheduled to close in the {opportunitiesWindowLabel}. Try widening the window above.</p>
+            </template>
+        </div>
+        </template>
+
+        <template lwc:if={isResourceCapacityTab}>
+        <div class="controls">
+            <div class="field">
+                <label for="period-type">Period</label>
+                <select id="period-type" onchange={handlePeriodTypeChange}>
+                    <template for:each={periodTypeOptions} for:item="opt">
+                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                    </template>
+                </select>
+            </div>
+            <div class="field">
+                <label for="range-start">Start date</label>
+                <input id="range-start" type="date" value={rangeStart} onchange={handleRangeStartChange} />
+            </div>
+            <div class="field">
+                <label for="range-end">End date</label>
+                <input id="range-end" type="date" value={rangeEnd} onchange={handleRangeEndChange} />
+            </div>
+            <div class="window-note">Showing {resourceCapacityPeriodType} periods from {rangeStart} to {rangeEnd}. Multiple periods in range are summed per resource.</div>
+        </div>
+
+        <div class="kpi-hero-row">
+            <div class="kpi-hero">
+                <div class="label">Total Available Billable Hours</div>
+                <div class="value"><lightning-formatted-number value={totalAvailableHours} maximum-fraction-digits="0"></lightning-formatted-number> hrs</div>
+                <div class="kpi-note">{resourceCapacityExplanation}</div>
+            </div>
+            <div class="kpi-hero">
+                <div class="label">Total Revenue Opportunity Lost</div>
+                <div class="value"><lightning-formatted-number value={totalRevenueLost} format-style="currency" currency-code="USD"></lightning-formatted-number></div>
+                <div class="kpi-note">{revenueLostExplanation}</div>
+            </div>
+        </div>
+
+        <div class="kpis">
+            <div class="kpi">
+                <div class="label">Active Resources</div>
+                <div class="value">{resourceCount}</div>
+            </div>
+            <div class="kpi">
+                <div class="label">Cost of Available Capacity</div>
+                <div class="value"><lightning-formatted-number value={totalCostOfAvailable} format-style="currency" currency-code="USD"></lightning-formatted-number></div>
+                <div class="kpi-note">{costOfAvailableExplanation}</div>
+            </div>
+            <div class="kpi">
+                <div class="label">Average Billing Rate</div>
+                <div class="value">
+                    <input type="number" min="0" step="1" class="rate-input" value={averageBillingRate} onchange={handleAverageBillingRateChange} />
+                    /hr
+                </div>
+                <div class="kpi-note">Adjustable what-if rate used to estimate revenue opportunity lost below - not a stored value.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Resource Capacity</h2>
+            <p class="sub">Active resources' scheduled billable hours vs. billable target for the current month.</p>
+            <template lwc:if={hasResources}>
+                <div class="tbl-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Resource</th>
+                                <th class="num">Scheduled Hours</th>
+                                <th class="num">Target Hours</th>
+                                <th class="num">Available Hours</th>
+                                <th class="num">Cost Rate</th>
+                                <th class="num">Cost of Available</th>
+                                <th class="num">Revenue Opportunity Lost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={resourceRows} for:item="r">
+                                <tr key={r.key}>
+                                    <td>
+                                        <button class="link-btn" aria-label={r.name} data-id={r.id} onclick={handleOpenResource}>{r.name}</button>
+                                    </td>
+                                    <td class="num"><lightning-formatted-number value={r.scheduledHours} maximum-fraction-digits="1"></lightning-formatted-number></td>
+                                    <td class="num"><lightning-formatted-number value={r.targetHours} maximum-fraction-digits="1"></lightning-formatted-number></td>
+                                    <td class="num"><lightning-formatted-number value={r.availableHours} maximum-fraction-digits="1"></lightning-formatted-number></td>
+                                    <td class="num"><lightning-formatted-number value={r.costRate} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                    <td class="num"><lightning-formatted-number value={r.costOfAvailable} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                    <td class="num"><lightning-formatted-number value={r.revenueLost} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+            <template lwc:else>
+                <p class="empty-state">No active resources found with utilization data for the current month.</p>
+            </template>
+        </div>
+        </template>
+    </div>
+</template>

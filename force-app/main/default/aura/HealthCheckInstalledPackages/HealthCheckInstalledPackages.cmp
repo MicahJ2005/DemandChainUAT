@@ -1,0 +1,37 @@
+<aura:component controller="HealthCheckInstalledPackagesCtrl" implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="installedPackages" type="String[]" />
+    <aura:handler event="c:HealthCheckLoginEvent" action="{!c.loadPackages}" />
+    <aura:handler event="c:HealthCheckUpdateLeadPackagesEvent" action="{!c.updateLeadHelper}" />
+    <aura:renderIf isTrue="{!not(empty(v.installedPackages))}">
+        <div class="slds-page-header" role="banner">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-media--center slds-no-space slds-grow">
+                        <div class="slds-media__figure">
+                            <c:svgIcon class="slds-icon slds-icon-standard-account" svgPath="standard-sprite/svg/symbols.svg#account" />
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-heading--label">Installed Packages</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table--bordered">
+            <thead>
+                <tr class="slds-text-heading--label">
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate">Package Name</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.installedPackages}" var="installedPackage">
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Package Name">{!installedPackage}</td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>	
+    </aura:renderIf>
+</aura:component>

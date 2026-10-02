@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Gross_Margin_Floor__c</fullName>
+    <description>Projects, clients and practices below this margin are flagged red.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Projects, clients and practices below this margin are flagged red.</inlineHelpText>
+    <label>Gross Margin Floor %</label>
+    <precision>8</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

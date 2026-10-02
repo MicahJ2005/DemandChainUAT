@@ -1,0 +1,41 @@
+<aura:component controller="HealthCheckLicensesCtrl" implements="flexipage:availableForRecordHome,force:hasRecordId,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="userLicenses" type="String[]" />
+    <aura:handler event="c:HealthCheckLoginEvent" action="{!c.loadUserLicenses}" />
+    <aura:handler event="c:HealthCheckUpdateLeadLicensesEvent" action="{!c.updateLeadHelper}" />
+    <aura:renderIf isTrue="{!not(empty(v.userLicenses))}">
+        <div class="slds-page-header" role="banner">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-media--center slds-no-space slds-grow">
+                        <div class="slds-media__figure">
+                            <c:svgIcon class="slds-icon slds-icon-standard-account" svgPath="standard-sprite/svg/symbols.svg#account" />
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-heading--label">User Licenses</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table--bordered">
+            <thead>
+                <tr class="slds-text-heading--label">
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate">User License</div>
+                    </th>
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate"># of Licenses Used</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.userLicenses}" var="license">
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="License Name">{!license.Name}</td>
+                        <td class="slds-truncate" data-label="License Count">{!license.numLicenses}</td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+    </aura:renderIf>
+</aura:component>

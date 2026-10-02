@@ -1,0 +1,5 @@
+<design:component>
+    <design:attribute name="recordId" label="Record Id" default="{!v.recordId}" />
+    <design:attribute name="title" label="Title" default="Meeting Attendees" />
+    <design:attribute name="iconName" label="LDS Icon Name" default="custom:custom71" />
+</design:component>

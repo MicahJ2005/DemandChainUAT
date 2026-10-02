@@ -1,0 +1,48 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Case Studies" standardStylesheets="true">
+  <html>
+<head>
+    <title>Profitable CRM | Leverage Your CRM System to Land Bigger Sales</title>
+<meta name="description" content="DCS can help make your sales team more effective by focusing on your most profitable customers and promising prospects." />
+<meta name="keywords" content="profitable CRM, leverage CRM, effective sales team, most profitable customers">   
+  	<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+  	</head>
+  	<body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				    	 <c:leftLinks navigation="careers" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS knowledge of on-demand CRM made it easy for them to seamlessly integrate great sales tools with our lead generation and property management systems. Now, when our sales people enter sales opportunity information our meeting professionals are right on it. That helps us close sales more efficiently and deliver outstanding customer service," said Dee Gullikson, Carlson Hotels Worldwide."<br />
+				   		</span>
+				   		</apex:outputText>	
+				   		<br/>
+				   		<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+					<img src="https://ssl.salesforce.com/servlet/servlet.ImageServer?id=01500000000Yzc2&oid=00DVE000005EaIT" width="684" height="142" alt="Profitable CRM - Land More Lunkers"><br><br>
+						<div class="Title" align="left">Land More Lunkers--Stop Wasting Time on the Minnows</div>
+						<br/>
+						<div align="left">   <br />
+                            
+                            Revenue is down and pipelines are drying up. You can't afford to have your sales team wasting time on unproductive meetings and ineffective prospecting. 
+ <br />
+  <br />
+At Demand Chain Systems, we¿re experts at leveraging your CRM system to make your sales team more effective. That means getting detailed profiles about your prospects in just a few clicks. It means knowing who your most profitable customers are (not just your largest ones) so you can spend more time growing them. It means more meetings with qualified leads and less time swimming upstream.<br />
+  <br /></div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

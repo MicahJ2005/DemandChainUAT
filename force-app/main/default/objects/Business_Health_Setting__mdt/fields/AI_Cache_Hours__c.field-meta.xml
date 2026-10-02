@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AI_Cache_Hours__c</fullName>
+    <description>Reuse a stored AI insight for the same page, scope, and as-of date for this many hours.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Reuse a stored AI insight for the same page, scope, and as-of date for this many hours.</inlineHelpText>
+    <label>AI Cache Hours</label>
+    <precision>16</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

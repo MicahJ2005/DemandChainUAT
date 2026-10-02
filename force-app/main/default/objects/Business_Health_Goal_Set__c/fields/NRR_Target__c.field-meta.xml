@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NRR_Target__c</fullName>
+    <description>This year revenue from last year clients / last year total revenue.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This year revenue from last year clients / last year total revenue.</inlineHelpText>
+    <label>Net Revenue Retention Target %</label>
+    <precision>8</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

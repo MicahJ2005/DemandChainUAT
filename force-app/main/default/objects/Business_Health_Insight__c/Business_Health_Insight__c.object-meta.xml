@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>AI Advisor output for a Business Health dashboard page. Acts as a short-lived cache (see Business Health Setting AI Cache Hours) and a history of the advice leadership was given and the metrics it was based on.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>false</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>Business Health Insight</label>
+    <nameField>
+        <displayFormat>BHI-{000000}</displayFormat>
+        <label>Insight Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Business Health Insights</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

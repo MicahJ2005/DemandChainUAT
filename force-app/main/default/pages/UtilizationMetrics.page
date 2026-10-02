@@ -1,0 +1,43 @@
+<apex:page controller="MetricController" standardStylesheets="false">
+
+	<table border="1">
+		<tr>
+			<th>Resource</th>
+			<th>Billable Goal</th>
+			<th>Week Of</th>
+			<th colSpan="40">Forecast vs. Timecards</th>
+		</tr>
+		<apex:repeat value="{!mapUtilization}" var="util">
+			<tr>
+				<td valign="top">{!mapUtilization[util].objResource.Name}</td>
+				<td valign="top">{!mapUtilization[util].objResource.DCS_Billable_Goal__c}</td>
+				<apex:repeat value="{!mapUtilization[util].mapUtil}" var="linedate">
+					<td valign="top">
+						<table border="1">
+							<tr>
+								<td colSpan="2" valign="top">
+									<apex:outputText value="{0, date, MM/dd/yyyy}">
+			    						<apex:param value="{!linedate}" /> 
+									</apex:outputText>
+								</td>
+							</tr>
+							<apex:repeat value="{!mapUtilization[util].mapUtil[linedate]}" var="lineitem">
+								<tr>
+									<td valign="top">
+										{!mapUtilization[util].mapUtil[linedate][lineitem].strName}
+									</td>
+									<td valign="top">
+										Est:&nbsp;{!mapUtilization[util].mapUtil[linedate][lineitem].dblHoursEst}<br />
+										Act:&nbsp;{!mapUtilization[util].mapUtil[linedate][lineitem].dblHoursAct}
+									</td>
+								</tr>
+							</apex:repeat>
+						</table>
+					</td>
+				</apex:repeat>
+			</tr>
+		</apex:repeat>
+	</table>
+
+
+</apex:page>

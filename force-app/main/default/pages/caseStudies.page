@@ -1,0 +1,77 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Success with Salesforce.com On-Demand CRM and DCS | Case Studies" standardStylesheets="true">
+  <html>
+	<head>
+    	<title>Success with Salesforce.com On-Demand CRM and DCS | Case Studies</title>
+  		<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   </head>
+   <body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				    	 <c:leftLinks navigation="clients" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS knowledge of on-demand CRM made it easy for them to seamlessly integrate great sales tools with our lead generation and property management systems. Now, when our sales people enter sales opportunity information our meeting professionals are right on it. That helps us close sales more efficiently and deliver outstanding customer service," said Dee Gullikson, Carlson Hotels Worldwide."<br />
+				   		</span>
+				   		</apex:outputText>	
+				   		<br/>
+				   		<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">Case Studies</div>
+						<br/>
+						<div align="left">
+							<p>
+								<strong>Douglas Scientific</strong><br />
+								How to use Salesforce.com to lay the foundation for rapid growth. <a href="/dcs/douglasScientific">Learn more</a>
+							</p>
+							<p>
+								<strong>Center for Diagnostic Imaging</strong><br/>
+								CDI takes it one step at time for Salesforce.com success. <a href="/dcs/cdi">Learn more</a>
+							<p>
+								<strong>Carlson Hotels Worldwide
+								</strong><br/>
+								How to integrate a CRM system with other mission-critical systems to increase productivity. <a href="/dcs/CHW">Learn more</a>
+							</p>
+							<p>
+								<strong>GN ReSound</strong><br/>
+								How to integrate on-demand CRM with SQL Server. <a href="/dcs/gnr">Learn more</a>
+							</p>
+							<p>
+								<strong>Interton</strong><br/>
+								How to use Salesforce.com as a centralized database of customer information that serves the entire enterprise. <a href="/dcs/interton">Learn more</a>
+							</p>
+							<p>
+								<strong>Blue Cross and Blue Shield of Minnesota</strong><br/>
+								How to use CRM to manage renewals and new business. <a href="/dcs/bcbs">Learn more</a>
+							</p>
+							<p>
+								<strong>Imation</strong><br/>
+								How to keep dealers and sales people in sync. <a href="/dcs/imation">Learn more</a>
+							</p>
+							<p>
+								<strong>Buhrs Holding BV
+								</strong><br/>
+								How to go beyond the basics and get maximum value from Salesforce.com.  <a href="/dcs/buhrs">Learn more</a>
+							</p>
+							<p>
+								<strong>JetCraft</strong><br/>
+								How to turn Blackberries into mobile CRM platforms.  <a href="/dcs/jetCraft">Learn more</a>
+							</p>
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

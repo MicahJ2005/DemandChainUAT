@@ -1,0 +1,59 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Successful CRM Implementation | DCS Provides the Technology for Successful CRM" standardStylesheets="true">
+  <html>
+	<head>
+    	<title>Successful CRM Implementation | DCS Provides the Technology for Successful CRM</title>
+		<meta name="description" content="DCS has helped hundreds of clients achieve a successful CRM implementation with on-demand SFA applications." />
+		<meta name="keywords" content="successful CRM implementation, Minnesota, CRM technology, sales force automation applications, Goldmine ACT Salesforce.com, SaaS CRM applications, SFA applications" />
+  	</head>
+  	<body>
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+                
+                    <apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >         
+                        <c:leftLinks navigation="successfulCRM"/>
+                        <apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+                        <apex:outputText ><span style="font-size:10px">"DCS made it easy for our Navision and Salesforce.com systems to 'talk' to each other like they were one application,¿ said Keith Lewis, VP of Business Development at GN ReSound.  ¿That gives our sales representatives a complete picture on how their accounts are trending and enables them to provide exceptional customer service. DCS's knowledge of how to integrate the best CRM tools with ERP and other back-end systems is outstanding. And their ability to execute fast and efficiently is exceptional."  </span> 
+                        <br />
+                        <br />
+                            <c:gd />
+                        </apex:outputText>
+                    </apex:panelGrid>
+                    <apex:panelGrid cellpadding="0" cellspacing="0">
+                        <div class="Title" align="left">Leveraging CRM to survive-even thrive-in tough times</div>
+                        <br/>
+                        <div align="left">
+                         	<p><i>Christian Dahlberg, Demand Chain Systems co-founder.</i></p>
+           					<p>You can't turn on the news today without hearing another dire report about the tough economic conditions we¿re all enduring. Unfortunately, the forecast for the future is just as grim. Experts predict that in 2009, the recession will deepen and possibly extend globally, U.S. unemployment figures could reach double digits, and many more businesses will face shrinking revenues and eventual failure.</p>
+           					<p>If your revenues are already declining, you're no doubt working hard to maintain your pipeline and keep your business healthy. For most companies, that means dramatically cutting costs, putting even more pressure on your sales team, and crossing your fingers.</p>
+           					<p>But freezing spending and stretching your sales team will only get you so far. Spending money¿though it may sound counter-intuitive¿may actually be the answer, as long as you make smart choices. One of the best investments you can make when business is down is in your customer relationship management (CRM) system. Here¿s why...</p>
+           					<p>First, investing in CRM is a very cost-effective growth strategy because it can help you sell more to your existing customers. With a well-planned CRM system, you can deliver a more targeted message to focused groups of customers. That not only costs less than marketing to the masses, it's more effective because you can tailor your message to your customers' specific needs.</p>
+           					<p>Salesforce.com, one popular on-demand CRM system, allows you to build comprehensive profiles of your customers. It goes well beyond tracking general characteristics like industry and company size and allows you to identify and track much deeper industry or company-specific attributes, such as geographic distance from your sales offices (for efficient route planning) or wallet share (for customer scoring). Multiple methods to integrate with back-end systems also allow you to correlate those attributes with past buying behavior. So it's easy for you to see that certain customers always buy at the end of the quarter while others always jump at your special offers¿and you can respond accordingly to prompt new purchases.
+
+           					</p>
+           					<p>A good CRM system can also help you identify your most profitable customers. You may think you already know who they are. The common assumption is that the most profitable customers are the ones who buy the most. But picture one of those "strategic accounts" for just a minute. If one of your top sales reps spends 10 hours a week on that one account, if the buyer is always demanding discounts, if the users are constantly tying up your customer service center with requests¿just how profitable can that account really be?</p>
+           					<p>Demand Chain Systems even helped one company leverage its CRM system to segment its customers into four "profitability quadrants." We used salesforce.com to identify how much time sales reps were spending with which customers and then correlating that to the customers' buying habits. We created four quadrants of customers: high-profit, low-touch; high-profit, high-touch; low-profit, low-touch; and low-profit, high-touch. The company can now proactively spend more time with its most valuable customers based on real, quantifiable data.</p>
+           					<p>Finally, unlike most other IT projects, it's easy to make small, incremental investments in CRM¿and they often deliver very fast ROI. Let's face it: even when business is booming, there's little appetite today for 2-year, $2-million IT projects. But when times are tough, any investment must deliver quick results, and ideally long-term ones as well. Many CRM investments do just that.</p>
+           					<p>For example, if you're still using Excel to manage your opportunity pipeline, you know the data is days, possibly weeks, old. By contrast, the opportunity management pipeline tool in most CRM systems gives you an up-to-the-minute view of your pipeline¿empowering you to act more quickly and make smarter decisions.</p>
+           					<p>If you're already using a CRM system, you can gain additional value quickly by turning on new modules. For example, you can create, launch and track marketing campaigns inside most CRM systems, and that marketing module can typically be up and running in a couple of weeks.</p>
+           					<p>Another way you can realize rapid ROI is properly implementing the workflow engine built into most CRM systems. This is a small investment that can pay big dividends, especially given the current business environment. Tough times often mean layoffs. And that means fewer people doing the same work. But if you're getting ready to close a large new account, you can't afford to have your internal process slow down the deal¿simply because Susie who used to do all the credit approvals no longer works here. A CRM system can automate manual processes like setting up new accounts and countless others.</p>
+           					<p>If you're not sure which part of your CRM system can deliver the most value, Demand Chain Systems has a unique diagnostic that can help¿a fast and free online tool called the CRM Diagnostic¿that quickly identifies what you need to focus on to grow revenues and improve customer relationships. And we've always specialized in implementing CRM systems (or just enhancements) in small, bite-sized chunks.</p>
+           					<p>Best of all, all the benefits of CRM are clearly not just short-term. Anything you do to better understand your customers and enhance your relationships can also lead to long-term growth and health for your company, long after the economy¿and your business¿rebounds.
+           					</p>
+                        </div>
+                    </apex:panelGrid>
+                 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

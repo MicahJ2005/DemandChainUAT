@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Book_To_Bill_Target__c</fullName>
+    <description>Bookings / delivered revenue, trailing 3 months.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Bookings / delivered revenue, trailing 3 months.</inlineHelpText>
+    <label>Book-to-Bill Target</label>
+    <precision>8</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Annual_Revenue_Target__c</fullName>
+    <description>Delivered revenue target for a 12-month period. Leave blank to derive it from trailing-12-month revenue x (1 + growth target).</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Delivered revenue target for a 12-month period. Leave blank to derive it from trailing-12-month revenue x (1 + growth target).</inlineHelpText>
+    <label>Annual Revenue Target</label>
+    <precision>16</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

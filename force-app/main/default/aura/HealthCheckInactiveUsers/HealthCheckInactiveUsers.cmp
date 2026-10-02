@@ -1,0 +1,30 @@
+<aura:component controller="HealthCheckInactiveUsersCtrl" implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="inactiveCount" type="Integer" />
+    <aura:handler event="c:HealthCheckLoginEvent" action="{!c.loadInactiveUsers}" />
+    <aura:handler event="c:HealthCheckUpdateLeadUsersEvent" action="{!c.updateLeadHelper}" />
+    <aura:renderIf isTrue="{!not(empty(v.inactiveCount))}">
+        <div class="slds-page-header" role="banner">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-media--center slds-no-space slds-grow">
+                        <div class="slds-media__figure">
+                            <c:svgIcon class="slds-icon slds-icon-standard-account" svgPath="standard-sprite/svg/symbols.svg#account" />
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-heading--label">Active users, no logins past 7 days.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table--bordered">
+            <tbody>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Name">Active users, no logins past 7 days</td>
+                        <td class="slds-truncate" data-label="Child Count">{!v.inactiveCount}</td>
+                   	</tr>
+
+            </tbody>
+        </table>
+    </aura:renderIf>
+</aura:component>

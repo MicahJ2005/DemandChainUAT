@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#912121</headerColor>
+        <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
+    </brand>
+    <description>Business health dashboards for Demand Chain leadership and directors, each with an Einstein AI Advisor.</description>
+    <formFactors>Large</formFactors>
+    <label>Business Health</label>
+    <navType>Standard</navType>
+    <tabs>Business_Health_Leadership</tabs>
+    <tabs>Business_Health_Sales</tabs>
+    <tabs>Business_Health_Finance</tabs>
+    <tabs>Business_Health_Capacity</tabs>
+    <tabs>Business_Health_Delivery</tabs>
+    <tabs>Business_Health_Portfolio</tabs>
+    <tabs>Business_Health_Marketing</tabs>
+    <tabs>Business_Health_People</tabs>
+    <tabs>Financial_Health_Dashboard</tabs>
+    <tabs>Business_Health_Goal_Set__c</tabs>
+    <tabs>Business_Health_Insight__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

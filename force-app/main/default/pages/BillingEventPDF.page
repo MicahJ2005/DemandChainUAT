@@ -1,0 +1,95 @@
+<apex:page renderAs="pdf" standardController="pse__Billing_Event__c" sidebar="false" showHeader="false" title="Generate Order Form/Report">
+<div style="text-align: right; font-family: trebuchet ms,sans-serif;"><b>
+<table style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px;" border="0" bordercolor="#888888" cellspacing="0">
+<tbody>
+<tr>
+<td align="left" style="width: 500px; height: 29px;">&nbsp;<img src="{!$Resource.FFDCLogo}"></img>
+</td>
+<td style="width: 500px; height: 29px;">&nbsp;<h1>INVOICE</h1>
+</td>
+</tr>
+</tbody>
+</table>
+</b>
+<div style="text-align: left;">
+<table style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px;" border="0" bordercolor="#888888" cellspacing="0">
+<tbody>
+<tr>
+<td style="width: 200px; height: 16px;">&nbsp;Invoice: 
+</td>
+<td style="width: 800px; height: 16px;">&nbsp;<b>{!pse__Billing_Event__c.pse__Invoice_Number__c}</b></td>
+</tr>
+<tr>
+<td style="width: 200px; height: 29px;">&nbsp;Invoice Date:
+</td>
+<td style="width: 800px; height: 29px;">&nbsp;<b><apex:outputText value="{0,date,MM-dd-yyyy}">
+<apex:param value="{!pse__Billing_Event__c.pse__Invoice_Date__c}"/> 
+</apex:outputText></b></td>
+</tr>
+<tr>
+<td style="width: 200px; height: 16px;">&nbsp;Project:</td>
+<td style="width: 800px; height: 16px;">&nbsp;<b>{!pse__Billing_Event__c.pse__Project__r.Name}</b></td>
+</tr>
+<tr>
+<td style="width: 200px; height: 16px;">&nbsp;Project Manager:</td>
+<td style="width: 800px; height: 16px;">&nbsp;<b>{!pse__Billing_Event__c.pse__Project__r.pse__Project_Manager__r.Name}</b></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div style="text-align: Center; font-family: trebuchet ms,sans-serif;">
+<b>
+<h3>Invoice Line Items</h3>
+</b>
+</div>
+<div style="text-align: Left; font-family: trebuchet ms,sans-serif;">
+<table style="border-collapse: collapse; border-color: rgb(136, 136, 136); border-width: 1px;" border="1" bordercolor="#888888" cellspacing="1">
+<tbody>
+<tr>
+<td style="width: 100px; height: 16px;">&nbsp;<b>Date</b>  
+</td>
+<td style="width: 100px; height: 16px;">&nbsp;<b>Category</b>  
+</td>
+<td align="right" style="width: 100px; height: 16px;">&nbsp;<b>Qty</b>  
+</td>
+<td align="right" style="width: 150px; height: 16px;">&nbsp;<b>Price</b>  
+</td>
+<td align="right" style="width: 150px; height: 16px;">&nbsp;<b>Extended</b>  
+</td>
+<td style="width: 400px; height: 16px;">&nbsp;<b>Description</b>
+</td>
+</tr>
+<apex:repeat var="bei" value="{!pse__Billing_Event__c.pse__Billing_Event_Items__r}">
+<tr>
+<td valign="top" align="left" style="width: 100px; height: 12px; "><span class="Apple-style-span" style="background-color: rgb(255, 255, 255);"><apex:outputText value="{0,date,MM-dd-yyyy}" rendered="{!bei.pse__Amount__c != 0.0}"><apex:param value="{!bei.pse__Date__c}" /></apex:outputText></span></td>
+<td valign="top" align="left" style="width: 100px; height: 12px; "><span class="Apple-style-span" style="background-color: rgb(255, 255, 255);"><apex:outputText value="{!bei.pse__Category__c}" rendered="{!bei.pse__Amount__c != 0.0}"></apex:outputText></span></td>
+<td valign="top" align="right" style="width: 100px; height: 12px; "><span class="Apple-style-span" style="background-color: rgb(255, 255, 255);"><apex:outputText value="{!bei.pse__Quantity__c}" rendered="{!bei.pse__Amount__c != 0.0}"></apex:outputText></span></td>
+<td valign="top" align="right" style="width: 150px; height: 12px; "><span class="Apple-style-span" style="background-color: rgb(255, 255, 255);"><apex:outputText value="${!bei.pse__Unit_Price__c}0" rendered="{!bei.pse__Amount__c != 0.0}"></apex:outputText></span></td>
+<td valign="top" align="right" style="width: 150px; height: 12px; "><span class="Apple-style-span" style="background-color: rgb(255, 255, 255);"><apex:outputText value="${!bei.pse__Amount__c}0" rendered="{!bei.pse__Amount__c != 0.0}"></apex:outputText></span></td>
+<td valign="top" align="left" style="width: 400px; height: 12px; " ><apex:outputText value="{!bei.pse__Description__c}" rendered="{!bei.pse__Amount__c != 0.0}"></apex:outputText></td>
+</tr>
+</apex:repeat>
+<tr>
+<td valign="top" align="right" style="width: 100px; height: 16px;">&nbsp;
+</td>
+<td valign="top" align="right" style="width: 100px; height: 16px;">&nbsp;
+</td>
+<td valign="top" align="right" style="width: 100px; height: 16px;">&nbsp;
+</td>
+<td valign="top" align="right" style="width: 150px; height: 16px;">&nbsp;<b>Invoice Total</b>  
+</td>
+<td valign="top" align="right" style="width: 150px; height: 16px;">&nbsp;<b><apex:outputField value="{!pse__Billing_Event__c.pse__Summary_Amount__c}"/></b>
+</td>
+<td valign="middle" align="left" style="width: 400px; height: 16px;">&nbsp;<b> Payable Net 30</b>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div style="text-align: Center; font-family: trebuchet ms,sans-serif;">
+<br></br>
+<br></br>
+(c) 2012 - This invoice has been produced using <b><i>FinancialForce PSA</i></b>
+</div>
+</apex:page>

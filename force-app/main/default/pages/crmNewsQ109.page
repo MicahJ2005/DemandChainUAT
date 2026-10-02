@@ -1,0 +1,264 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Case Studies" standardStylesheets="true">
+  <html>
+<head>
+     <title>CRM News | Leverage CRM to survive in tough times </title>
+    
+<meta name="description" content="Welcome to the inaugural issue of DCS Connections, a quarterly newsletter from Demand Chain Systems designed to share news, tools and advice with sales and marketing professionals." />
+<meta name="keywords" content="CRM news, leveraging CRM, how to integrate on demand crm with sql server, GN ReSound" />
+  	<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+  	</head>
+  	<body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				    	 <c:leftLinks navigation="careers" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS knowledge of on-demand CRM made it easy for them to seamlessly integrate great sales tools with our lead generation and property management systems. Now, when our sales people enter sales opportunity information our meeting professionals are right on it. That helps us close sales more efficiently and deliver outstanding customer service," said Dee Gullikson, Carlson Hotels Worldwide."<br />
+				   		</span>
+				   		</apex:outputText>	
+				   		<br/>
+				   		<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+								<div class="Title" align="left">CRM Newsletter, First Quarter 2009</div>
+						<br/>
+						<div align="left">   
+
+<!-- BEGIN NEWSLETTER -->
+
+<html><head><style type="text/css"><!-- DIV {margin:0px;} --></style></head><body>
+
+
+
+<STYLE type=text/css>
+
+p {font-family:Arial;font-size:10px;}
+
+</STYLE>
+
+
+
+<TABLE cellSpacing=0 cellPadding=0 width=700 border=0>
+
+<TBODY>
+
+<TR>
+
+<TD vAlign=top><IMG height=221 src="http://proxy.pcdn.vresp.com/f89547907/www.demandchainsystems.com/images/news/banner_left.gif" width=205></TD>
+
+<TD vAlign=top><IMG height=221 src="http://proxy.pcdn.vresp.com/884efc366/www.demandchainsystems.com/images/news/banner_right.gif" width=495></TD></TR>
+
+<TR>
+
+<TD vAlign=top background=http://proxy.pcdn.vresp.com/760a51618/www.demandchainsystems.com/images/news/nav_bg.jpg>
+
+<TABLE cellSpacing=0 cellPadding=0 border=0>
+
+<TBODY>
+
+<TR>
+
+<TD><IMG height=32 src="http://proxy.pcdn.vresp.com/c752b5876/www.demandchainsystems.com/images/news/nav_firstQuarter2009.gif" width=205></TD></TR>
+
+<TR>
+
+<TD><IMG height=28 src="http://proxy.pcdn.vresp.com/4a6ae56d7/www.demandchainsystems.com/images/news/nav_inThisIssue.gif" width=205></TD></TR>
+
+<TR>
+
+<TD><A href="#LeveragingCRM"><IMG height=35 src="http://proxy.pcdn.vresp.com/8e9c587e2/www.demandchainsystems.com/images/news/nav_inThisIssue_01.gif" width=205 border=0></A></TD></TR>
+
+<TR>
+
+<TD><A href="#HowtoIntegrate"><IMG height=31 src="http://proxy.pcdn.vresp.com/65b507f79/www.demandchainsystems.com/images/news/nav_inThisIssue_02.gif" width=205 border=0></A></TD></TR>
+
+<TR>
+
+<TD><A href="#Advice"><IMG height=18 src="http://proxy.pcdn.vresp.com/fd73f13d4/www.demandchainsystems.com/images/news/nav_inThisIssue_03.gif" width=205 border=0></A></TD></TR>
+
+<TR>
+
+<TD><A href="#News"><IMG height=18 src="http://proxy.pcdn.vresp.com/4f523b69e/www.demandchainsystems.com/images/news/nav_inThisIssue_04.gif" width=205 border=0></A></TD></TR>
+
+<TR>
+
+<TD><IMG height=102 src="http://proxy.pcdn.vresp.com/87af19d8c/www.demandchainsystems.com/images/news/nav_usefulLinks.gif" width=205 border=0></TD></TR>
+
+<TR>
+
+<TD><A href="http://www.customerthink.com/" target=_blank><IMG height=17 src="http://proxy.pcdn.vresp.com/337ae8c52/www.demandchainsystems.com/images/news/nav_usefulLinks_01.gif" width=205 border=0></A></TD></TR>
+
+<TR>
+
+<TD><A href="http://www.destinationcrm.com/" target=_blank><IMG height=17 src="http://proxy.pcdn.vresp.com/26f2adb36/www.demandchainsystems.com/images/news/nav_usefulLinks_02.gif" width=205 border=0></A></TD></TR>
+
+<TR>
+
+<TD><A href="http://usergroups.salesforce.com/twincities/" target=_blank><IMG height=34 src="http://proxy.pcdn.vresp.com/2d0c5ac24/www.demandchainsystems.com/images/news/nav_usefulLinks_03.gif" width=205 border=0></A></TD></TR>
+
+<TR>
+
+<TD><A href="http://demandchainsystems.blogspot.com/" target=_blank><IMG height=17 src="http://proxy.pcdn.vresp.com/92ff1d148/www.demandchainsystems.com/images/news/nav_usefulLinks_05.gif" width=205 border=0></A></TD></TR>
+
+<TR>
+
+<TD><A href="http://www.salesforce.com/community/" target=_blank><IMG height=17 src="http://proxy.pcdn.vresp.com/7165c9e41/www.demandchainsystems.com/images/news/nav_usefulLinks_06.gif" width=205 border=0></A></TD></TR>
+
+<TR>
+
+<TD><IMG height=296 src="http://proxy.pcdn.vresp.com/e550fbd6b/www.demandchainsystems.com/images/news/nav_demandChainSystems.gif" width=205></TD></TR></TBODY></TABLE></TD>
+
+<TD vAlign=top>
+
+<TABLE cellSpacing=0 cellPadding=0 border=0>
+
+<TBODY>
+
+<TR>
+
+<TD vAlign=top rowSpan=5><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=33></TD></TR>
+
+<TR>
+
+<TD vAlign=top colSpan=2><IMG height=32 src="http://proxy.pcdn.vresp.com/9f2b9d0e0/www.demandchainsystems.com/images/news/heading_01_introDCS2.gif" width=455></TD></TR>
+
+<TR>
+
+<TD>
+
+<P>Welcome to the inaugural issue of DCS Connections, a quarterly newsletter from Demand Chain Systems designed to share news, tools and advice with sales and marketing professionals. As a local CRM consulting and implementation firm, we've managed hundreds of implementations. Along the way, we've learned how to mitigate the time, cost and disruption of transitioning to a new CRM system, and we're delighted to share some of our experience and expertise with you. We hope you find this newsletter useful, and we welcome your feedback! </P>
+
+<TABLE width="100%">
+
+<TBODY>
+
+<TR>
+
+<TD width="50%">
+
+<P>Chris Dahlberg<BR>Co-founder<BR><A href="mailto:chris@demandchainsystems.com" target=_blank rel=nofollow ymailto="mailto:chris@demandchainsystems.com">chris@demandchainsystems.com</A></P></TD>
+
+<TD width="50%">
+
+<P>Mike Paradis<BR>Co-founder<BR><A href="mailto:mike@demandchainsystems.com" target=_blank rel=nofollow ymailto="mailto:mike@demandchainsystems.com">mike@demandchainsystems.com</A></P></TD></TR></TBODY></TABLE><BR></TD>
+
+<TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=40> </TD></TR>
+
+<TR>
+
+<TD colSpan=2><A name=LeveragingCRM><IMG height=36 src="http://proxy.pcdn.vresp.com/7ced54cc5/www.demandchainsystems.com/images/news/heading_02_leveragingCRM.gif" width=462 border=0></A></TD></TR>
+
+<TR>
+
+<TD>
+
+<P><I>Christian Dahlberg, Demand Chain Systems co-founder</I></P>
+
+<P>You can't turn on the news today without hearing another dire report about the tough economic conditions we're all enduring. Unfortunately, the forecast for the future is just as grim. Experts predict that in 2009, the recession will deepen and possibly extend globally, U.S. unemployment figures could reach double digits, and many more businesses will face shrinking revenues and eventual failure.<BR><IMG height=5 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></P>
+
+<P>If your revenues are already declining, you're no doubt working hard to maintain your pipeline and keep your business healthy. For most companies, that means dramatically cutting costs, putting even more pressure on your sales team and crossing your fingers.<BR><IMG height=5 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></P>
+
+<P>But freezing spending and stretching your sales team will only get you so far. Spending money¿though it may sound counterintuitive¿may actually be the answer, as long as you make smart choices. One of the best investments you can make when business is down is in your customer relationship management (CRM) system. Here's why...</P>
+
+<P><A href="/dcs/leveragingCRM" target=_blank>Read full article...</A></P><BR></TD>
+
+<TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=40> </TD></TR>
+
+<TR>
+
+<TD colSpan=3><A rel=nofollow name=HowtoIntegrate><IMG height=56 src="http://proxy.pcdn.vresp.com/21ba38362/www.demandchainsystems.com/images/news/heading_03_clientSuccess.gif" width=495 border=0></A></TD></TR>
+
+<TR>
+
+<TD>&nbsp;</TD>
+
+<TD>
+
+<P>GN ReSound is the undisputed technology leader in the global hearing instrument markets. A major segment of worldwide market share comes from its North American operation, which is headquartered in Bloomington, Minn. The state-of-the-art facility produces thousands of sophisticated hearing instruments a month.<BR><IMG height=5 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></P>
+
+<P>Unfortunately, GN ReSound's CRM system wasn't quite as sophisticated as its manufacturing facility. Sales, customer support, technical support, quality control and marketing used different systems that were hard to keep in synch. Rolling data up from these different systems into management summaries was also a challenge...</P>
+
+<P><A href="/dcs/gnr" target=_blank>Read full article...</A></P><BR></TD>
+
+<TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=40> </TD></TR>
+
+<TR>
+
+<TD colSpan=3><A rel=nofollow name=Advice><IMG height=50 src="http://proxy.pcdn.vresp.com/558ddadf1/www.demandchainsystems.com/images/news/heading_04_adviceFromAndy.gif" width=495 border=0></A></TD></TR>
+
+<TR>
+
+<TD>&nbsp;</TD>
+
+<TD>
+
+<P style="FONT-WEIGHT: bold; FONT-SIZE: 13px">What can we do to get people to use our CRM system--and how do we make sure the information is accurate?</P>
+
+<P>I hear this question--or some form of it--from nearly every client I work with. We've all heard that a new CRM system is only as good as the information you put into it. But how do you ensure that people are actually using the system and that the information is accurate and valuable?<BR><IMG height=5 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></P>
+
+<P>The answer is simple: I call it 'Inspect what you expect.' It simply means that you should use your CRM system to run all of your critical reports for your weekly meetings. The pipeline report for your sales meeting, the sales figures and forecast for your operations meeting¿they should all be generated from your CRM system.<BR><IMG height=5 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></P>
+
+<P>You'll find out very quickly if the information in the system is accurate¿and if it's not, that's OK. Point out the inaccuracies to your users and have them make changes for the next meeting. With each meeting, the accuracy of your reports should increase. Soon your CRM system will be part of your culture. </P><BR></TD>
+
+<TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=40> </TD></TR>
+
+<TR>
+
+<TD colSpan=3><A rel=nofollow name=News><IMG height=45 src="http://proxy.pcdn.vresp.com/64f170e52/www.demandchainsystems.com/images/news/heading_DCSnewsBriefs.gif" width=495 border=0></A></TD></TR>
+
+<TR>
+
+<TD>&nbsp;</TD>
+
+<TD>
+
+<P style="FONT-SIZE: 11px"><B><I>DCS wins honor in <A href="http://salesforce.com/" target=_blank>salesforce.com</A> contest</I></B></P>
+
+<P>Tim Inman, a senior technical architect at DCS, was honored recently by salesforce.com. The company's ,<A href="http://force.com/" target=_blank>Force.com</A> Sites Developer Challenge, encouraged developers to build exciting new Force.com Sites applications. Nearly 350 people from around the world responded with a variety of applications. Tim's <A href="http://blog.sforce.com/sforce/2009/02/announcing-the-results-from-the-developer-challenge.html" target=_blank>content management system</A> (built for DCS's own website) received one of three prestigious honorable mentions. The system, built on the Force.com platform, gives non-technical administrators the ability to add and edit content to the website. <A href="/dcs/devChallengeAnnouncement" target=_blank>Read more...</A><BR><IMG height=5 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif"
+
+ width=1></P>
+
+<P style="FONT-SIZE: 11px"><B><I>DCS helps McCormick increase collaboration with salesforce.com</I></B></P>
+
+<P>McCormick Construction is the latest of many construction companies to choose DCS to manage a salesforce.com implementation project. The effort at McCormick significantly increased the collaboration between the firm¿s sales team and project management staff by giving both groups access to sales and project implementation information. Mark Schmid, McCormick CFO, said, ¿DCS made the salesforce.com implementation a much more efficient and effective process. The team was very responsive to our needs, kept us on task and provided a great deal of guidance setting up salesforce.com to meet our specific needs.¿<BR><IMG height=5 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></P>
+
+<P style="FONT-SIZE: 11px"><B><I>Nonprofit selects DCS and salesforce.com to enhance communication</I></B></P>
+
+<P>Healthy Start, a nonprofit initiative administered by the Anoka County Community Action Program (ACCAP), works with over 100 community partners to help families give their children a healthy start in life and enter school ready to learn. Healthy Start enlisted DCS to install salesforce.com and is now using it to communicate with families and partners via email about available services, track the services provided by the initiative and partners, and efficiently organize funders and donors. ¿DCS is doing a great job helping us tie our services to funding streams, which will allow us to run reports with information on services per funder,¿ said Roejean Goodwin of Healthy Start. ¿That will be huge for us!¿</P><BR><BR></TD>
+
+<TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=40> </TD></TR></TBODY></TABLE></TD></TR>
+
+<TR>
+
+<TD><A href="http://www.demandchainsystems.com/" target=_blank><IMG height=107 src="http://proxy.pcdn.vresp.com/0f8027521/www.demandchainsystems.com/images/news/DCS_eNews_28.gif" width=205 border=0></A></TD>
+
+<TD bgColor=#b32017 colSpan=2>
+
+
+<TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></TD></TR></TBODY></TABLE><BR><BR style="CLEAR: both">
+
+<HR color=#e0e0e0>
+
+
+
+
+
+<!-- END NEWSLETTER -->
+
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

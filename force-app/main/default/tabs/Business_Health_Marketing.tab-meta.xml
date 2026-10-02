@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Leads, lead funnel, follow-up speed, campaign response, and marketing-sourced and influenced pipeline.</description>
+    <flexiPage>Business_Health_Marketing</flexiPage>
+    <label>BH Marketing</label>
+    <motif>Custom57: Globe</motif>
+</CustomTab>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Unbilled_WIP_Days_Target__c</fullName>
+    <description>Approved-but-unbilled work expressed in days of average revenue.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Approved-but-unbilled work expressed in days of average revenue.</inlineHelpText>
+    <label>Unbilled WIP Target (days)</label>
+    <precision>16</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

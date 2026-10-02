@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bench_Threshold__c</fullName>
+    <description>Acceptable share of delivery resources scheduled under 25% for the next 4 weeks.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Acceptable share of delivery resources scheduled under 25% for the next 4 weeks.</inlineHelpText>
+    <label>Bench Threshold (% of headcount)</label>
+    <precision>8</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

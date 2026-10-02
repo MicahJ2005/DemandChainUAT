@@ -1,0 +1,67 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Get More Value from Your CRM System and Increase Sales | Demand Chain Systems Adds CRm Value" standardStylesheets="true">
+	<html>
+		<head>
+		<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+  		<title>Get More Value from Your CRM System and Increase Sales | Demand Chain Systems Adds CRM Value</title>
+  		
+  		<meta name="description" content="There are many things you can do right now to get more value from your CRM system, and many can be implemented quickly at a relatively low cost." />
+		<meta name="keywords" content="CRM systems, CRM value, sales team CRM adoption, track time, track activities, sales friendly CRM, sales focused CRM, management tool, CRM integration with financial systems, voice-to-text applications, CRM data quality, dirty data, CRM workflow, Facebook, Twitter" />
+ 		</head>
+ 		<body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+                
+                    <apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >         
+                        <c:leftLinks navigation="successfulCRM"/>
+                        <apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+                        <apex:outputText ><span style="font-size:10px">"DCS made it easy for our Navision and Salesforce.com systems to 'talk' to each other like they were one application,¿ said Keith Lewis, VP of Business Development at GN ReSound.  ¿That gives our sales representatives a complete picture on how their accounts are trending and enables them to provide exceptional customer service. DCS's knowledge of how to integrate the best CRM tools with ERP and other back-end systems is outstanding. And their ability to execute fast and efficiently is exceptional."  </span> 
+                        <br />
+                        <br />
+                            <c:gd />
+                        </apex:outputText>
+                    </apex:panelGrid>
+                    <apex:panelGrid cellpadding="0" cellspacing="0">
+                        <div class="Title" align="left">Get more value from your CRM system and increase sales without spending an arm and a leg</div>
+                        <br/>
+                        <div align="left">
+                         	<p><i>Andy Moldenhauer, DCS senior business analyst</i></p>
+           					<p>It's no secret that many companies are unhappy with the value they're getting out of their CRM systems. One of the chief complaints we hear is that sales teams resist their adoption. Even when sales reps do use CRM daily, it doesn't seem to have much impact on their productivity. Sales managers can easily track their time and activities, but are sales reps actually selling more? Often, the answer is "no." And who gets the blame? The CRM system. </p>
+           					<p>So what to do? Start all over with a new system? Overhaul your current system? Not many companies in today's economy can afford such choices. But don't give up on your CRM system. There are numerous things you can do right now to get more value from it, and many can be implemented quickly at a relatively low cost. </p>
+           					<p><strong>Make it sales-friendly</strong></p>
+           					<p>Sales teams' resistance to CRM technology shouldn't be so surprising. If sales reps perceive your system as something that just tracks their time and activities for the convenience of sales managers¿like Big Brother looking over their shoulders¿and doesn¿t actually help them sell better, they¿ll naturally be wary of it.</p>
+           					<p>The best CRM implementations are sales-focused rather than management-focused. They give sales reps all the data they need to maximize sales calls or other customer interactions. Take a hard look at your system. Is it primarily a management tool used to collect data and track resources? Or is it a tool that gathers every bit of information about prospects and customers in your financials and other systems and presents this information to sales reps in the field as they plan their week and prioritize their activities? </p>
+           					<p>You likely already have this information. But if you keep it locked away in accounting or transactional databases and don¿t push it out to sales rep in the field through your CRM system¿often a feature of CRM technology that isn¿t enabled¿you¿re missing out on what may be the most powerful capability of the system. Integrations between CRM and financial systems vary in their complexity and cost, but many tools are available to make this possible without a massive development effort. </p>
+           					<p><strong>Take advantage of add-on tools</strong></p>
+           					<p>Leading CRM systems have legions of independent application developers and partners who have developed hundreds value-enhancing tools and add-on applications. Consider, for example, voice-to-text applications. With this technology, calls, voice memos and voicemail flow into CRM systems, eliminating manual typing updates and allowing sales reps to better capture and share customer information. There are literally hundreds of valuable add-ons like this that range in price from free to several thousand dollars (see the links below for examples). If you haven¿t checked out what¿s available, you¿re probably missing out on one of the easiest ways to add value to your CRM system.</p>
+           					<p>
+           						<a href="http://sites.force.com/appexchange/home" target="_blank">http://sites.force.com/appexchange/home</a><br />
+           						<a href="http://crm.dynamics.com/partners/find-a-partner.aspx" target="_blank">http://crm.dynamics.com/partners/find-a-partner.aspx</a><br />
+           						<a href="http://saleslogix.qisys.com/saleslogix_addons " target="_blank">http://saleslogix.qisys.com/saleslogix_addons </a><br />
+           					</p>
+           					<p><Strong>Don¿t forget data quality and integrity</Strong></p>
+           					<p>Nothing undermines the value of a CRM system more than bad data¿duplicate, out of date or just plain inaccurate. Sales reps won't trust the system, and your administrative burden increases. Luckily, there are plenty of tools available that can help keep your CRM database clean. Typically, these are administrative toolkits for a variety of data quality needs, including merging duplicate records, batch normalization, duplicate prevention, and comparing external data to data in CRM databases. Costs vary, but often they are as little as $50 per user per year, a small price compared to the loss of confidence that dirty data causes. </p>
+           					<p><strong>Streamline through workflow</strong></p>
+           					<p>If you're not using the customizable workflows built into most CRM systems, functionality you've already paid for, you're missing out on a zero-cost way to get more value from your CRM investment. 
+
+           					</p>
+           					<p>Built-in CRM workflows can often eliminate 90 percent of repetitive tasks¿things people do every day in the same way. But many organizations don¿t take advantage of CRM workflows because they implement the basic features and think they¿re done. Other organizations don¿t have the money and a long-term strategy to develop more advanced CRM features after their initial implementation. Don¿t fall into either of these traps. You¿ll lose an easy opportunity to get more value from your CRM system.</p>
+           					<p><strong>Stay informed</strong></p>
+           					<p>Did you know that some organizations are using social networking sites such as Facebook and Twitter as part of their CRM strategies? It may be a little premature to discuss the value of these sites as sales tools in the general market, but the phenomenon helps illustrate a point. CRM is a journey, not a destination, and if the system you have in place a year or two from now only does the same thing it's currently doing, you¿re probably never going to get the maximum value from your investment. That's why it¿s important to pay attention to what's happening in the evolving CRM marketplace. One good way to do this is to stay in regular touch with an implementation partner like DCS. It's our job to pay attention to what's happening in the marketplace, and we're more than happy to share this knowledge with you.
+           					</p>
+                        </div>
+                    </apex:panelGrid>
+                 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

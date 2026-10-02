@@ -1,0 +1,8 @@
+<aura:component implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes" access="global" controller="HealthCheckLimitsCtrl">
+    <aura:attribute name="limitRpt" type="HealthCheckLimitsCtrl.LimitReport" />
+	<aura:handler event="c:HealthCheckLoginEvent" action="{!c.loadApiRequests}"/>
+    <aura:handler event="c:HealthCheckUpdateLeadLimitsEvent" action="{!c.updateLeadHelper}"/>
+    <aura:renderIf isTrue="{!not(empty(v.limitRpt))}">
+		<c:HealthcheckLiquidGauge title="{!'Remaining API Requests: ' + v.limitRpt.remainingApiRequests + ' / ' + v.limitRpt.totalApiRequests}" percentValue="{!v.limitRpt.percentApiRequestsRemaining}" svgId="apiRequestGauge" yellow="75" red="50" comparison="pos"/>
+    </aura:renderIf>
+</aura:component>

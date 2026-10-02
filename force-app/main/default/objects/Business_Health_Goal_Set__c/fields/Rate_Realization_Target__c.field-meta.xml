@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rate_Realization_Target__c</fullName>
+    <description>Effective bill rate / Default Rate Card rate.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Effective bill rate / Default Rate Card rate.</inlineHelpText>
+    <label>Rate Realization Target %</label>
+    <precision>8</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

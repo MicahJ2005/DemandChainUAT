@@ -1,0 +1,146 @@
+<aura:component controller="HealthCheckHeaderCtrl" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome" access="global">
+    <aura:attribute name="code" type="String" />
+    <aura:attribute name="loginUrl" type="String" />
+    <aura:attribute name="apiVersion" type="String" />
+    <aura:attribute name="domain" type="String" />
+    <aura:attribute name="isLoggedIn" type="boolean" />
+    <aura:attribute name="restRequest" type="RESTRequestUtil" default="{}"/>
+    <aura:attribute name="customUrl" type="String" />
+    <aura:attribute name="accountOrg" type="Account_Org__c" default="{'sobjectType':'Account_Org__c'}" />
+    
+    <!--<aura:attribute name="restRequest" type="RESTRequest" />
+    <aura:attribute name="accountOrg" type="Account_Org__c" default="{'sobjectType':'Account_Org__c'}" />-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:registerEvent name="loginEvent" type="c:HealthCheckLoginEvent"/>
+    
+    <div aura:id="modal" class="slds-hide">
+        <div class="slds-modal slds-fade-in-open" aria-hidden="false" role="dialog">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <button class="slds-button slds-button--icon-inverse slds-modal__close" onclick="{!c.closeModal}">
+                        <c:svgIcon class="slds-button__icon slds-button__icon--large" svgPath="action-sprite/svg/symbols.svg#close" />
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading--medium">Login</h2>
+                    <p class="slds-m-top--x-small">Select an environment.</p>
+                </div>
+                <div class="slds-modal__content slds-p-around--medium">
+                    <form class="slds-form--inline">
+                        <div class="slds-form-element">
+                            <button class="slds-button slds-button--brand  slds-theme--alt-inverse" type="button" onclick="{!c.loginProduction}">Production</button>
+                        </div>
+                        <div class="slds-form-element">
+                            <button class="slds-button slds-button--brand slds-theme--info" type="button" onclick="{!c.loginSandbox}">Sandbox</button>
+                        </div>
+                        <div class="slds-form-element">
+                            <input id="inputSample2" class="slds-input" type="text" placeholder="my.salesforce.com" value="{!v.customUrl}"/>
+                        </div>
+                        <div class="slds-form-element">
+                            <button class="slds-button slds-button--brand slds-theme--info" type="button" onclick="{!c.loginSandbox}">Custom Domain</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </div>
+    
+    
+    <div aura:id="privacyModal" class="slds-hide">
+        <div class="slds-modal slds-fade-in-open" aria-hidden="false" role="dialog">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <button class="slds-button slds-button--icon-inverse slds-modal__close" onclick="{!c.closePrivacyModal}">
+                        <c:svgIcon class="slds-button__icon slds-button__icon--large" svgPath="action-sprite/svg/symbols.svg#close" />
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading--medium">Privacy Statement</h2>
+                </div>
+                <div class="slds-modal__content slds-p-around--medium slds-theme--alert-texture">
+                    <div class="slds-notify__content slds-grid">
+                        <lightning:icon iconName="utility:warning" size="small" />
+                        <div class="slds-col slds-align-middle">
+                            <h2 class="slds-text-heading--small">Thank you for participating in the DCS Health Check. Below are the items that DCS tracks and stores as part of the health check.</h2>
+                            <p><b>What are we tracking?</b></p>
+                            <p>Your organization's limit information, such as file, data, and api use.</p>
+                            <p>The number of profiles, roles, licenses.</p>
+                            <p>The number of users for profiles, roles, and licenses.</p>
+                            <p>The number of records for core CRM objects such as Accounts, Leads, Contacts, Opportunities, Campaigns, Cases, and Products.</p>
+                            <p>The number of users in the org.</p>
+                            <p><b>What are we storing?</b></p>
+                            <p>Your basic contact information (Email, Name, and Company Name).</p>
+                        </div>
+                        
+                    </div>
+                </div>                
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--neutral" onclick="{!c.closePrivacyModal}">Cancel</button>
+                    <button class="slds-button slds-button--brand" onclick="{!c.openModal}">I understand</button>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </div>
+    
+    
+    
+    
+    
+    <!--<aura:renderIf isTrue="{!not(empty(v.restRequest))}">-->
+    <div class="slds-page-header" role="banner">
+        <div class="slds-grid">
+            <div class="slds-col slds-has-flexi-truncate">
+                <div class="slds-media slds-media--center slds-no-space slds-grow">
+                    <div class="slds-media__figure">
+                        <c:svgIcon class="slds-icon slds-icon-standard-dashboard" svgPath="standard-sprite/svg/symbols.svg#dashboard" />
+                    </div>
+                    <div class="slds-media__body">
+                        <p class="slds-text-heading--label">Health Check<aura:renderIf isTrue="{!if(v.isLoggedIn,true,false)}"> for {!v.restRequest.organizationName}</aura:renderIf></p>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-truncate slds-align-middle" title="Organization Name">{!v.accountOrg.Name}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-no-flex slds-grid slds-align-bottom">
+                <!--<aura:renderIf isTrue="{!if(v.isLoggedIn,true,false)}">
+                     <button class="slds-button slds-buttonHYPHENHYPHENxneutral slds-not-selected" aria-live="assertive">
+                         <span class="slds-text-not-selected">
+                             <c:svgIcon class="slds-button__iconHYPHENHYPHENstateful slds-button__iconHYPHENHYPHENleft" svgPath="utility-sprite/svg/symbols.svg#page" />
+                             
+                         </span>
+                     </button>
+                 </aura:renderIf>-->
+                
+                <aura:renderIf isTrue="{!if(v.isLoggedIn,false,true)}">
+                    <button class="slds-button slds-button--neutral slds-not-selected" aria-live="assertive" onclick="{!c.openPrivacyModal}">
+                        <span class="slds-text-not-selected">
+                            <c:svgIcon class="slds-button__icon--stateful slds-button__icon--left" svgPath="utility-sprite/svg/symbols.svg#power" />
+                            <a href="javascript:void(0);" onclick="{!c.openPrivacyModal}">Login</a>
+                        </span>
+                    </button>
+                </aura:renderIf>
+                <aura:renderIf isTrue="{!if(v.isLoggedIn,true,false)}">
+                    <button class="slds-button slds-button--neutral slds-not-selected" aria-live="assertive">
+                        <span class="slds-text-not-selected">
+                            <c:svgIcon class="slds-button__icon--stateful slds-button__icon--left" svgPath="utility-sprite/svg/symbols.svg#power" />
+                            <a href="javascript:void(0);">Logged in as {!v.restRequest.identityResponse.display_name}</a>
+                        </span>
+                    </button>
+                </aura:renderIf>
+            </div>
+        </div>
+        <ul class="slds-grid slds-page-header__detail-row">
+            <li class="slds-page-header__detail-block">
+                <p class="slds-text-heading--label-normal slds-truncate slds-m-bottom--xx-small" title="Field 1">Organization Type</p>
+                <p class="slds-text-body--regular slds-truncate" title="Organization Type">{!v.restRequest.organizationType}</p>
+            </li>
+            <li class="slds-page-header__detail-block">
+                <p class="slds-text-heading--label-normal slds-truncate slds-m-bottom--xx-small" title="Field 1">API Version</p>
+                <p class="slds-text-body--regular slds-truncate" title="API Version">{!v.restRequest.apiVersion}</p>
+            </li>
+            <li class="slds-page-header__detail-block">
+                <p class="slds-text-heading--label-normal slds-truncate slds-m-bottom--xx-small" title="Field 1">Domain</p>
+                <p class="slds-text-body--regular slds-truncate" title="API Version">{!v.restRequest.url}</p>
+            </li>
+        </ul>
+    </div>
+</aura:component>

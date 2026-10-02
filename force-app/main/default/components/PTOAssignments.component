@@ -1,0 +1,19 @@
+<apex:component controller="PTOAssignmentsController" access="global">
+    <apex:attribute name="resource" description="Resource user ID" type="Id" assignTo="{!resourceId}"/>
+    <apex:attribute name="ptoStart" description="PTO Start date" type="date" assignTo="{!ptoStartDate}"/>
+    <apex:attribute name="ptoEnd" description="PTO End date" type="date" assignTo="{!ptoEndDate}"/>
+       <apex:dataTable value="{!Projects}" var="p" cellpadding="10" cellspacing="5">
+        <apex:column >
+            <apex:facet name="header">Project</apex:facet>
+            {!p.Name}
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Hours</apex:facet>
+            {!p.Hours}
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Project Manager</apex:facet>
+            {!p.Manager}
+        </apex:column>
+    </apex:dataTable>
+</apex:component>

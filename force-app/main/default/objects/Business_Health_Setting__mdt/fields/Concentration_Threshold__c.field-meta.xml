@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Concentration_Threshold__c</fullName>
+    <description>Top five clients share of trailing-12-month revenue above this is flagged as a concentration risk.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Top five clients share of trailing-12-month revenue above this is flagged as a concentration risk.</inlineHelpText>
+    <label>Top-5 Client Concentration Threshold %</label>
+    <precision>16</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

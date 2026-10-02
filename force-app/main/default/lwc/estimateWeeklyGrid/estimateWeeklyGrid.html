@@ -1,0 +1,43 @@
+<template>
+    <template lwc:if={hasRows}>
+        <div class="tbl-wrap">
+            <table class="weekly-grid" onmouseup={handleMouseUp} onmouseleave={handleMouseUp}>
+                <thead>
+                    <tr>
+                        <th class="wg-resource">Resource</th>
+                        <template for:each={weekColumns} for:item="w">
+                            <th key={w.index} class="wg-week">{w.label}</th>
+                        </template>
+                        <th class="wg-total">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={rows} for:item="row">
+                        <tr key={row.key}>
+                            <td class="wg-resource">{row.label}</td>
+                            <template for:each={row.cells} for:item="cell">
+                                <td key={cell.key} class="wg-cell">
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={cell.value}
+                                        aria-label={row.label}
+                                        data-row={row.key}
+                                        data-week={cell.week}
+                                        onmousedown={handleMouseDown}
+                                        onmouseover={handleMouseOver}
+                                        onchange={handleDirectChange}
+                                    />
+                                </td>
+                            </template>
+                            <td class="wg-total">{row.total}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+    <template lwc:else>
+        <p class="hint">Add a team resource above to enter its weekly hours here.</p>
+    </template>
+</template>

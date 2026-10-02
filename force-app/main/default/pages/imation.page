@@ -1,0 +1,49 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Case Studies" standardStylesheets="true">
+  <html>
+<head>
+    <title>Case Studies</title>
+    
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   </head>
+   <body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				    	 <c:leftLinks navigation="clients" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS knowledge of on-demand CRM made it easy for them to seamlessly integrate great sales tools with our lead generation and property management systems. Now, when our sales people enter sales opportunity information our meeting professionals are right on it. That helps us close sales more efficiently and deliver outstanding customer service," said Dee Gullikson, Carlson Hotels Worldwide."<br />
+				   		</span>
+				   		</apex:outputText>	
+				   		<br/>
+				   		<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">Imation</div>
+						<br/>
+						<div align="left">
+							<p>
+								<strong>How to keep dealers and sales people in sync </strong>
+							</p>
+							<p><i>Imation Corp is the world's leading removable data storage company and the only company with products in all four data storage categories ¿ magnetic, optical, flash and removable hard disk storage.  Recently acquiring several other companies along with their brands has presented interesting challenges to our internal business processes. </i></p>
+							<p>Imation has hundreds of dealers who register for pricing programs. Sales people often had no way of knowing what programs dealers were participating in because the Oracle DB was hard to access and not intuitive. Confusion ran rampant and relationships with dealers suffered.  DCS fixed the problem fast by integrating Salesforce.com with Oracle so reps could access pricing program data within Salesforce.com. 
+							</p>
+							<p>According to Imation, DCS consultants have the technical skills and business process knowledge to solve almost any CRM challenge. In this case, they used their knowledge of Knowledge Sync and SQL to bridge the sometimes considerable gap between Oracle and Salesforce.com.  Imation's business model is a work in progress, as the company continues to acquire new companies and merge internal business processes.  DCS has helped the company use Salesforce.com to step up to many of these challenges. </p>
+							<p>"DCS consultants know programs like Salesforce.com better than almost anyone. When we need to solve yet another business challenge, I rely on their understanding of Salesforce to help plan our strategy for implementation, and to understand what the roadmap to completing the integration with Salesforce will look like.  They've become a trusted partner in our use of technology to support our sales organization,¿ said Tracy Peloquin, Ebusiness Manager, North America Commercial Division, Imation Corp."</p>
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

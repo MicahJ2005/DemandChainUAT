@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Leadership scorecard: book-to-bill, backlog runway, margin, utilization, cash, attrition, concentration and recurring revenue vs target.</description>
+    <flexiPage>Business_Health_Leadership</flexiPage>
+    <label>BH Leadership</label>
+    <motif>Custom48: Gears</motif>
+</CustomTab>

@@ -1,0 +1,47 @@
+<apex:page showHeader="false" id="SiteTemplate" title="CRM Implementations Twin Cities | About DCS" standardStylesheets="true">
+  <html>
+<head>
+    <title>CRM Implementations Twin Cities | About DCS</title>
+    
+<meta name="description" content="DCS has one of the most experienced teams for CRM implementations in the Twin Cities." />
+<meta name="keywords" content="CRM implementations Twin Cities" />
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   </head>
+   <body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader"> 
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				     	<c:leftLinks navigation="aboutDCS"/>
+
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS consultants know programs like Salesforce.com better than almost anyone. When we need to solve yet another business challenge, I rely on their understanding of Salesforce to help plan our strategy for implementation, and to understand what the roadmap to completing the integration with Salesforce will look like. They've become a trusted partner in our use of technology to support our sales organization,¿ said Tracy Peloquin, Ebusiness Manager, North America Commercial Division, Imation Corp.</span> </apex:outputText>
+				   			<br />
+				   			<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">About DCS
+</div>
+						<br/>
+						<div align="left">
+							<p>Demand Chain Systems is passionate about minimizing the time, cost and disruption associated with on-demand CRM implementations. Which is why we've got a long <a href="http://demandchainsystems.force.com/dcs/successfulCrm">successful CRM implementation</a> track record with our clients.</p>
+							<p>We're different because we identify high-value features quickly and stage implementations to match what your business can reasonably absorb. We're experts because our consultants have extensive knowledge of both older CRM technologies and new ones, and they leverage proven toolsets to make the conversion process fast and painless. And we're successful because we're among the most experienced CRM teams in the Twin Cities. We've helped hundreds of companies properly migrate from older CRM systems to newer on-demand systems, both locally and globally.</p>
+							<p>Salesforce.com honored Demand Chain Systems consultant Tim Inman with one of the top three awards in its prestigious Force.com Sites Developer Challenge. Read the <a href="http://demandchainsystems.force.com/dcs/devChallengeAnnouncement">full announcement</a>.
+							</p>
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

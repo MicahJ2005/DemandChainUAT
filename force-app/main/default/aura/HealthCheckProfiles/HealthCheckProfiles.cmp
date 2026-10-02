@@ -1,0 +1,56 @@
+<aura:component controller="HealthCheckProfilesCtrl" implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="permissionSetWrappers" type="HealthCheckProfilesCtrl.PermissionSetWrapper[]" />
+    <aura:handler event="c:HealthCheckLoginEvent" action="{!c.doInit}" />
+    <aura:renderIf isTrue="{!not(empty(v.permissionSetWrappers))}">
+        <div class="slds-page-header" role="banner">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-media--center slds-no-space slds-grow">
+                        <div class="slds-media__figure">
+                            <c:svgIcon class="slds-icon slds-icon-standard-account" svgPath="standard-sprite/svg/symbols.svg#account" />
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-heading--label">Profiles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table--bordered">
+            <thead>
+                <tr class="slds-text-heading--label">
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate">Profile Name</div>
+                    </th>
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate"># Active Users</div>
+                    </th>
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate">Modify All Data</div>
+                    </th>
+                    <th class="slds-is-sortable" scope="col">
+                        <div class="slds-truncate">View All Data</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.permissionSetWrappers}" var="permissionSetWrapper">
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Profile Name">{!permissionSetWrapper.Profile.Name}</td>
+                        <td class="slds-truncate" data-label="User Count">{!permissionSetWrapper.userCount}</td>
+                        <td class="slds-truncate" data-label="Modify All">
+                            <aura:renderIf isTrue="{!if(permissionSetWrapper.PermissionsModifyAllData,true,false)}">
+                                <c:svgIcon class="slds-icon slds-icon-text-default" svgPath="utility-sprite/svg/symbols.svg#check" />
+                            </aura:renderIf>
+                        </td>
+                        <td class="slds-truncate" data-label="View All">
+                            <aura:renderIf isTrue="{!if(permissionSetWrapper.PermissionsViewAllData,true,false)}">
+                                <c:svgIcon class="slds-icon slds-icon-text-default" svgPath="utility-sprite/svg/symbols.svg#check" />
+                            </aura:renderIf>
+                        </td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+    </aura:renderIf>
+</aura:component>

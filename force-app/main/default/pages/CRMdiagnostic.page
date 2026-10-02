@@ -1,0 +1,40 @@
+<apex:page showHeader="false" id="SiteTemplate" title="CRM Strategy Consulting Minnesota | DCS CRM System Integration and Strategy Consulting" standardStylesheets="true">
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader /> 
+          </apex:insert>
+         
+          <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+               	<apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+			
+					<c:leftLinks navigation="whyDCS" />
+					<apex:outputText >
+						<span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> 
+					</apex:outputText>
+					<apex:outputText >
+						<span style="font-size:10px;">"DCS consultants know programs like Salesforce.com better than almost anyone. When we need to solve yet another business challenge, I rely on their understanding of Salesforce to help plan our strategy for implementation, and to understand what the roadmap to completing the integration with Salesforce will look like. They've become a trusted partner in our use of technology to support our sales organization,¿ said Tracy Peloquin, Ebusiness Manager, North America Commercial Division, Imation Corp.</span> 
+					</apex:outputText>
+				   	<br />
+				   	<c:gd /> 
+				</apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0"> 
+						<div class="Title" align="left">40 days and $40k - or 40 minutes and free?</div>
+						<br/>
+						<div align="left">
+							<p>Introducing our <strong>CRM Diagnostic</strong>, a fast and free tool that identifies what you need to focus on to grow revenues and improve customer relationships. Unlike traditional CRM assessments that drag on for weeks and cost a small fortune, the CRM Diagnostic is a sophisticated online tool that takes only 40 minutes to complete, is free for the first two users, and is available to your entire team for just $250/person.</p>
+							<p>The <strong>CRM Diagnostic</strong> identifies your weakest or most constraining points first - so you can fix your most pressing problems and get rapid ROI. It measures your current performance objectively, without the emotions and politics involved with traditional assessments, so it's easier to build consensus internally on where to focus.</p>
+							<p><a href="https://www.growthdiagnostic.com/growthdiagnostic/index.php?p=DCS" target="_blank">Try it today for free</a>.
+							</p>
+						</div>
+					</apex:panelGrid> 
+					  </apex:panelGrid>
+            </apex:panelGrid>
+       
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+</apex:page>

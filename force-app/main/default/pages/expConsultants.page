@@ -1,0 +1,52 @@
+<apex:page showHeader="false" id="SiteTemplate" title="CRM Implementation Minneapolis | DCS CRM Minneapolis Extensive Experience" standardStylesheets="true">
+  <html>
+	<head>
+    	<title>CRM Implementation Minneapolis | DCS CRM Minneapolis Extensive Experience</title> 
+		<meta name="description" content="DCS consultants have extensive CRM implementation experience and average of more than 10 years working with CRM technologies." />
+		<meta name="keywords" content="CRM Minneapolis, CRM implementation experience, experienced CRM consultants Minnesota, CRM technologies, CRM solution" />
+  
+  		<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   	</head>
+   	<body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				     	<c:leftLinks navigation="aboutDCS"/>
+
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS consultants know programs like Salesforce.com better than almost anyone. When we need to solve yet another business challenge, I rely on their understanding of Salesforce to help plan our strategy for implementation, and to understand what the roadmap to completing the integration with Salesforce will look like. They've become a trusted partner in our use of technology to support our sales organization,¿ said Tracy Peloquin, Ebusiness Manager, North America Commercial Division, Imation Corp.</span> </apex:outputText>
+				   			<br />
+				   			<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">Consultants with Extensive CRM Implementation Experience
+</div>
+						<br/>
+						<div align="left">
+							<p>DCS consultants have implemented hundreds of CRM technology projects for companies of all sizes and in virtually all major industries. Their success comes from: 
+						</p>
+						<ul>
+							<li><p>An average of more than 10 years of CRM implementation experience.
+							</p></li>
+							<li><p>Deep knowledge of leading <strong>on-demand CRM technologies</strong>. DCS is Salesforce.com's #1 Minnesota partner, with more consultants certified than any other firm in the Minneapolis area.</p></li>
+							<li><p>Extensive business and team skills that enables them to work smoothly with internal client teams and complement and improve your internal processes with the right CRM solution.</p></li>
+							<li><p>The consulting depth they enjoy from DCS's alliance with BenNevis, one of the world's leading strategic customer intimacy consulting firms.</p></li>
+						</ul>
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

@@ -1,0 +1,169 @@
+<apex:page controller="AssignmentRequest" id="AssignmentRequest" tabStyle="pse__Proj__c" docType="html-5.0">
+
+    <apex:includeScript value="{!URLFOR($Resource.jQueryBase1_9UI1_10,'/jquery-ui-1.10.1.custom/js/jquery-1.9.1.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryBase1_9UI1_10,'/jquery-ui-1.10.1.custom/js/jquery-ui-1.10.1.custom.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryAnimatedTableSorter,'/animatedtablesorter-0.2.2/tsort.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryAnimatedTableSorter,'/animatedtablesorter-0.2.2/tsort.min.js')}" />
+    
+    <apex:stylesheet value="{!URLFOR($Resource.jQueryAnimatedTableSorter,'/animatedtablesorter-0.2.2/style.css')}" />
+
+    <script>
+    
+        function setFocusOnLoad() {}
+            
+        function confirmCancel() {
+            var isCancel = confirm("Are you sure you wish to cancel/close?");
+            if (isCancel)
+            return true;  
+            return false;
+        }
+    
+        var j$ = jQuery.noConflict();   
+    
+        j$(document).ready(function(){
+    
+            var dataTable = document.getElementById('{!$Component.AssignmentRequest:theForm:thePageBlock:theResultsBlock:theProjectTable}');
+            
+            j$(dataTable).tableSort( {
+                sortBy: ['nosort', 'text', 'nosort', 'nosort', 'nosort', 'nosort'],
+              
+                animation: 'slideLeft',
+                speed: 400,
+                distance: '200px',
+                delay: 50
+            } );        
+                
+        }); 
+            
+    </script>
+
+    <style>
+    
+        .odd{ 
+            background-color: #FCF7F7;
+        }
+        
+        .even{
+            background-color: #FFFFFF;
+        }
+    
+        .takeNote{
+            font-size: 12pt;
+            font-weight: bold;
+            color: red; 
+        }   
+        
+        .genInfo{
+            font-size: 10pt;
+            font-weight: bold;
+        )
+        
+    </style>
+
+    <apex:pageMessages id="Er"/>
+    
+    <apex:sectionHeader title="Request Project Assignment(s)" />
+    
+    <apex:form id="theForm">
+    
+        <apex:pageBlock id="thePageBlock" mode="edit">
+            
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!requestAssgmt}" value="Request Assignment(s)" disabled="{!(lstProjs.size == 0)}" rendered="{!(submittedRequest == 'Not submitted')}"/>
+                <apex:commandButton action="{!clear}" value="Request Assignment(s)" rendered="{!(submittedRequest == 'Submitted')}"/>
+                <apex:commandButton action="{!clear}" value="Clear/Reset" rendered="{!submittedRequest == 'Not submitted'}"/> 
+                <apex:commandButton action="{!cancel}" value="Cancel/Close" onclick="return confirmCancel()" immediate="true"/>                                 
+            </apex:pageBlockButtons>            
+            
+            <apex:pageBlockSection id="searchBlock" columns="1" rendered="{!(submittedRequest == 'Not submitted')}">                                    
+                <apex:panelGroup >
+                <apex:outputLabel styleclass="genInfo" for="searchText">Project Name Search Keyword: </apex:outputLabel>
+                <apex:inputText id="searchText" value="{!searchText}"/>
+                <apex:commandLink value="Search for Project" action="{!searchProjs}" status="status">
+                    <apex:param name="paramSearchProj" value="Search executed" assignTo="{!paramSearchProj}"/>
+                </apex:commandLink>
+                </apex:panelGroup>  
+                <br/>           
+            </apex:pageBlockSection>
+            
+            <apex:pageBlock id="filterBlock" rendered="{!submittedRequest == 'Not submitted'}">                 
+                <table width="100%" cellspacing="0">
+                    <tr>
+                        <td width = "100%">
+                            <apex:outputText rendered="{!(lstProjs.size != 0)}" styleclass="genInfo" value="Select the project(s) you wish to submit an assignment for.  Ensure Assignment Start and End dates and hour(s) are entered before request submission."/>
+                        </td>
+                    </tr>
+                </table>                
+                <br/>
+                <table width="100%" cellspacing="0">
+                    <tr >
+                        <td width="20%">
+                            <apex:commandLink action="{!AssignmentSearch}" value="Show Projects Not Assigned to Me" rendered="{!IF(projectFilter == 'My' && projectSearch == FALSE, TRUE, FALSE)}">
+                                <apex:param name="paramFilterProj" value="All" assignTo="{!paramFilterProj}"/> 
+                            </apex:commandLink> 
+                            <apex:commandLink action="{!AssignmentSearch}" value="Show Projects Assigned to Me" rendered="{!IF(projectFilter == 'All' && projectSearch == FALSE, TRUE, FALSE)}">
+                                <apex:param name="paramFilterProj" value="My" assignTo="{!paramFilterProj}"/> 
+                            </apex:commandLink>
+                            <apex:commandLink action="{!clear}" value="Clear Search" rendered="{!projectSearch == TRUE}">
+                                <apex:param name="paramFilterProj" value="My" assignTo="{!paramFilterProj}"/> 
+                            </apex:commandLink>                             
+                        </td>
+                        <td width="50%">
+                            <apex:outputText styleclass="genInfo" value="{!IF(projectFilter == 'My', 'PROJECTS ASSIGNED TO ME', 'PROJECTS NOT ASSIGNED TO ME')}" rendered="{!projectSearch == FALSE}"/>
+                            <apex:outputText styleclass="genInfo" value="SEARCHED PROJECTS" rendered="{!projectSearch == TRUE}"/>
+                        </td>               
+                    </tr>
+                </table>
+            </apex:pageBlock>
+
+          <apex:outputPanel id="myButtonsTop" rendered="{!submittedRequest != 'Submitted'}">
+               <!--  <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" reRender="myPanel,myButtonsTop,myButtonsBottom"/> -->
+               <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" reRender="theProjectTable,myButtonsTop,myButtonsBottom"/>        
+               <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext}" reRender="theProjectTable,myButtonsTop,myButtonsBottom"/>  
+               <!-- <apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext}" reRender="myPanel,myButtonsTop,myButtonsBottom"/> -->
+               <apex:outputText value="  Showing Page {!pageNumber} of {!totalPages}"/>
+          </apex:outputPanel>
+
+            <apex:pageBlockSection id="theResultsBlock" columns="1" rendered="{!submittedRequest == 'Not submitted'}">              
+
+        <apex:outputText rendered="{!(lstProjs.size == 0)}" styleclass="genInfo" value="Either there are no active projects assigned to you or the project does not exist."/>
+
+        <apex:outputText rendered="{!invalidDataEntryCount > 0}" styleclass="takeNote" value="Ensure the desired project is selected along with its dates and hour(s) entered before requesting an assignment."/>
+
+                <apex:pageBlockTable id="theProjectTable" value="{!lstProjs}" var="p" width="100%" rendered="{!(lstProjs.size != 0)}" rowClasses="even,odd">
+                    <apex:column headerValue="Select" width="5%">
+                        <apex:inputCheckbox value="{!p.chooseRec}"/>
+                    </apex:column>
+                    <apex:column headerValue="Project Name" width="30%">
+                        <apex:outputLink value="/{!p.Id}">{!p.Name}</apex:outputLink>
+                    </apex:column>
+                   <apex:column headerValue="Assignment Start Date" width="10%">
+                        <apex:input value="{!p.startDate}" type="date"/>
+                    </apex:column>
+                    <apex:column headerValue="Assignment End Date" width="10%">
+                        <apex:input value="{!p.endDate}" type="date"/>
+                    </apex:column>              
+                    <apex:column headerValue="Requested Hour(s)" width="10%">
+                        <apex:input value="{!p.reqHours}" type="number"/>
+                    </apex:column>
+                    <apex:column headerValue="Assignment Notes" width="35%">
+                        <apex:input value="{!p.assignmentNote}" type="text" style="width: 90%; height: 110%"/>
+                    </apex:column>                  
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>    
+            
+     <apex:outputPanel id="myButtonsBottom" rendered="{!submittedRequest != 'Submitted'}">
+        <!-- <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" reRender="myPanel,myButtonsTop,myButtonsBottom"/> -->
+        <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" reRender="theProjectTable,myButtonsTop,myButtonsBottom"/>        
+        <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext}" reRender="theProjectTable,myButtonsTop,myButtonsBottom"/> 
+        <!-- <apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext}" reRender="myPanel,myButtonsTop,myButtonsBottom"/> -->
+        <apex:outputText value="  Showing Page {!pageNumber} of {!totalPages}"/>
+     </apex:outputPanel>    
+    
+            <apex:pageBlockSection id="resultsBlockSubmitted" columns="1" rendered="{!submittedRequest == 'Submitted'}">
+                <apex:outputText styleclass="genInfo" value="Your request(s) have been submitted."/>
+            </apex:pageBlockSection>            
+        
+        </apex:pageBlock>                   
+    </apex:form>
+</apex:page>

@@ -1,0 +1,53 @@
+<apex:page showHeader="false" id="SiteTemplate" title="CRM Strategy Consulting Minnesota | DCS CRM System Integration and Strategy Consulting" standardStylesheets="true">
+  <html>
+<head>
+    <title>CRM Strategy Consulting Minnesota | DCS CRM System Integration and Strategy Consulting</title>
+ 
+<meta name="description" content="DCS has helped hundreds of companies migrate from older CRM software to newer on-demand systems through expert CRM strategy consulting and CRM system integration." />
+<meta name="keywords" content="Demand Chain Systems, DCS, Minnesota, CRM strategy consulting, crm system integration services" />
+
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   </head>
+   <body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader /> 
+          </apex:insert>
+         
+          <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+               	<apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+			
+					<c:leftLinks navigation="whyDCS" />
+					<apex:outputText >
+						<span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> 
+					</apex:outputText>
+					<apex:outputText >
+						<span style="font-size:10px;">"DCS consultants know programs like Salesforce.com better than almost anyone. When we need to solve yet another business challenge, I rely on their understanding of Salesforce to help plan our strategy for implementation, and to understand what the roadmap to completing the integration with Salesforce will look like. They've become a trusted partner in our use of technology to support our sales organization,¿ said Tracy Peloquin, Ebusiness Manager, North America Commercial Division, Imation Corp.</span> 
+					</apex:outputText>
+				   	<br />
+				   	<c:gd /> 
+				</apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0"> 
+						<div class="Title" align="left">Why Demand Chain Systems for CRM Strategy Consulting</div>
+						<br/>
+						<div align="left">
+							<p>Businesses turn to Demand Chain Systems to reduce the time, cost and hassle associated with implementing and supporting up-to-date <a href="http://demandchainsystems.force.com/dcs/fastPainlessImplementations" >on-demand CRM systems</a>. Our approach is uniquely effective, and we've proven its value with hundreds of companies. Our keys to success: </p>
+							<ul>
+								<li><p>Our proven toolset and extensive knowledge of both older CRM technologies and new ones make migrating to an on-demand CRM system integration easy. DCS has helped hundreds of companies migrate quickly and painlessly from older CRM systems to newer on-demand systems. We have extensive expertise with a variety of software, from small home-grown tools to large relational repositories. And we've developed tools and templates to quickly and efficiently retrieve existing data and stage it to import cleanly into a new system. <a href="http://demandchainsystems.force.com/dcs/crmServices">Read more about our services...</a></p></li>
+								<li><p>DCS uses an exclusive tool, the <a href="http://demandchainsystems.force.com/dcs/CRMdiagnostic">CRM Diagnostic</a>, <strong>to identify what's critical to your success, implement it fast, and ensure a rapid ROI</strong>. The CRM Diagnostic is a sophisticated diagnostic tool that quickly and accurately measures a company's customer-facing capabilities and identifies the most important improvement initiatives. The tool helps you focus your resources on the weakest or most constraining points first improving customer relations quickly and ensuring a rapid ROI. <a href="http://demandchainsystems.force.com/dcs/fastPainlessImplementations" >Read more about fast, painless CRM implementations...</a></p></li>
+								<li><p>No one knows more about installing new systems or converting legacy systems to on-demand CRM than DCS. Our team is the most experienced in Minnesota and the upper midwest region, and has the credentials and certifications to prove our expertise in CRM strategy consulting and system integration. <a href="http://demandchainsystems.force.com/dcs/experiencedConsultants">Read more about our experience...</a></p></li>
+							</ul>
+						</div>
+					</apex:panelGrid> 
+					  </apex:panelGrid> 
+            </apex:panelGrid>
+       
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

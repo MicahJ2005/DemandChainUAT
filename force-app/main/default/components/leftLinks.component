@@ -1,0 +1,69 @@
+<apex:component >
+	<style>
+	
+		.hidden{
+
+			display:none;		
+		
+		}
+
+	</style>
+	<apex:attribute name="navigation" description="asd" type="String" required="true"/>
+	<span class="{!IF(navigation == 'contact','','hidden')}">
+		<apex:outputText ><span class=Title style="font-size:10px;">> CONTACT  </span></apex:outputText>
+		<hr />
+	</span>
+	<span class="{!IF(navigation == 'carrers','','hidden')}">
+		<apex:outputText ><span class=Title style="font-size:10px;">> CAREERS  </span></apex:outputText>
+		<hr />
+	</span>
+	<span class="{!IF(navigation == 'successfulCRM','','hidden')}">
+		<apex:outputText ><span class=Title style="font-size:10px;">> SUCCESSFUL CRM  </span></apex:outputText>
+			<hr />
+			<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/moreCRMvalue">More CRM Value</a></span> </apex:outputText><br/>
+			<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/leveragingCRM">Leveraging CRM</a></span> </apex:outputText><br/>				
+			<apex:outputText ><span style="font-size:10px;">>  <a href="/dcs/usefulLinks">Useful links</a></span> </apex:outputText><br/>		 
+			<br />
+			<hr /> 
+	</span>
+	
+	<span class="{!IF(navigation == 'whyDCS','','hidden')}">
+		<apex:outputText ><span class=Title style="font-size:10px;">> WHY DCS</span></apex:outputText>		
+		<hr />
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/fastPainlessImplementations" >Fast, Painless Implementations</a></span> </apex:outputText><br/>
+		<apex:outputText ><span style="font-size:10px;">>  <a href="/dcs/experiencedConsultants" >Experienced Consultants</a></span> </apex:outputText>
+		<br /><br/>
+		<hr />
+	</span>	
+	
+	<span class="{!IF(navigation == 'crmServices','','hidden')}">
+		<apex:outputText ><span class=Title style="font-size:10px;">> CRM Services </span></apex:outputText>
+		<hr />
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/crmImplementations">CRM Implementations</a></span></apex:outputText><br/>
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/onDemandSupport">On-Demand Support</a></span> </apex:outputText><br/>
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/crmSoftwareEvalution">CRM Software Evaluation</a></span> </apex:outputText><br/>
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/crmNeedsDiagnosis">CRM Needs Diagnosis</a> </span> </apex:outputText><br/>
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/crmCatapult">CRM Catapult</a> </span> </apex:outputText><br/>
+		<br />
+		<hr />		
+	</span>
+	
+	<span class="{!IF(navigation == 'clients','','hidden')}">
+		<apex:outputText ><span class=Title style="font-size:10px;">> CLIENTS</span></apex:outputText>
+		<hr />
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/caseStudies">Case Studies</a></span> </apex:outputText>
+		<br />
+		<hr />
+	</span>		
+	<span class="{!IF(navigation == 'aboutDCS','','hidden')}">
+		<apex:outputText ><span class=Title style="font-size:10px;">> ABOUT DCS</span></apex:outputText>
+		<hr />
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/management">Management</a></span> </apex:outputText><br/>
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/expConsultants">Experienced Consultants</a></span> </apex:outputText><br/>
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/sfdcExpertise">Salesforce.com expertise</a></span> </apex:outputText><br/>
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/crmNewsQ409">DCS Connections Q409</a></span> </apex:outputText><br/>
+		<apex:outputText ><span style="font-size:10px;">> <a href="/dcs/crmNewsQ109">DCS Connections Q109</a></span> </apex:outputText><br/>	 
+		<br />
+		<hr />	
+	</span>			
+</apex:component>

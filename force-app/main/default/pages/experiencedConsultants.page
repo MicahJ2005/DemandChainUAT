@@ -1,0 +1,49 @@
+<apex:page showHeader="false" id="SiteTemplate" title="CRM Resources Minnesota | DCS Delivers Painless On-Demand CRM" standardStylesheets="true">
+  <html>
+<head>
+    <title>CRM Experience Minnesota | Salesforce.com Level II Certified Consultants</title>
+<meta name="description" content="DCS consultants are self-directed professionals with years of CRM experience and are Salesforce.com Level II Certified to solve even the most strategic CRM challenges." />
+<meta name="keywords" content="CRM experience Minnesota, Salesforce.com Level II Certified, strategic CRM challenges" />
+</head>
+<body>
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				     	<c:leftLinks navigation="whyDCS" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS consultants know programs like Salesforce.com better than almost anyone. When we need to solve yet another business challenge, I rely on their understanding of Salesforce to help plan our strategy for implementation, and to understand what the roadmap to completing the integration with Salesforce will look like. They've become a trusted partner in our use of technology to support our sales organization," said Tracy Peloquin, Ebusiness Manager, North America Commercial Division, Imation Corp."</span> 
+				    	<br />
+				    	<br />
+				   			<c:gd />
+				    	</apex:outputText>
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">CRM Experience</div>
+						<br/>
+						<div align="left">
+						<p>
+							DCS consultants are self-directed professionals with years of <strong>CRM experience</strong> and some of the highest levels of certification available. Together they have implemented hundreds of CRM projects for companies of all sizes and in virtually all major industries. What makes them so good? 		</p>
+						<ul>
+							<li><p>They each average more than 10 years of <a href="http://demandchainsystems.force.com/dcs/expConsultants">CRM implementation experience</a>.</p></li>
+							<li><p>They intimately know the leading on-demand CRM technologies. In fact, DCS is <a href="http://demandchainsystems.force.com/dcs/sfdcExpertise">Salesforce.com's #1 Minnesota partner</a>, with more consultants certified than any other firm in the area, and several of our consultants are Salesforce.com Level II Certified. </p></li>
+							<li><p>They have the business and team skills required to work smoothly with internal client teams and can complement and improve your internal processes. </p></li>
+									</ul>
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

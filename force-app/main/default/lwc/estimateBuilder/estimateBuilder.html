@@ -1,0 +1,604 @@
+<template>
+    <div class="estimate-app">
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
+
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <lightning-combobox
+                    class="version-select"
+                    label="Version"
+                    variant="label-hidden"
+                    placeholder="Select a version..."
+                    value={versionSelectValue}
+                    options={versionOptions}
+                    onchange={handleVersionChange}
+                ></lightning-combobox>
+                <span class={statusPillClass}>{header.Status__c}</span>
+            </div>
+            <div class="toolbar-actions">
+                <button class="btn btn-ghost btn-sm" onclick={handleStartNew} disabled={isSaving}>+ New</button>
+                <button class="btn btn-ghost btn-sm" onclick={handleNewVersion} disabled={isSaving}>New Version</button>
+                <template lwc:if={canActivate}>
+                    <button class="btn btn-ghost btn-sm" onclick={handleActivate} disabled={isSaving}>Activate</button>
+                </template>
+                <template lwc:if={isDraft}>
+                    <button class="btn btn-ghost btn-sm" onclick={handleDelete} disabled={isSaving}>Delete Draft</button>
+                </template>
+                <button class="btn btn-ghost btn-sm" onclick={handleExportPdf} disabled={isSaving}>⬇ PDF</button>
+                <button class="btn btn-ghost btn-sm" onclick={handleExportWord} disabled={isSaving}>⬇ Word</button>
+                <button class="btn btn-primary" onclick={handleSave} disabled={isSaving}>Save</button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class={projectInfoTabClass} data-tab="project-info" onclick={handleTabClick}>Project Info</button>
+            <button class={rateCardTabClass} data-tab="rate-card" onclick={handleTabClick}>Rate Card</button>
+            <button class={projectTrackTabClass} data-tab="project-track" onclick={handleTabClick}>Project</button>
+            <button class={managedServicesTabClass} data-tab="managed-services" onclick={handleTabClick}>Managed Services</button>
+            <button class={adHocTmTabClass} data-tab="adhoc-tm" onclick={handleTabClick}>Ad-Hoc T&amp;M</button>
+            <button class={summaryTabClass} data-tab="summary" onclick={handleTabClick}>Summary</button>
+        </div>
+
+        <!-- ============================= PROJECT INFO ============================= -->
+        <template lwc:if={isProjectInfoTab}>
+            <div class="panel">
+                <div class="card discovery-band">
+                    <h2>Paid Discovery</h2>
+                    <div class="grid cols-4">
+                        <div class="field">
+                            <label>Discovery Fee ($)</label>
+                            <input type="number" min="0" value={header.Discovery_Fee__c} data-field="Discovery_Fee__c" onchange={handleHeaderFieldChange} />
+                        </div>
+                        <div class="field">
+                            <label>Sessions (1-3)</label>
+                            <input type="number" min="1" max="3" value={header.Discovery_Sessions__c} data-field="Discovery_Sessions__c" onchange={handleHeaderFieldChange} />
+                        </div>
+                        <div class="field">
+                            <label>Status</label>
+                            <lightning-combobox
+                                label="Status"
+                                variant="label-hidden"
+                                value={header.Discovery_Status__c}
+                                options={discoveryStatusOptions}
+                                data-field="Discovery_Status__c"
+                                onchange={handleHeaderFieldChange}
+                            ></lightning-combobox>
+                        </div>
+                        <div class="field">
+                            <label>Recommended Track</label>
+                            <lightning-combobox
+                                label="Recommended Track"
+                                variant="label-hidden"
+                                value={header.Recommended_Track__c}
+                                options={trackOptions}
+                                data-field="Recommended_Track__c"
+                                onchange={handleHeaderFieldChange}
+                            ></lightning-combobox>
+                        </div>
+                    </div>
+                    <div class="grid cols-4" style="margin-top:12px;">
+                        <div class="field">
+                            <label>Delivery Hours</label>
+                            <input type="number" min="0" value={header.Discovery_Hours__c} data-field="Discovery_Hours__c" onchange={handleHeaderFieldChange} />
+                        </div>
+                        <div class="field">
+                            <label>Delivery Rate Class</label>
+                            <lightning-combobox
+                                label="Delivery Rate Class"
+                                variant="label-hidden"
+                                placeholder="--None--"
+                                value={header.Discovery_Rate_Class__c}
+                                options={rateClassOptions}
+                                data-field="Discovery_Rate_Class__c"
+                                onchange={handleHeaderFieldChange}
+                            ></lightning-combobox>
+                        </div>
+                        <div class="field">
+                            <label>Delivery Cost</label>
+                            <div class="readout"><lightning-formatted-number value={discoveryCostPreview} format-style="currency" currency-code="USD"></lightning-formatted-number></div>
+                        </div>
+                        <div class="field">
+                            <label>Margin</label>
+                            <div class="readout"><lightning-formatted-number value={discoveryMarginPreview} maximum-fraction-digits="1"></lightning-formatted-number>%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Project Information</h2>
+                    <div class="grid cols-3">
+                        <div class="field">
+                            <label>Project / Engagement Name</label>
+                            <input type="text" value={header.Project_Name__c} data-field="Project_Name__c" onchange={handleHeaderFieldChange} />
+                        </div>
+                        <div class="field">
+                            <label>Sales Owner</label>
+                            <lightning-record-picker
+                                label="Sales Owner"
+                                variant="label-hidden"
+                                object-api-name="User"
+                                placeholder="Search active users..."
+                                filter={activeUserFilter}
+                                value={header.Sales_Owner__c}
+                                data-field="Sales_Owner__c"
+                                onchange={handleHeaderFieldChange}
+                            ></lightning-record-picker>
+                        </div>
+                        <div class="field">
+                            <label>Sales Engineer</label>
+                            <lightning-record-picker
+                                label="Sales Engineer"
+                                variant="label-hidden"
+                                object-api-name="User"
+                                placeholder="Search active users..."
+                                filter={activeUserFilter}
+                                value={header.Sales_Engineer__c}
+                                data-field="Sales_Engineer__c"
+                                onchange={handleHeaderFieldChange}
+                            ></lightning-record-picker>
+                        </div>
+                        <div class="field">
+                            <label>Scope Approver</label>
+                            <lightning-record-picker
+                                label="Scope Approver"
+                                variant="label-hidden"
+                                object-api-name="User"
+                                placeholder="Search active users..."
+                                filter={activeUserFilter}
+                                value={header.Scope_Approver__c}
+                                data-field="Scope_Approver__c"
+                                onchange={handleHeaderFieldChange}
+                            ></lightning-record-picker>
+                        </div>
+                        <div class="field">
+                            <label>Financial Approver</label>
+                            <lightning-record-picker
+                                label="Financial Approver"
+                                variant="label-hidden"
+                                object-api-name="User"
+                                placeholder="Search active users..."
+                                filter={activeUserFilter}
+                                value={header.Financial_Approver__c}
+                                data-field="Financial_Approver__c"
+                                onchange={handleHeaderFieldChange}
+                            ></lightning-record-picker>
+                        </div>
+                        <div class="field">
+                            <label>Legal Approver</label>
+                            <lightning-record-picker
+                                label="Legal Approver"
+                                variant="label-hidden"
+                                object-api-name="User"
+                                placeholder="Search active users..."
+                                filter={activeUserFilter}
+                                value={header.Legal_Approver__c}
+                                data-field="Legal_Approver__c"
+                                onchange={handleHeaderFieldChange}
+                            ></lightning-record-picker>
+                        </div>
+                        <div class="field">
+                            <label>Anticipated Start Date</label>
+                            <input type="date" value={header.Anticipated_Start_Date__c} data-field="Anticipated_Start_Date__c" onchange={handleHeaderFieldChange} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============================= RATE CARD ============================= -->
+        <template lwc:if={isRateCardTab}>
+            <div class="panel">
+                <div class="card">
+                    <h2>Rate Card</h2>
+                    <p class="sub">Cost/hr is DC's internal loaded cost. Price/hr is the negotiated bill rate for this estimate version.</p>
+                    <div class="tbl-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Rate Class</th><th class="num">Cost / hr</th><th class="num">Price / hr</th><th class="num">Managed Svcs / hr</th></tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={rates} for:item="r">
+                                    <tr key={r.key}>
+                                        <td>{r.Rate_Class__c}</td>
+                                        <td class="num">
+                                            <input type="number" value={r.Cost_Per_Hour__c} data-key={r.key} data-field="Cost_Per_Hour__c" onchange={handleRateFieldChange} />
+                                        </td>
+                                        <td class="num">
+                                            <input type="number" value={r.Price_Per_Hour__c} data-key={r.key} data-field="Price_Per_Hour__c" onchange={handleRateFieldChange} />
+                                        </td>
+                                        <td class="num">
+                                            <input type="number" value={r.Managed_Services_Price_Per_Hour__c} data-key={r.key} data-field="Managed_Services_Price_Per_Hour__c" onchange={handleRateFieldChange} />
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row-actions">
+                        <button class="btn btn-sm btn-ghost" onclick={handleRestoreDefaultRates}>Restore default rate card</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============================= PROJECT TRACK ============================= -->
+        <template lwc:if={isProjectTrackTab}>
+            <div class="panel">
+                <div class="card">
+                    <h2>Pricing Model</h2>
+                    <div class="field" style="max-width:280px;">
+                        <lightning-combobox
+                            label="Pricing Mode"
+                            variant="label-hidden"
+                            value={header.Pricing_Mode__c}
+                            options={pricingModeOptions}
+                            data-field="Pricing_Mode__c"
+                            onchange={handleHeaderFieldChange}
+                        ></lightning-combobox>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Phase &amp; Sprint Durations</h2>
+                    <div class="grid cols-4">
+                        <div class="field"><label>Planning (weeks)</label><input type="number" min="0" value={header.Planning_Weeks__c} data-field="Planning_Weeks__c" onchange={handleHeaderFieldChange} /></div>
+                        <div class="field"><label>Discovery (weeks)</label><input type="number" min="0" value={header.Discovery_Weeks__c} data-field="Discovery_Weeks__c" onchange={handleHeaderFieldChange} /></div>
+                        <div class="field"><label># of P&amp;B Sprints</label><input type="number" min="0" value={header.PB_Sprints__c} data-field="PB_Sprints__c" onchange={handleHeaderFieldChange} /></div>
+                        <div class="field"><label>Sprint Length (weeks)</label><input type="number" min="1" value={header.Sprint_Length_Weeks__c} data-field="Sprint_Length_Weeks__c" onchange={handleHeaderFieldChange} /></div>
+                        <div class="field"><label>Deploy (weeks)</label><input type="number" min="0" value={header.Deploy_Weeks__c} data-field="Deploy_Weeks__c" onchange={handleHeaderFieldChange} /></div>
+                        <div class="field"><label>Wrap-up (weeks)</label><input type="number" min="0" value={header.Wrapup_Weeks__c} data-field="Wrapup_Weeks__c" onchange={handleHeaderFieldChange} /></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Timeline</h2>
+                    <c-estimate-timeline-chart header={header}></c-estimate-timeline-chart>
+                </div>
+
+                <div class="card">
+                    <h2>Hours Entry</h2>
+                    <div class="field" style="max-width:280px;">
+                        <lightning-combobox
+                            label="Hours Entry Mode"
+                            variant="label-hidden"
+                            value={header.Hours_Entry_Mode__c}
+                            options={hoursEntryModeOptions}
+                            data-field="Hours_Entry_Mode__c"
+                            onchange={handleHeaderFieldChange}
+                        ></lightning-combobox>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Project Team</h2>
+                    <p class="sub">Cost/hr and Price/hr are set from the Rate Card based on the selected Rate Class and aren't editable here.</p>
+                    <div class="tbl-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th><th>Rate Class</th>
+                                    <template lwc:if={isPhaseHoursMode}>
+                                        <th class="num">Planning</th><th class="num">Discovery</th><th class="num">P&amp;B</th>
+                                        <th class="num">Deploy</th><th class="num">Wrap-up</th>
+                                    </template>
+                                    <th class="num">Total Hrs</th><th class="num">Cost/hr</th><th class="num">Price/hr</th>
+                                    <th class="num">Line Cost</th><th class="num">Line Price</th><th class="num">Margin</th><th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={teamLines} for:item="li">
+                                    <tr key={li.key}>
+                                        <td><input type="text" value={li.Name} data-key={li.key} data-field="Name" onchange={handleLineFieldChange} /></td>
+                                        <td>
+                                            <lightning-combobox
+                                                label="Rate Class"
+                                                variant="label-hidden"
+                                                placeholder="--None--"
+                                                value={li.Rate_Class__c}
+                                                options={rateClassOptions}
+                                                data-key={li.key}
+                                                data-field="Rate_Class__c"
+                                                onchange={handleLineFieldChange}
+                                            ></lightning-combobox>
+                                        </td>
+                                        <template lwc:if={isPhaseHoursMode}>
+                                            <td class="num"><input type="number" min="0" value={li.Planning_Hours__c} data-key={li.key} data-field="Planning_Hours__c" onchange={handleLineFieldChange} /></td>
+                                            <td class="num"><input type="number" min="0" value={li.Discovery_Hours__c} data-key={li.key} data-field="Discovery_Hours__c" onchange={handleLineFieldChange} /></td>
+                                            <td class="num"><input type="number" min="0" value={li.PB_Hours__c} data-key={li.key} data-field="PB_Hours__c" onchange={handleLineFieldChange} /></td>
+                                            <td class="num"><input type="number" min="0" value={li.Deploy_Hours__c} data-key={li.key} data-field="Deploy_Hours__c" onchange={handleLineFieldChange} /></td>
+                                            <td class="num"><input type="number" min="0" value={li.Wrapup_Hours__c} data-key={li.key} data-field="Wrapup_Hours__c" onchange={handleLineFieldChange} /></td>
+                                        </template>
+                                        <td class="num">{li.Total_Hours__c}</td>
+                                        <td class="num"><lightning-formatted-number value={li.Cost_Per_Hour__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td class="num"><lightning-formatted-number value={li.Price_Per_Hour__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td class="num"><lightning-formatted-number value={li.Line_Cost__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td class="num"><lightning-formatted-number value={li.Line_Price__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td class="num"><lightning-formatted-number value={li.Margin__c} maximum-fraction-digits="1"></lightning-formatted-number>%</td>
+                                        <td><button class="remove-btn" data-key={li.key} onclick={handleRemoveLine}>&times;</button></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row-actions">
+                        <button class="btn btn-sm btn-primary" onclick={handleAddTeamResource}>+ Add resource</button>
+                    </div>
+                </div>
+
+                <template lwc:if={isWeeklyGridMode}>
+                    <div class="card">
+                        <h2>Weekly Timeline</h2>
+                        <p class="sub">Click and drag across a resource's row to paint the same hours across multiple weeks.</p>
+                        <c-estimate-weekly-grid header={header} lines={teamLines} onweeklyhourschange={handleWeeklyHoursChange}></c-estimate-weekly-grid>
+                    </div>
+                </template>
+
+                <template lwc:if={isFixedBid}>
+                    <div class="card">
+                        <h2>Deliverables (Fixed Bid)</h2>
+                        <div class="tbl-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Functionality</th><th>Deliverable</th><th>Phase</th><th class="num">Est. Hours</th>
+                                        <th>Rate Class</th><th class="num">Line Cost</th><th class="num">Fixed Price</th><th class="num">Margin</th><th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={fixedLines} for:item="li">
+                                        <tr key={li.key}>
+                                            <td><input type="text" value={li.Name} data-key={li.key} data-field="Name" onchange={handleLineFieldChange} /></td>
+                                            <td><input type="text" value={li.Deliverable__c} data-key={li.key} data-field="Deliverable__c" onchange={handleLineFieldChange} /></td>
+                                            <td>
+                                                <lightning-combobox
+                                                    label="Phase"
+                                                    variant="label-hidden"
+                                                    placeholder="--None--"
+                                                    value={li.Phase__c}
+                                                    options={phaseOptions}
+                                                    data-key={li.key}
+                                                    data-field="Phase__c"
+                                                    onchange={handleLineFieldChange}
+                                                ></lightning-combobox>
+                                            </td>
+                                            <td class="num"><input type="number" value={li.Total_Hours__c} data-key={li.key} data-field="Total_Hours__c" onchange={handleLineFieldChange} /></td>
+                                            <td>
+                                                <lightning-combobox
+                                                    label="Rate Class"
+                                                    variant="label-hidden"
+                                                    placeholder="--None--"
+                                                    value={li.Rate_Class__c}
+                                                    options={rateClassOptions}
+                                                    data-key={li.key}
+                                                    data-field="Rate_Class__c"
+                                                    onchange={handleLineFieldChange}
+                                                ></lightning-combobox>
+                                            </td>
+                                            <td class="num"><lightning-formatted-number value={li.Line_Cost__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                            <td class="num"><input type="number" value={li.Fixed_Price__c} data-key={li.key} data-field="Fixed_Price__c" onchange={handleLineFieldChange} /></td>
+                                            <td class="num"><lightning-formatted-number value={li.Margin__c} maximum-fraction-digits="1"></lightning-formatted-number>%</td>
+                                            <td><button class="remove-btn" data-key={li.key} onclick={handleRemoveLine}>&times;</button></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row-actions">
+                            <button class="btn btn-sm btn-primary" onclick={handleAddFixedDeliverable}>+ Add functionality</button>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="kpis">
+                    <div class="kpi"><div class="label">Project Price</div><div class="value"><lightning-formatted-number value={projectPrice} format-style="currency" currency-code="USD"></lightning-formatted-number></div></div>
+                    <div class="kpi"><div class="label">Project Cost</div><div class="value"><lightning-formatted-number value={projectCost} format-style="currency" currency-code="USD"></lightning-formatted-number></div></div>
+                    <div class="kpi"><div class="label">Project Hours</div><div class="value">{projectHours}</div></div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============================= MANAGED SERVICES ============================= -->
+        <template lwc:if={isManagedServicesTab}>
+            <div class="panel">
+                <div class="card">
+                    <h2>Engagement Details</h2>
+                    <div class="grid cols-4">
+                        <div class="field"><label>Named Engagement Lead</label><input type="text" value={header.MS_Lead__c} data-field="MS_Lead__c" onchange={handleHeaderFieldChange} /></div>
+                        <div class="field">
+                            <label>Cadence</label>
+                            <lightning-combobox
+                                label="Cadence"
+                                variant="label-hidden"
+                                value={header.MS_Cadence__c}
+                                options={msCadenceOptions}
+                                data-field="MS_Cadence__c"
+                                onchange={handleHeaderFieldChange}
+                            ></lightning-combobox>
+                        </div>
+                        <div class="field"><label>Contract Length (months)</label><input type="number" min="1" value={header.MS_Contract_Months__c} data-field="MS_Contract_Months__c" onchange={handleHeaderFieldChange} /></div>
+                        <div class="field">
+                            <label>QBR Cadence</label>
+                            <lightning-combobox
+                                label="QBR Cadence"
+                                variant="label-hidden"
+                                value={header.MS_QBR_Cadence__c}
+                                options={msQbrOptions}
+                                data-field="MS_QBR_Cadence__c"
+                                onchange={handleHeaderFieldChange}
+                            ></lightning-combobox>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Delivery Mix &amp; Committed Hours per Week</h2>
+                    <p class="sub">Cost/hr and Price/hr are set from the Rate Card's Managed Services column based on the selected Rate Class and aren't editable here.</p>
+                    <div class="tbl-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Delivery Tier</th><th>Rate Class</th><th class="num">Hrs / Week</th><th class="num">Cost/hr</th><th class="num">Price/hr</th><th class="num">Margin</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={msLines} for:item="li">
+                                    <tr key={li.key}>
+                                        <td><input type="text" value={li.Delivery_Tier__c} data-key={li.key} data-field="Delivery_Tier__c" onchange={handleLineFieldChange} /></td>
+                                        <td>
+                                            <lightning-combobox
+                                                label="Rate Class"
+                                                variant="label-hidden"
+                                                placeholder="--None--"
+                                                value={li.Rate_Class__c}
+                                                options={rateClassOptions}
+                                                data-key={li.key}
+                                                data-field="Rate_Class__c"
+                                                onchange={handleLineFieldChange}
+                                            ></lightning-combobox>
+                                        </td>
+                                        <td class="num"><input type="number" value={li.Hours_Per_Week__c} data-key={li.key} data-field="Hours_Per_Week__c" onchange={handleLineFieldChange} /></td>
+                                        <td class="num"><lightning-formatted-number value={li.Cost_Per_Hour__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td class="num"><lightning-formatted-number value={li.Price_Per_Hour__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td class="num"><lightning-formatted-number value={li.Margin__c} maximum-fraction-digits="1"></lightning-formatted-number>%</td>
+                                        <td><button class="remove-btn" data-key={li.key} onclick={handleRemoveLine}>&times;</button></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row-actions">
+                        <button class="btn btn-sm btn-primary" onclick={handleAddMsTier}>+ Add delivery tier</button>
+                    </div>
+                </div>
+
+                <div class="kpis">
+                    <div class="kpi"><div class="label">MS Weekly/Contract Price</div><div class="value"><lightning-formatted-number value={msPrice} format-style="currency" currency-code="USD"></lightning-formatted-number></div></div>
+                    <div class="kpi"><div class="label">MS Cost</div><div class="value"><lightning-formatted-number value={msCost} format-style="currency" currency-code="USD"></lightning-formatted-number></div></div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============================= AD-HOC T&M ============================= -->
+        <template lwc:if={isAdHocTmTab}>
+            <div class="panel">
+                <div class="card">
+                    <h2>Request Volume &amp; Approval</h2>
+                    <div class="grid cols-3">
+                        <div class="field"><label>Est. Requests / Month</label><input type="number" min="0" value={header.TM_Requests_Per_Month__c} data-field="TM_Requests_Per_Month__c" onchange={handleHeaderFieldChange} /></div>
+                        <div class="field"><label>Approval (if exception)</label><input type="text" value={header.TM_Approval__c} data-field="TM_Approval__c" onchange={handleHeaderFieldChange} /></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Estimated Block of Hours</h2>
+                    <p class="sub">Cost/hr and Price/hr are set from the Rate Card (with the SLA tier multiplier applied) based on the selected Rate Class and aren't editable here.</p>
+                    <div class="tbl-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Rate Class</th><th>SLA Tier</th><th class="num">Est. Hours</th><th class="num">Cost/hr</th><th class="num">Price/hr (w/ SLA)</th><th class="num">Margin</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={tmLines} for:item="li">
+                                    <tr key={li.key}>
+                                        <td>
+                                            <lightning-combobox
+                                                label="Rate Class"
+                                                variant="label-hidden"
+                                                placeholder="--None--"
+                                                value={li.Rate_Class__c}
+                                                options={rateClassOptions}
+                                                data-key={li.key}
+                                                data-field="Rate_Class__c"
+                                                onchange={handleLineFieldChange}
+                                            ></lightning-combobox>
+                                        </td>
+                                        <td>
+                                            <lightning-combobox
+                                                label="SLA Tier"
+                                                variant="label-hidden"
+                                                value={li.SLA_Tier__c}
+                                                options={slaTierOptions}
+                                                data-key={li.key}
+                                                data-field="SLA_Tier__c"
+                                                onchange={handleLineFieldChange}
+                                            ></lightning-combobox>
+                                        </td>
+                                        <td class="num"><input type="number" value={li.Total_Hours__c} data-key={li.key} data-field="Total_Hours__c" onchange={handleLineFieldChange} /></td>
+                                        <td class="num"><lightning-formatted-number value={li.Cost_Per_Hour__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td class="num"><lightning-formatted-number value={li.Price_Per_Hour__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td class="num"><lightning-formatted-number value={li.Margin__c} maximum-fraction-digits="1"></lightning-formatted-number>%</td>
+                                        <td><button class="remove-btn" data-key={li.key} onclick={handleRemoveLine}>&times;</button></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row-actions">
+                        <button class="btn btn-sm btn-primary" onclick={handleAddTmLine}>+ Add line</button>
+                    </div>
+                </div>
+
+                <div class="kpis">
+                    <div class="kpi"><div class="label">T&amp;M Price</div><div class="value"><lightning-formatted-number value={tmPrice} format-style="currency" currency-code="USD"></lightning-formatted-number></div></div>
+                    <div class="kpi"><div class="label">T&amp;M Cost</div><div class="value"><lightning-formatted-number value={tmCost} format-style="currency" currency-code="USD"></lightning-formatted-number></div></div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============================= SUMMARY ============================= -->
+        <template lwc:if={isSummaryTab}>
+            <div class="panel">
+                <div class="kpis">
+                    <div class="kpi"><div class="label">Total Price</div><div class="value"><lightning-formatted-number value={totalPrice} format-style="currency" currency-code="USD"></lightning-formatted-number></div></div>
+                    <div class="kpi"><div class="label">Total Cost</div><div class="value"><lightning-formatted-number value={totalCost} format-style="currency" currency-code="USD"></lightning-formatted-number></div></div>
+                    <div class="kpi"><div class="label">Total Hours</div><div class="value">{totalHours}</div></div>
+                    <div class="kpi"><div class="label">Margin</div><div class="value"><lightning-formatted-number value={totalMargin} maximum-fraction-digits="1"></lightning-formatted-number>%</div></div>
+                </div>
+
+                <div class="card">
+                    <h2>Engagement Rollup</h2>
+                    <p class="sub">Uncheck a line to exclude it from the totals above. Discovery is always included.</p>
+                    <div class="tbl-wrap">
+                        <table>
+                            <thead>
+                                <tr><th></th><th>Line</th><th>Type</th><th class="num">Price</th><th class="num">Cost</th><th class="num">Hours</th><th class="num">Margin</th></tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={lineItems} for:item="li">
+                                    <tr key={li.key}>
+                                        <td><input type="checkbox" checked={li.Include_In_Rollup__c} data-key={li.key} data-field="Include_In_Rollup__c" onchange={handleLineFieldChange} /></td>
+                                        <td>{li.Name}</td>
+                                        <td>{li.Line_Type__c}</td>
+                                        <td class="num"><lightning-formatted-number value={li.Line_Price__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td class="num"><lightning-formatted-number value={li.Line_Cost__c} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td class="num">{li.Total_Hours__c}</td>
+                                        <td class="num"><lightning-formatted-number value={li.Margin__c} maximum-fraction-digits="1"></lightning-formatted-number>%</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Discovery</h2>
+                    <div class="grid cols-4">
+                        <div class="field"><label>Fee</label><div class="readout"><lightning-formatted-number value={header.Discovery_Fee__c} format-style="currency" currency-code="USD"></lightning-formatted-number></div></div>
+                        <div class="field"><label>Status</label><div class="readout">{header.Discovery_Status__c}</div></div>
+                        <div class="field"><label>Cost</label><div class="readout"><lightning-formatted-number value={discoveryCostForTotals} format-style="currency" currency-code="USD"></lightning-formatted-number></div></div>
+                        <div class="field"><label>Recommended Track</label><div class="readout">{header.Recommended_Track__c}</div></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Export</h2>
+                    <p class="sub">Save the estimate first so the export reflects your latest changes.</p>
+                    <div class="row-actions">
+                        <button class="btn btn-primary" onclick={handleExportPdf} disabled={isSaving}>⬇ Download PDF</button>
+                        <button class="btn btn-primary" onclick={handleExportWord} disabled={isSaving}>⬇ Download Word</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

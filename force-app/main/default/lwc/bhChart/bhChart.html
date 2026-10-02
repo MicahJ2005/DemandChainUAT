@@ -1,0 +1,115 @@
+<template>
+    <figure class="chart">
+        <div class="chart-head">
+            <div>
+                <figcaption class="chart-title">{chart.title}</figcaption>
+                <template lwc:if={chart.subtitle}><div class="chart-sub">{chart.subtitle}</div></template>
+            </div>
+            <button class="link-btn small" onclick={toggleTable}>{tableToggleLabel}</button>
+        </div>
+        <div class="legend">
+            <template lwc:if={hasLegend}>
+                <template for:each={legend} for:item="l">
+                    <span key={l.key} class="legend-item"><span class={l.swatchClass} style={l.swatchStyle}></span>{l.name}</span>
+                </template>
+            </template>
+            <template lwc:if={targetLegend}>
+                <span class="legend-item"><span class="swatch-target"></span>{targetLegend}</span>
+            </template>
+        </div>
+
+        <template lwc:if={showTable}>
+            <div class="tbl-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <template for:each={tableHeaders} for:item="h"><th key={h.key} class="num">{h.name}</th></template>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={tableRows} for:item="r">
+                            <tr key={r.key}>
+                                <td>{r.label}</td>
+                                <template for:each={r.cells} for:item="c"><td key={c.key} class="num">{c.value}</td></template>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+        <template lwc:else>
+            <template lwc:if={hasData}>
+                <div class="plot-wrap" onmouseleave={handleLeave}>
+                    <svg viewBox={viewBox} class="plot" role="img" aria-label={ariaLabel} preserveAspectRatio="xMidYMid meet">
+                        <template lwc:if={isHbar}>
+                            <template for:each={gridX} for:item="g">
+                                <g key={g.key}>
+                                    <line x1={g.x} x2={g.x} y1={g.y1} y2={g.y2} class="grid"></line>
+                                    <text x={g.x} y={g.labelY} class="axis-label" text-anchor="middle">{g.label}</text>
+                                </g>
+                            </template>
+                            <template for:each={rowLabels} for:item="r">
+                                <text key={r.key} x={r.x} y={r.y} class="row-label" text-anchor="end">{r.label}<title>{r.full}</title></text>
+                            </template>
+                            <template for:each={hbars} for:item="b">
+                                <g key={b.key}>
+                                    <path d={b.d} fill={b.fill} fill-opacity={b.opacity}></path>
+                                    <template lwc:if={b.showValue}>
+                                        <text x={b.valueX} y={b.valueY} class="value-label" text-anchor={b.anchor}>{b.valueLabel}</text>
+                                    </template>
+                                </g>
+                            </template>
+                        </template>
+                        <template lwc:else>
+                            <template for:each={gridY} for:item="g">
+                                <g key={g.key}>
+                                    <line x1={g.x1} x2={g.x2} y1={g.y} y2={g.y} class="grid"></line>
+                                    <text x={g.labelX} y={g.labelY} class="axis-label" text-anchor="end">{g.label}</text>
+                                </g>
+                            </template>
+                            <template for:each={xLabels} for:item="xl">
+                                <text key={xl.key} x={xl.x} y={xl.y} class="axis-label" text-anchor="middle">{xl.label}</text>
+                            </template>
+                            <template for:each={bars} for:item="b">
+                                <path key={b.key} d={b.d} fill={b.fill} fill-opacity={b.opacity}></path>
+                            </template>
+                            <template lwc:if={crosshair}>
+                                <line x1={crosshair.x} x2={crosshair.x} y1={crosshair.y1} y2={crosshair.y2} class="crosshair"></line>
+                            </template>
+                            <template for:each={lines} for:item="l">
+                                <g key={l.key}>
+                                    <path d={l.d} stroke={l.stroke} class="series-line"></path>
+                                    <template lwc:if={l.hasEnd}>
+                                        <circle cx={l.endX} cy={l.endY} r="4" fill={l.stroke} class="marker"></circle>
+                                    </template>
+                                </g>
+                            </template>
+                            <template for:each={hoverMarkers} for:item="m">
+                                <circle key={m.key} cx={m.cx} cy={m.cy} r="5" fill={m.fill} class="marker"></circle>
+                            </template>
+                        </template>
+                        <template lwc:if={target}>
+                            <line x1={target.x1} x2={target.x2} y1={target.y1} y2={target.y2} class="target-line"></line>
+                            <text x={target.labelX} y={target.labelY} class="target-label" text-anchor={target.anchor}>{target.label}</text>
+                        </template>
+                        <template for:each={hoverBands} for:item="hb">
+                            <rect key={hb.key} x={hb.x} y={hb.y} width={hb.width} height={hb.height} class="hit" data-index={hb.index} onmouseenter={handleEnter}></rect>
+                        </template>
+                    </svg>
+                    <template lwc:if={tooltip}>
+                        <div class="tooltip" style={tooltip.style}>
+                            <div class="tt-title">{tooltip.title}</div>
+                            <template for:each={tooltip.rows} for:item="r">
+                                <div key={r.key} class="tt-row"><span class="swatch" style={r.swatchStyle}></span><span class="tt-name">{r.name}</span><span class="tt-val">{r.value}</span></div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+            <template lwc:else>
+                <p class="empty">No data for this chart in the selected window and scope.</p>
+            </template>
+        </template>
+    </figure>
+</template>

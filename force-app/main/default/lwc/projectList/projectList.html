@@ -1,0 +1,21 @@
+<template>
+    <lightning-card title="Projects">
+        <template if:true={projects}>
+            <lightning-layout multiple-rows>
+                <template for:each={projects} for:item="project">
+                    <lightning-layout-item key={project.Id} padding="around-small" size="12">
+                        <div class="slds-box">
+                            <p><strong>Name:</strong> {project.Name}</p>
+                            <p><strong>Account:</strong> {project.pse__Account__c}</p>
+                            <p><strong>Active:</strong> {project.pse__Is_Active__c}</p>
+                            <p><strong>Budget Remaining:</strong> {project.Budget_Variance__c}</p>
+                        </div>
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+        </template>
+        <!-- <template if:true={error}>
+            <c-error-panel errors={error}></c-error-panel>
+        </template> -->
+    </lightning-card>
+</template>

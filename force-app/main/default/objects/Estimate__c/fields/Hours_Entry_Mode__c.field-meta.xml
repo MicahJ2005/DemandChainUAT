@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hours_Entry_Mode__c</fullName>
+    <label>Hours Entry Mode</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>By Phase</fullName>
+                <default>true</default>
+                <label>By Phase</label>
+            </value>
+            <value>
+                <fullName>Weekly Grid</fullName>
+                <default>false</default>
+                <label>Weekly Grid</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

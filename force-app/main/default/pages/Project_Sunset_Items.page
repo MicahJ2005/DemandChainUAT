@@ -1,0 +1,38 @@
+<apex:page standardController="Opportunity" extensions="opptySunsetTaskController">
+
+   <apex:sectionheader title="Project Sunset Meeting Items" subtitle="{!Opportunity.Name}"/>
+      
+    <apex:form >
+       
+           <apex:pageBlock id="openProject" rendered="{!RenderOpenProject}"><p/>
+           
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Save"/> 
+                <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons> 
+              
+            <apex:pageBlockSection >
+               <b>Sunset meeting topics:</b><br/>
+               (255 character limit)
+               
+               <apex:inputTextArea value="{!Opportunity.Sunset_Meeting_Review_Items__c}" required="true" rows="18" cols="150"/><p/>   
+
+               Create Sunset Task:  <apex:inputCheckbox value="{!Opportunity.Sunset_Notification_Created__c}" selected="true" disabled="true"/>    
+            </apex:pageBlockSection>            
+            
+           </apex:pageBlock>
+           
+           <apex:pageBlock id="closedProject" rendered="{!RenderClosedProject}">
+           
+            <apex:pageBlockButtons >
+               <apex:commandButton action="{!cancel}" value="Close"/>
+            </apex:pageBlockButtons> 
+           
+           	<apex:pageBlockSection >
+           		Project already closed.<br><br>
+           		Update the related sunset task with relevant information if needed.
+           	</apex:pageBlockSection>
+           </apex:pageBlock>       
+           
+    </apex:form>   
+  </apex:page>

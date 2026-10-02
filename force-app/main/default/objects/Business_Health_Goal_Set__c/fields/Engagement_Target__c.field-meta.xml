@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Engagement_Target__c</fullName>
+    <description>Average weekly pulse survey score.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Average weekly pulse survey score.</inlineHelpText>
+    <label>Engagement Target (1-5)</label>
+    <precision>8</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,162 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Case Studies" standardStylesheets="true">
+  <html>
+<head>
+        <title>CRM News | Get More Value from your CRM System and Increase Sales</title>
+    
+<meta name="description" content="It's no secret that many companies are unhappy with the value they're getting out of their CRM systems. One of the chief complaints we hear is that sales teams resist their adoption. Even when sales reps do use CRM daily..." />
+<meta name="keywords" content="CRM news, crm value, increase sales, migrate SalesLogix to Salesforce.com" />
+  	<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+  	</head>
+  	<body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				    	 <c:leftLinks navigation="careers" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS knowledge of on-demand CRM made it easy for them to seamlessly integrate great sales tools with our lead generation and property management systems. Now, when our sales people enter sales opportunity information our meeting professionals are right on it. That helps us close sales more efficiently and deliver outstanding customer service," said Dee Gullikson, Carlson Hotels Worldwide."<br />
+				   		</span>
+				   		</apex:outputText>	
+				   		<br/>
+				   		<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">CRM Newsletter, Fourth Quarter 2009</div>
+						<br/>
+						<div align="left"> <!-- BEGIN NEWSLETTER -->
+<html><head><style type="text/css"><!-- DIV {margin:0px;} --></style></head><body>
+<STYLE type=text/css>
+p {font-family:Arial;font-size:10px;padding-bottom:2px;}
+
+a.navLink  
+{
+font-family:Verdana;
+font-size:10px;
+color:#777777;
+font-weight:bold;
+text-decoration:none;
+}
+
+td.navLinkIndent {padding-bottom:7px;padding-left:20px;}
+
+.redHeading {font-family:Arial;font-size:18px;color:#B32317;font-weight:bold;padding-bottom:7px;}
+
+.navbg {background-repeat:no-repeat;}
+</STYLE>
+
+<TABLE cellSpacing=0 cellPadding=0 width=700 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top><IMG height=221 src="http://proxy.pcdn.vresp.com/f89547907/www.demandchainsystems.com/images/news/banner_left.gif" width=205></TD>
+<TD vAlign=top><IMG height=221 src="http://proxy.pcdn.vresp.com/884efc366/www.demandchainsystems.com/images/news/banner_right.gif" width=495></TD></TR>
+<TR>
+<TD vAlign=top background=http://proxy.pcdn.vresp.com/760a51618/www.demandchainsystems.com/images/news/nav_bg.jpg>
+<TABLE class=navbg cellSpacing=0 cellPadding=0 border=0>
+<TBODY>
+<TR></TR>
+<TR>
+<TD><IMG height=28 src="http://proxy.pcdn.vresp.com/4a6ae56d7/www.demandchainsystems.com/images/news/nav_inThisIssue.gif" width=205></TD></TR>
+<TR>
+<TD class=navLinkIndent><A class=navLink href="#LeveragingCRM">Get more value from your CRM</A></TD></TR>
+<TR>
+<TD class=navLinkIndent><A class=navLink href="#HowtoIntegrate">CDI turns to DCS to migrate from SalesLogix to Salesforce.com</A></TD></TR>
+<TR>
+<TD class=navLinkIndent><A class=navLink href="#Advice">Advice from Andy</A></TD></TR>
+<TR>
+<TD class=navLinkIndent><A class=navLink href="#News">DCS News Briefs</A></TD></TR>
+<TR>
+<TD><IMG height=102 src="http://proxy.pcdn.vresp.com/87af19d8c/www.demandchainsystems.com/images/news/nav_usefulLinks.gif" width=205 border=0></TD></TR>
+<TR>
+<TD class=navLinkIndent><A class=navLink href="http://www.customerthink.com/" target=_blank>CRM Guru</A></TD></TR>
+<TR>
+<TD class=navLinkIndent><A class=navLink href="http://www.destinationcrm.com/" target=_blank>Destination CRM</A></TD></TR>
+<TR>
+<TD class=navLinkIndent><A class=navLink href="http://usergroups.salesforce.com/twincities/" target=_blank>Twin Cities salesforce.com User Group</A></TD></TR>
+<TR>
+<TD class=navLinkIndent><A class=navLink href="http://demandchainsystems.blogspot.com/" target=_blank>Technical Insights blog by DCS</A></TD></TR>
+<TR>
+<TD class=navLinkIndent><A class=navLink href="http://www.salesforce.com/community/" target=_blank>Salesforce.com Community</A></TD></TR>
+<TR>
+<TD><IMG height=262 src="http://proxy.pcdn.vresp.com/e550fbd6b/www.demandchainsystems.com/images/news/nav_demandChainSystems.gif" width=205></TD></TR></TBODY></TABLE></TD>
+<TD vAlign=top>
+<TABLE cellSpacing=0 cellPadding=0 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top rowSpan=5><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=33></TD></TR>
+<TR>
+<TD style="FONT-SIZE: 11px; PADDING-BOTTOM: 20px; MARGIN-LEFT: 0px; FONT-FAMILY: Arial">FOURTH QUARTER 2009</TD>
+<TR><A name=LeveragingCRM></A>
+<TD class=redHeading vAlign=top colSpan=2>Get more value from your CRM system and <BR>increase sales without spending an arm and a leg
+<P><I>By Andy Moldenhauer, DCS senior business analyst</I></P></TD></TR>
+<TR>
+<TD>
+<P>It's no secret that many companies are unhappy with the value they're getting out of their CRM systems. One of the chief complaints we hear is that sales teams resist their adoption. Even when sales reps do use CRM daily, it doesn't seem to have much impact on their productivity. Sales managers can easily track their time and activities, but are sales reps actually selling more? Often, the answer is 'no.' And who gets the blame? The CRM system. </P><IMG height=2 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1> 
+<P>So what to do? Start all over with a new system? Overhaul your current system? Not many companies in today's economy can afford such choices. But don't give up on your CRM system. There are numerous things you can do right now to get more value from it, and many can be implemented quickly at a relatively low cost. </P>
+<P><A href="/dcs/moreCRMvalue" target=_blank>Read full article...</A></P></TD>
+<TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=40> </TD></TR>
+<TR> 
+<TD><BR></TD>
+<TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=40> </TD></TR>
+<TR></TR>
+<TR>
+<TD colSpan=3><A name=HowtoIntegrate><IMG height=56 src="http://proxy.pcdn.vresp.com/21ba38362/www.demandchainsystems.com/images/news/heading_03_clientSuccess.gif" width=495 border=0></A></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>
+<P><B>The Center for Diagnostic Imaging (CDI)</B> was one of the first freestanding, outpatient imaging providers in the country. CDI is now a national network of imaging providers offering a full range of diagnostic imaging, pain management and interventional radiology services. CDI has more than 50 centers located throughout the United States.</P><IMG height=2 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1> 
+<P>CDI's first attempt at CRM left much to be desired. The SalesLogix software the company implemented was confusing, difficult to support, and the synching of data from the field was a time-consuming and error-ridden chore. Sales reps at first started using the system enthusiastically, but adoption rates and utilization soon plummeted. </P>
+<P>When the company decided to implement a new system, it turned to DCS to ensure that it didn't make the same mistakes twice. <BR><IMG height=5 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></P>
+<P><A href="/dcs/cdi" target=_blank>Read full article...</A></P><BR></TD>
+<TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=40> </TD></TR>
+<TR>
+<TD colSpan=3><A name=Advice><IMG height=50 src="http://proxy.pcdn.vresp.com/558ddadf1/www.demandchainsystems.com/images/news/heading_04_adviceFromAndy.gif" width=495 border=0></A></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>
+<P style="FONT-WEIGHT: bold; FONT-SIZE: 13px">'Our CRM data is inaccurate. How do we keep it clean?'</P>
+<P>In our last newsletter, I talked about the value of 'inspecting what you expect' and using your CRM system to run reports and manage the user group. Perhaps you went ahead and did that and now realize you've got a mess on your hands, duplicate data leading to inaccurate reports. </P><IMG height=2 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1> 
+<P>Every CRM admin needs to have a cleaning tool that will minimize or remove duplicates so that the system is pristine. Duplicate records will compound the problem over time, so it's best to regularly sweep your system for duplicate accounts, contacts, leads or whatever you add regularly. If you keep your system clean, it will lead to more trust from managers and reps. The more their trust grows, the more they'll use the system.</P><BR></TD>
+<TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=40> </TD></TR>
+<TR>
+<TD colSpan=3><A name=News><IMG height=45 src="http://proxy.pcdn.vresp.com/64f170e52/www.demandchainsystems.com/images/news/heading_DCSnewsBriefs.gif" width=495 border=0></A></TD></TR>
+<TR>
+<TD>&nbsp;</TD>
+<TD>
+<P style="FONT-SIZE: 11px"><B><I>DCS's Tim Inman wins prestigious SFDC award with <A href="http://force.com/" target=_blank>Force.com</A> application</I></B></P>
+<P>When <A href="http://salesforce.com/" target=_blank>Salesforce.com</A> announced its second annual Force.com Developer Challenge, judges said they were looking for 'style, technical ability, pizzazz and that little x-factor.' Recently the top three winners were announced, and Tim Inman, a senior technical analyst at DCS, was one of the chosen. Winner of one of three honorable mentions in the first Developer Challenge in 2008, Tim claimed the top prize this year with his enduranceAthlete, a Force.com application that plans, tracks and analyzes workouts, complete with video overviews. <BR><IMG height=10 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></P>
+<P style="FONT-SIZE: 11px"><B><I>DCS helps Douglas Scientific leverage Salesforce.com as foundation for growth</I></B></P>
+<P>A newly formed division of Minnesota-based Douglas Machine, <A href="http://www.demandchainsystems.com/caseStudyDouglasScientific.php?pageId=clients" target=_blank>Douglas Scientific</A> has sold its groundbreaking genetic screening technology to over a dozen of the world's leading agribusinesses, including Cargill, Syngenta and Monsanto. With significant additional growth planned for the future, the company hired DCS to help with a Salesforce.com implementation. 'We intend to support our markets with the most responsive service, whether they are customers, prospects, or industry influencers' says Dan Malmstrom, Douglas Scientific General Manager. 'We also want our client and service executives equipped with the best information available as they serve those relationships. DCS has done a great job to quickly implement a system that elevates our market acumen.<BR><IMG height=10
+ src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></P>
+<P style="FONT-SIZE: 11px"><B><I>DCS's CRM Catapult offering helps companies increase adoption and efficiency</I></B></P>
+<P>Is your CRM system underutilized, poorly optimized or full of unreliable data? You might want to check out DCS's new CRM Catapult program. As the name implies, Catapult is designed to quickly boost your CRM system's performance. We start by analyzing your current data and system issues, management support of you system, and issues affecting its overall adoption. We then produce an actionable plan to rapidly improve your CRM system performance. Our goals are specific to your needs but commonly include: 
+<UL style="PADDING-RIGHT: 30px; PADDING-LEFT: 20px; FONT-SIZE: 11px; MARGIN-LEFT: 0px; FONT-FAMILY: Arial">
+<LI>Improving data quality and consistency</LI>
+<LI>Improving adoption by providing greater daily value to your team</LI>
+<LI>Improving adoption by eliminating unnecessary activities</LI>
+<LI>Improving manageability with dashboard views and automated exception reporting</LI>
+<LI>Improving lead and activity cultivation with automated email, notification and response</LI>
+<LI>Getting the most out of the CRM capabilities that have been added since your deployment</LI></UL>
+<P></P>
+</TD><TD><IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=40> </TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD><A href="http://cts.vresp.com/c/?DemandChainSystemsIn/1fdf8b57c4/28af15a413/d771aec1e9" target=_blank rel=nofollow><IMG height=107 src="http://proxy.pcdn.vresp.com/0f8027521/www.demandchainsystems.com/images/news/DCS_eNews_28.gif" width=205 border=0></A></TD>
+<IMG height=1 src="http://proxy.pcdn.vresp.com/09e01cc97/www.demandchainsystems.com/images/news/spacer.gif" width=1></TD></TR></TBODY></TABLE><BR><BR style="CLEAR: both">
+<HR color=#e0e0e0>
+
+<!-- END NEWSLETTER --></div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

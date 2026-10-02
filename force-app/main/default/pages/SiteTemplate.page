@@ -1,0 +1,17 @@
+<apex:page showHeader="false" id="SiteTemplate" standardStylesheets="true">
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="0" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+                       </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+</apex:page>

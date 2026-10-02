@@ -1,0 +1,10 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global">
+	<aura:attribute name="loginUrl" type="String" />
+    <aura:attribute name="apiVersion" type="String" />
+    <aura:attribute name="domain" type="String" />
+    <aura:attribute name="restRequest" type="RESTRequestUtil" />
+    <aura:attribute name="accountOrg" type="Account_Org__c" default="{'sobjectType':'Account_Org__c'}" />
+    <!--<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>-->
+    <aura:registerEvent name="loginEvent" type="c:HealthCheckLoginEvent"/>
+    abcdefg
+</aura:component>

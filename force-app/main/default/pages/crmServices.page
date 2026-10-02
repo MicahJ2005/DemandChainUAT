@@ -1,0 +1,52 @@
+<apex:page showHeader="false" id="SiteTemplate" title="CRM Services | DCS CRM Services in the Twin Cities" standardStylesheets="true">
+  <html>
+<head>
+    <title>CRM Services | DCS CRM Services in the Twin Cities</title>
+<meta name="description" content="Demand Chain Systems provides CRM services to design, deploy and support on-demand CRM systems designed to meet critical CRM needs quickly for a rapid ROI." />
+<meta name="keywords" content="CRM services, CRM services Twin Cities, CRM services Minnesota" />
+  
+  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+  </head>
+  <body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				     		<c:leftLinks navigation="crmServices" />
+
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"We needed a better way to manage sales processes in our three major employer market segments. We also have to manage sales relationships with our partner agencies and agents," said Amy Conway, Director, Sales Technology & Agency Relations, Blue Cross and Blue Shield of Minnesota, an independent licensee of the Blue Cross and Blue Shield Association. "DCS showed us how easily it all could be done with Salesforce.com. Their customizations included integration with mainframe data feeds that automatically update our CRM tools, and dashboards that show managers at a glance the overall sales picture."
+				    	</span> 
+				    	<br />
+				    	<br /> 
+				   			<c:gd />
+				    	</apex:outputText>
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">CRM Services</div>
+						<br/>
+						<div align="left">
+						Demand Chain Systems designs, deploys and supports on-demand CRM systems designed to meet critical CRM needs quickly for a rapid ROI. We're passionate about keeping time, cost and disruption to a minimum when you're ready for on-demand software-as-a-service CRM. Our CRM services include: 
+						<p><apex:outputText ><a href="/dcs/crmImplementations">CRM Implementations</a></apex:outputText></p>
+						<p><apex:outputText ><a href="/dcs/onDemandSupport">On-Demand Support</a></apex:outputText></p>
+						<p><apex:outputText ><a href="/dcs/crmSoftwareEvalution">CRM Software Evaluation</a></apex:outputText></p>
+						<p><apex:outputText ><a href="/dcs/crmNeedsDiagnosis">CRM Needs Diagnosis</a></apex:outputText></p>
+						<p><apex:outputText ><a href="/dcs/crmCatapult">CRM Catapult</a></apex:outputText></p>
+		
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>DC Rate Class</masterLabel>
+    <sorted>false</sorted>
+    <customValue>
+        <fullName>Chief Architect/MVP</fullName>
+        <default>false</default>
+        <label>Chief Architect/MVP</label>
+    </customValue>
+    <customValue>
+        <fullName>Solutions Architect</fullName>
+        <default>false</default>
+        <label>Solutions Architect</label>
+    </customValue>
+    <customValue>
+        <fullName>Technical Architect</fullName>
+        <default>false</default>
+        <label>Technical Architect</label>
+    </customValue>
+    <customValue>
+        <fullName>Senior Consultant</fullName>
+        <default>false</default>
+        <label>Senior Consultant</label>
+    </customValue>
+    <customValue>
+        <fullName>Consultant</fullName>
+        <default>false</default>
+        <label>Consultant</label>
+    </customValue>
+    <customValue>
+        <fullName>Senior Administrator</fullName>
+        <default>false</default>
+        <label>Senior Administrator</label>
+    </customValue>
+    <customValue>
+        <fullName>Administrator</fullName>
+        <default>false</default>
+        <label>Administrator</label>
+    </customValue>
+</GlobalValueSet>

@@ -1,0 +1,47 @@
+<template>
+    <!-- Trigger Button -->
+    <!-- <lightning-button label="Submit a Case" onclick={handleOpenModal} variant="brand"></lightning-button> -->
+
+    <!-- Modal -->
+    <template if:true={showModal}>
+        <!-- <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container"> -->
+                <!-- Header -->
+                <header class="slds-modal__header">
+                    <h2 class="slds-modal__title">Submit a Case</h2>
+                    <button class="slds-button slds-button_icon slds-modal__close" title="Close" onclick={handleCloseModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                    </button>
+                </header>
+
+                <!-- Body -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-input label="Subject" name="subject" value={subject} onchange={handleInputChange}></lightning-input>
+                    <lightning-textarea label="Description" name="description" value={description} onchange={handleInputChange}></lightning-textarea>
+                    <lightning-input type="email" label="Email" name="email" value={email} onchange={handleInputChange}></lightning-input>
+
+                    <template if:true={showSuccess}>
+                        <div class="slds-text-color_success slds-m-top_medium">
+                            ✅ Case submitted successfully! Case ID: <strong>{caseId}</strong>
+                        </div>
+                    </template>
+
+                    <template if:true={errorMsg}>
+                        <div class="slds-text-color_error slds-m-top_medium">
+                            ⚠️ {errorMsg}
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Footer -->
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Cancel" onclick={handleCloseModal}></lightning-button>
+                    <lightning-button variant="brand" label="Submit" onclick={handleSubmit}></lightning-button>
+                </footer>
+            <!-- </div>
+        </section> -->
+
+        <!-- Modal Backdrop -->
+        <!-- <div class="slds-backdrop slds-backdrop_open"></div> -->
+    </template>
+</template>

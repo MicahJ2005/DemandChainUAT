@@ -1,0 +1,43 @@
+<apex:page showHeader="false" id="SiteTemplate" title="CRM Software Minnesota | DCS CRM Software Evaluation Services" standardStylesheets="true">
+  <html>
+	<head>
+    	<title>CRM Software Minnesota | DCS CRM Software Evaluation Services</title>
+    	<meta name="description" content="With our CRM software evaluation experience, DCS can help you review your options and determine which system best meets your needs." />
+		<meta name="keywords" content="CRM software Minnesota, CRM software evaluation, service, consulting" />
+ 	 	<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   	</head>
+   	<body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				     		<c:leftLinks navigation="crmServices" />
+
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"We needed a better way to manage sales processes in our three major employer market segments. We also have to manage sales relationships with our partner agencies and agents," said Amy Conway, Director, Sales Technology & Agency Relations, Blue Cross and Blue Shield of Minnesota, an independent licensee of the Blue Cross and Blue Shield Association. "DCS showed us how easily it all could be done with Salesforce.com. Their customizations included integration with mainframe data feeds that automatically update our CRM tools, and dashboards that show managers at a glance the overall sales picture."
+				    	</span> 
+				    	<br />
+				    	<br />
+				   			<c:gd /> 
+				    	</apex:outputText>
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">CRM Software Evaluation</div>
+						<br/>
+						<div align="left">
+						We've been in business more than six years, and our consultants each average more than 10 years of CRM software experience. We have extensive knowledge of both older software and the latest <a href="http://demandchainsystems.force.com/dcs/expConsultants">CRM technologies</a>. We can help you review your options and determine which CRM software system best meets your needs given your goals, your environment and your level of maturity. As the top <a href="http://demandchainsystems.force.com/dcs/expConsultants">Salesforce.com partner in Minnesota</a>, DCS offers deep knowledge of on-demand CRM software technologies. 					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+	</body>
+	</html>
+</apex:page>

@@ -1,0 +1,48 @@
+<apex:page showHeader="false" id="SiteTemplate" title="CRM Integration Minnesota | CRM Needs DIagnostic and Evaluation of Customer-Facing Performance" standardStylesheets="true">
+ 	<html>
+	<head>
+    	<title>CRM Integration Minnesota | CRM Needs Diagnosis and Evaluation of Customer-Facing Performance</title>
+		<meta name="description" content="Our CRM Diagnostic is a highly sophisticated CRM needs diagnosis tool that quickly and accurately measures your customer-facing performance. From DCS, the leader in CRM integration Minnesota." />
+		<meta name="keywords" content="CRM integration Minnesota, CRM needs diagnosis, crm evaluation, growth diagnostic, customer-facing performance" />
+		  <apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+   	</head>
+   	<body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				     		<c:leftLinks navigation="crmServices" />
+
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"We needed a better way to manage sales processes in our three major employer market segments. We also have to manage sales relationships with our partner agencies and agents," said Amy Conway, Director, Sales Technology & Agency Relations, Blue Cross and Blue Shield of Minnesota, an independent licensee of the Blue Cross and Blue Shield Association. "DCS showed us how easily it all could be done with Salesforce.com. Their customizations included integration with mainframe data feeds that automatically update our CRM tools, and dashboards that show managers at a glance the overall sales picture."
+				    	</span> 
+				    	<br />
+				    	<br />
+				   			<c:gd />
+				    	</apex:outputText>
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">CRM Needs Diagnosis </div>
+						<br/>
+						<div align="left">
+							<p>Most businesses have up to 32 customer-facing capabilities that ultimately determine their overall customer success, including sales effectiveness. Given the scope of the challenge, identifying your highest value capabilities, measuring your effectiveness and determining why and how you need to improve in specific, actionable terms can take some CRM integration firms weeks or longer. If you're facing real and immediate strategic CRM challenges, that's simply not good enough. You need <a href="/dcs/crmStrategyConsulting">CRM strategy consulting</a> that provides fast answers and a fast way to move forward. </p>
+							<p>Only DCS has the tool that does just that. Our <a href="http://demandchainsystems.force.com/dcs/CRMdiagnostic"> CRM Diagnostic</a> is a highly sophisticated tool that quickly and accurately measures your customer-facing performance and identifies your most important improvement initiatives. You'll get valuable insight into your most urgent needs and actionable data that helps you improve your customer-facing performance quickly. Even more important, you can get results in as little as a day¿versus days or weeks of CRM integration consultation with other firms.</p>
+							<p>In as little as a day, you can be looking at your own <a href="http://demandchainsystems.force.com/dcs/CRMdiagnostic">CRM Diagnostic</a> dashboard that measures your key customer-facing performance capabilities and the impact <a href="http://demandchainsystems.force.com/dcs/fastPainlessImplementations">on-demand CRM</a> will have on your most important improvement initiatives.</p>
+							
+						</div>
+						</apex:panelGrid>
+               	 </apex:panelGrid> 
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

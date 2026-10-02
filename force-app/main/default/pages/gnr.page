@@ -1,0 +1,50 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Case Studies" standardStylesheets="true">
+  <html>
+	<head>
+    <title>Case Studies</title>
+  	<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+  	</head>
+  	<body>
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				    	 <c:leftLinks navigation="clients" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS knowledge of on-demand CRM made it easy for them to seamlessly integrate great sales tools with our lead generation and property management systems. Now, when our sales people enter sales opportunity information our meeting professionals are right on it. That helps us close sales more efficiently and deliver outstanding customer service," said Dee Gullikson, Carlson Hotels Worldwide."<br />
+				   		</span>
+				   		</apex:outputText>	
+				   		<br/>
+				   		<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">Gn ReSound</div>
+						<br/>
+						<div align="left">
+							<p>
+								<strong>How to integrate on-demand CRM with SQL Server</strong>
+							</p>
+							<p><i>GN ReSound is the undisputed technology leader in the global hearing instrument markets. A major segment of worldwide market share comes from its North American operation, which is headquartered in Bloomington, Minn. The state-of-the-art facility produces thousands of sophisticated hearing instruments a month.
+							</i>
+							</p>
+							<p>Unfortunately, GN ReSound's CRM system wasn't quite as sophisticated as its manufacturing facility. Sales, customer support, technical support, quality control, and marketing used different systems that were hard to keep in synch. Rolling data up from these different systems into management summaries was also a challenge.
+							</p>
+							<p>To solve the company's problems, DCS quickly (within two months) integrated the company's Navision system, which held unit volume data per account by product family, with Salesforce.com. The process is fully automated. Tools used to integrate the data were DbAmp, SQL Server 2005, and SQL Server Reporting Services.  Now sales reps simply click a button to see a detailed unit volume breakdown, enabling them to gauge how their sales are trending by account and product family, and net rolling from prior year same month to current month.  In addition, DCS mapped the unit volume data provided via the integration to an existing metric matrix that measures an account's standing based on velocity of sales within specified time periods. These metrics are displayed at the account level and allow reps to determine at a glance how an account is trending instead of directly reviewing the unit volume detail.  </p>
+							<p>"DCS made it easy for our Navision and Salesforce.com systems to 'talk' to each other like they were one application,¿ said Keith Lewis, VP of Business Development at GN ReSound.  ¿That gives our sales representatives a complete picture on how their accounts are trending and enables them to provide exceptional customer service. DCS's knowledge of how to integrate the best CRM tools with ERP and other back-end systems is outstanding. And their ability to execute fast and efficiently is exceptional."</p>
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

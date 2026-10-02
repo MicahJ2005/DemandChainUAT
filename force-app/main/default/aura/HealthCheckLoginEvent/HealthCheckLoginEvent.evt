@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="Event template">
+    <aura:attribute name="restRequestJson" type="String" description="REST result after logging into either the RESTful or Soap API" />
+</aura:event>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Financial Health Viewer</label>
+    <description>Makes the Financial Health tab visible. Metadata-API-deployed tabs aren't visible on any profile by default, so this is required for anyone (including admins) to find it in the App Launcher. Assign to anyone who needs to view the dashboard.</description>
+    <tabSettings>
+        <tab>Financial_Health_Dashboard</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

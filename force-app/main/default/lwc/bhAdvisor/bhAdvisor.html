@@ -1,0 +1,68 @@
+<template>
+    <section class={panelClass} aria-live="polite">
+        <div class="advisor-head">
+            <div class="badge"><span class="spark" aria-hidden="true">✦</span>{badgeLabel}</div>
+            <button class="btn-secondary" onclick={handleRegenerate} disabled={loading}>{regenerateLabel}</button>
+        </div>
+
+        <template lwc:if={loading}>
+            <div class="loading">
+                <div class="pulse-bar"></div>
+                <div class="pulse-bar short"></div>
+                <div class="pulse-bar"></div>
+                <p class="loading-note">Einstein is reviewing every number on this page and preparing recommendations. A fresh analysis takes 30 to 60 seconds.</p>
+            </div>
+        </template>
+
+        <template lwc:if={error}>
+            <p class="error">The AI Advisor failed: {error}</p>
+        </template>
+
+        <template lwc:if={hasAdvice}>
+            <template lwc:if={advice.notice}><p class="notice">{advice.notice}</p></template>
+            <h2 class="headline">{advice.headline}</h2>
+            <p class="assessment">{advice.assessment}</p>
+
+            <ol class="recs">
+                <template for:each={recommendations} for:item="r">
+                    <li key={r.key} class="rec">
+                        <div class="rec-num">{r.number}</div>
+                        <div class="rec-body">
+                            <div class="rec-title">{r.title}</div>
+                            <div class="rec-action">{r.action}</div>
+                            <template lwc:if={r.why}><div class="rec-line"><span class="rec-label">Why:</span> {r.why}</div></template>
+                            <template lwc:if={r.impact}><div class="rec-line"><span class="rec-label">Impact:</span> {r.impact}</div></template>
+                            <template lwc:if={r.hasMeta}>
+                                <div class="chips">
+                                    <template lwc:if={r.owner}><span class="chip">Owner: {r.owner}</span></template>
+                                    <template lwc:if={r.timeframe}><span class="chip">{r.timeframe}</span></template>
+                                    <template lwc:if={r.metric}><span class="chip chip-metric">Moves: {r.metric}</span></template>
+                                </div>
+                            </template>
+                        </div>
+                    </li>
+                </template>
+            </ol>
+
+            <div class="lists">
+                <template lwc:if={hasWatch}>
+                    <div class="list">
+                        <div class="list-title">Watch next month</div>
+                        <ul>
+                            <template for:each={watch} for:item="w"><li key={w.key}>{w.text}</li></template>
+                        </ul>
+                    </div>
+                </template>
+                <template lwc:if={hasDataFixes}>
+                    <div class="list">
+                        <div class="list-title">Data fixes that would sharpen this view</div>
+                        <ul>
+                            <template for:each={dataFixes} for:item="d"><li key={d.key}>{d.text}</li></template>
+                        </ul>
+                    </div>
+                </template>
+            </div>
+            <p class="footer">{footer}</p>
+        </template>
+    </section>
+</template>

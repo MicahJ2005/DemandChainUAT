@@ -1,0 +1,43 @@
+<apex:page showHeader="false" id="SiteTemplate" title="On-Demand CRM Software Support Services | DCS On=Demand CRM Software Support" standardStylesheets="true">
+  <html>
+	<head>
+	    <title>On-Demand CRM Software Support Services | DCS On-Demand CRM Software Support</title>
+		<meta name="description" content="DCS provides a wide range of on-demand CRM software support services, including technical support, system enhancements and user training." />
+		<meta name="keywords" content="on demand CRM software, on-demand CRM application support services" />
+	  	<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+	</head>  
+	<body>
+<apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				     		<c:leftLinks navigation="crmServices" />
+
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"We needed a better way to manage sales processes in our three major employer market segments. We also have to manage sales relationships with our partner agencies and agents," said Amy Conway, Director, Sales Technology & Agency Relations, Blue Cross and Blue Shield of Minnesota, an independent licensee of the Blue Cross and Blue Shield Association. "DCS showed us how easily it all could be done with Salesforce.com. Their customizations included integration with mainframe data feeds that automatically update our CRM tools, and dashboards that show managers at a glance the overall sales picture."
+				    	</span> 
+				    	<br />
+				    	<br />
+				   			<c:gd />
+				    	</apex:outputText>
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">On-Demand CRM Software Support</div>
+						<br/>
+						<div align="left">
+						We don't disappear when your CRM implementation is complete (unless you want us to, of course). If you don't have a dedicated IT department to support your on-demand CRM software, we'll provide the support you need. Our team of highly experienced consultants can work either onsite or remotely. In addition to <a href="http://demandchainsystems.force.com/dcs/crmImplementations">expert CRM implementation services</a>, we provide a wide range of support services, including technical support, system enhancements, user training and ongoing rollouts. 					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

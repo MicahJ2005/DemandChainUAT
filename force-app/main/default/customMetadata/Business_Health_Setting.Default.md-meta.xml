@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>Revenue_Growth_Target__c</field>
+        <value xsi:type="xsd:double">15</value>
+    </values>
+    <values>
+        <field>Pipeline_Coverage_Target__c</field>
+        <value xsi:type="xsd:double">3</value>
+    </values>
+    <values>
+        <field>Book_To_Bill_Target__c</field>
+        <value xsi:type="xsd:double">1.1</value>
+    </values>
+    <values>
+        <field>Backlog_Runway_Target__c</field>
+        <value xsi:type="xsd:double">4</value>
+    </values>
+    <values>
+        <field>Win_Rate_Target__c</field>
+        <value xsi:type="xsd:double">35</value>
+    </values>
+    <values>
+        <field>Salesforce_Sourced_Target__c</field>
+        <value xsi:type="xsd:double">30</value>
+    </values>
+    <values>
+        <field>Gross_Margin_Target__c</field>
+        <value xsi:type="xsd:double">40</value>
+    </values>
+    <values>
+        <field>Gross_Margin_Floor__c</field>
+        <value xsi:type="xsd:double">30</value>
+    </values>
+    <values>
+        <field>Rate_Realization_Target__c</field>
+        <value xsi:type="xsd:double">90</value>
+    </values>
+    <values>
+        <field>Unbilled_WIP_Days_Target__c</field>
+        <value xsi:type="xsd:double">10</value>
+    </values>
+    <values>
+        <field>DSO_Target__c</field>
+        <value xsi:type="xsd:double">45</value>
+    </values>
+    <values>
+        <field>Delivery_Utilization_Target__c</field>
+        <value xsi:type="xsd:double">75</value>
+    </values>
+    <values>
+        <field>Role_Utilization_Targets__c</field>
+        <value xsi:type="xsd:string">Developer=80;Analyst=80;Administrator=80;Technical Architect=65;Lead Technical Architect=60;Project Manager=65;PM=65;Strategic Advisor=50;Client Manager=40</value>
+    </values>
+    <values>
+        <field>Standard_Hours_Per_Week__c</field>
+        <value xsi:type="xsd:double">40</value>
+    </values>
+    <values>
+        <field>Concentration_Threshold__c</field>
+        <value xsi:type="xsd:double">35</value>
+    </values>
+    <values>
+        <field>Recurring_Revenue_Target__c</field>
+        <value xsi:type="xsd:double">25</value>
+    </values>
+    <values>
+        <field>Attrition_Target__c</field>
+        <value xsi:type="xsd:double">12</value>
+    </values>
+    <values>
+        <field>Milestone_On_Time_Target__c</field>
+        <value xsi:type="xsd:double">85</value>
+    </values>
+    <values>
+        <field>CSAT_Target__c</field>
+        <value xsi:type="xsd:double">4.5</value>
+    </values>
+    <values>
+        <field>Strategic_Skills__c</field>
+        <value xsi:type="xsd:string">Agentforce;AI Specialist;Data Cloud;Financial Services Cloud;Revenue Cloud;Service Cloud</value>
+    </values>
+    <values>
+        <field>Strategic_Skill_Min_Certified__c</field>
+        <value xsi:type="xsd:double">3</value>
+    </values>
+    <values>
+        <field>AI_Enabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>AI_Model__c</field>
+        <value xsi:type="xsd:string">sfdc_ai__DefaultBedrockAnthropicClaude45Sonnet</value>
+    </values>
+    <values>
+        <field>AI_Cache_Hours__c</field>
+        <value xsi:type="xsd:double">12</value>
+    </values>
+    <values>
+        <field>Lead_Conversion_Target__c</field>
+        <value xsi:type="xsd:double">10</value>
+    </values>
+    <values>
+        <field>Marketing_Pipeline_Target__c</field>
+        <value xsi:type="xsd:double">25</value>
+    </values>
+    <values>
+        <field>Campaign_Response_Target__c</field>
+        <value xsi:type="xsd:double">10</value>
+    </values>
+    <values>
+        <field>Lead_Follow_Up_Days__c</field>
+        <value xsi:type="xsd:double">2</value>
+    </values>
+</CustomMetadata>

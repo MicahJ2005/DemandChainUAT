@@ -1,0 +1,162 @@
+<template>
+    <div class="bh">
+        <header class="bh-header">
+            <div class="eyebrow">Demand Chain · Business Health</div>
+            <div class="title-row">
+                <h1>{pageTitle}</h1>
+                <template lwc:if={audience}><span class="audience">For {audience}</span></template>
+            </div>
+            <p class="sub">{pageSubtitle}</p>
+            <nav class="nav" aria-label="Business Health pages">
+                <template for:each={navItems} for:item="n">
+                    <button key={n.key} class={n.cls} aria-current={n.current} data-tab={n.tabName} onclick={handleNav}>{n.label}</button>
+                </template>
+            </nav>
+        </header>
+
+        <div class="filters">
+            <div class="field">
+                <label for="asof">As of</label>
+                <input id="asof" type="date" value={asOfValue} onchange={handleAsOfChange} />
+            </div>
+            <template lwc:if={isCustomAsOf}>
+                <button class="link-btn" onclick={handleResetAsOf}>Reset to latest</button>
+            </template>
+            <div class="field">
+                <label for="practice">Practice</label>
+                <select id="practice" onchange={handlePracticeChange}>
+                    <template for:each={practiceOptions} for:item="o">
+                        <option key={o.value} value={o.value} selected={o.selected}>{o.label}</option>
+                    </template>
+                </select>
+            </div>
+            <button class="btn-secondary" onclick={handleRefresh}>Refresh data</button>
+            <template lwc:if={hasPage}>
+                <span class="scope">
+                    {scopeLabel} · as of {asOfLabel} · Goals:
+                    <template lwc:if={goalSetId}>
+                        <button class="link-btn" data-id={goalSetId} onclick={handleOpenRecord}>{goalSetLabel}</button>
+                    </template>
+                    <template lwc:else>{goalSetLabel}</template>
+                </span>
+            </template>
+        </div>
+
+        <template lwc:if={showStaleBanner}>
+            <div class="banner" role="status">{staleMessage}</div>
+        </template>
+
+        <template lwc:if={error}>
+            <div class="banner banner-error" role="alert">Could not load this page: {error}</div>
+        </template>
+
+        <div class="body">
+            <template lwc:if={loading}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+
+            <template lwc:if={hasPage}>
+                <section class="kpis" aria-label="Key metrics">
+                    <template for:each={kpis} for:item="k">
+                        <div key={k.key} class={k.tileClass}>
+                            <div class="kpi-top">
+                                <span class="kpi-label">{k.label}</span>
+                                <span class={k.statusClass}><span aria-hidden="true">{k.statusIcon}</span> {k.statusText}</span>
+                            </div>
+                            <div class={k.valueClass}>{k.value}</div>
+                            <template lwc:if={k.target}><div class="kpi-target">{k.target}</div></template>
+                            <template lwc:if={k.spark}>
+                                <svg class="spark" viewBox={k.spark.viewBox} preserveAspectRatio="none" role="img" aria-label={k.spark.title}>
+                                    <title>{k.spark.title}</title>
+                                    <template lwc:if={k.spark.hasTarget}>
+                                        <line x1="0" x2="120" y1={k.spark.targetY} y2={k.spark.targetY} class="spark-target"></line>
+                                    </template>
+                                    <path d={k.spark.d} class="spark-line"></path>
+                                    <circle cx={k.spark.endX} cy={k.spark.endY} r="3" class="spark-end"></circle>
+                                </svg>
+                                <div class="spark-caption">{k.spark.caption}</div>
+                            </template>
+                            <template lwc:if={k.note}><div class="kpi-note">{k.note}</div></template>
+                        </div>
+                    </template>
+                </section>
+
+                <c-bh-advisor class="advisor" page-key={pageKey} as-of-date={advisorAsOf} practice-id={practiceParam}></c-bh-advisor>
+
+                <template lwc:if={hasSignals}>
+                    <section class="card">
+                        <h2>What the numbers say</h2>
+                        <ul class="signals">
+                            <template for:each={signals} for:item="s">
+                                <li key={s.key} class={s.cls}><span class="signal-icon" aria-hidden="true">{s.icon}</span><span>{s.message}</span></li>
+                            </template>
+                        </ul>
+                    </section>
+                </template>
+
+                <template lwc:if={hasCharts}>
+                    <section class="charts">
+                        <template for:each={charts} for:item="c">
+                            <div key={c.key} class={c.cls}><c-bh-chart chart={c}></c-bh-chart></div>
+                        </template>
+                    </section>
+                </template>
+
+                <template for:each={tables} for:item="t">
+                    <section key={t.key} class="card">
+                        <h2>{t.title}</h2>
+                        <template lwc:if={t.subtitle}><p class="sub">{t.subtitle}</p></template>
+                        <template lwc:if={t.hasRows}>
+                            <div class="tbl-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <template for:each={t.columns} for:item="c">
+                                                <th key={c.key} class={c.cls} aria-sort={c.ariaSort}>
+                                                    <button class="th-btn" data-table={t.key} data-key={c.key} onclick={handleSort}>{c.label}{c.indicator}</button>
+                                                </th>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={t.rows} for:item="r">
+                                            <tr key={r.key}>
+                                                <template for:each={r.cells} for:item="cell">
+                                                    <td key={cell.key} class={cell.cls}>
+                                                        <template lwc:if={cell.isLink}>
+                                                            <button class="link-btn" data-id={cell.recordId} onclick={handleOpenRecord}>{cell.text}</button>
+                                                        </template>
+                                                        <template lwc:elseif={cell.isStatus}>
+                                                            <span class={cell.statusClass}><span aria-hidden="true">{cell.icon}</span> {cell.text}</span>
+                                                        </template>
+                                                        <template lwc:else>{cell.text}</template>
+                                                    </td>
+                                                </template>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <template lwc:if={t.showToggle}>
+                                <button class="link-btn toggle" data-table={t.key} onclick={handleToggleRows}>{t.toggleLabel}</button>
+                            </template>
+                        </template>
+                        <template lwc:else>
+                            <p class="empty">{t.emptyMessage}</p>
+                        </template>
+                    </section>
+                </template>
+
+                <template lwc:if={hasDataGaps}>
+                    <section class="card card-muted">
+                        <h2>Known data gaps</h2>
+                        <p class="sub">Metrics this page cannot measure yet, or measures with caveats. Closing these makes the dashboard and the AI Advisor more reliable.</p>
+                        <ul class="gaps">
+                            <template for:each={dataGaps} for:item="g"><li key={g.key}>{g.text}</li></template>
+                        </ul>
+                    </section>
+                </template>
+            </template>
+        </div>
+    </div>
+</template>

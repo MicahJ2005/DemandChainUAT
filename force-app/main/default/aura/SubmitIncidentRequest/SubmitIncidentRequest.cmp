@@ -1,0 +1,14 @@
+<!--
+  @description       : 
+  @author            : Chris Mollet (Demand Chain)
+  @group             : 
+  @last modified on  : 10-09-2024
+  @last modified by  : Chris Mollet (Demand Chain)
+
+ 
+-->
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:lightningQuickActionWithoutHeader" access="global">
+   <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <!--<lightning:flow aura:id="flowData"/>  -->  
+  <lightning:flow aura:id="flowData" onstatuschange="{!c.handleStatusChange}" />
+</aura:component>

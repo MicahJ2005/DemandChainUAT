@@ -1,0 +1,206 @@
+<apex:page controller="EstimatePdfController" renderAs="PDF" applyBodyTag="false" showHeader="false" sidebar="false" standardStylesheets="false">
+<head>
+<style>
+    @page {
+        margin: 0.6in 0.5in 0.6in 0.5in;
+        size: letter;
+        @bottom-right {
+            content: "Page " counter(page) " of " counter(pages);
+            font-family: Arial, sans-serif;
+            font-size: 8pt;
+            color: #595959;
+        }
+    }
+    body { font-family: Arial, sans-serif; font-size: 9.5pt; color: #323232; margin: 0; padding: 0; line-height: 1.35; }
+    .brand-bar { border-bottom: 3px solid #912121; padding-bottom: 10px; margin-bottom: 14px; }
+    .brand-word { font-size: 20pt; font-weight: bold; color: #912121; }
+    .brand-sub { font-size: 9pt; color: #595959; }
+    .doc-title { font-size: 16pt; font-weight: bold; color: #002060; margin: 10px 0 2px; }
+    .doc-meta { font-size: 9pt; color: #595959; margin-bottom: 14px; }
+    .section-title { font-size: 10.5pt; font-weight: bold; color: #912121; text-transform: uppercase; letter-spacing: .4px;
+        margin: 16px 0 6px; border-bottom: 1px solid #EAEAEA; padding-bottom: 3px; }
+    table.grid { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+    table.grid th { text-align: left; font-size: 8pt; color: #595959; background: #F7F6F5; border: 1px solid #EAEAEA; padding: 5px 6px; }
+    table.grid td { font-size: 9pt; border: 1px solid #EAEAEA; padding: 5px 6px; }
+    .num { text-align: right; }
+    .kpi-row td { padding: 8px 10px; background: #F7F6F5; border: 1px solid #EAEAEA; }
+    .kpi-label { font-size: 7.5pt; color: #595959; text-transform: uppercase; }
+    .kpi-value { font-size: 13pt; font-weight: bold; color: #323232; }
+    .timeline-table { width: 100%; border-collapse: collapse; margin: 6px 0 4px; }
+    .timeline-table td { height: 22px; color: #fff; font-size: 8pt; text-align: center; vertical-align: middle; }
+    .timeline-legend { font-size: 8pt; color: #595959; }
+    .footer-note { font-size: 8pt; color: #595959; margin-top: 18px; }
+</style>
+</head>
+<body>
+    <div class="brand-bar">
+        <span class="brand-word">DEMAND CHAIN</span><br/>
+        <span class="brand-sub">Engagement Scoping &amp; Estimate</span>
+    </div>
+
+    <apex:outputPanel rendered="{!estimate != null}">
+        <div class="doc-title">{!estimate.Project_Name__c}</div>
+        <div class="doc-meta">
+            <apex:outputText value="{!estimate.Name} &#183; Version {0} &#183; {1}">
+                <apex:param value="{!estimate.Version_Number__c}"/>
+                <apex:param value="{!estimate.Status__c}"/>
+            </apex:outputText>
+            <br/>
+            Account: {!estimate.Opportunity__r.Account.Name} &#183; Opportunity: {!estimate.Opportunity__r.Name}
+            <br/>
+            Sales Owner: {!estimate.Sales_Owner__r.Name} &#183; Sales Engineer: {!estimate.Sales_Engineer__r.Name}
+            <br/>
+            Scope Approver: {!estimate.Scope_Approver__r.Name} &#183; Financial Approver: {!estimate.Financial_Approver__r.Name} &#183; Legal Approver: {!estimate.Legal_Approver__r.Name}
+        </div>
+
+        <table class="grid" style="border: none;">
+            <tr class="kpi-row">
+                <td style="width:25%;">
+                    <div class="kpi-label">Total Price</div>
+                    <div class="kpi-value"><apex:outputText value="{0,number,currency}"><apex:param value="{!totalPrice}"/></apex:outputText></div>
+                </td>
+                <td style="width:25%;">
+                    <div class="kpi-label">Total Cost</div>
+                    <div class="kpi-value"><apex:outputText value="{0,number,currency}"><apex:param value="{!totalCost}"/></apex:outputText></div>
+                </td>
+                <td style="width:25%;">
+                    <div class="kpi-label">Total Hours</div>
+                    <div class="kpi-value"><apex:outputText value="{0,number,#,##0}"><apex:param value="{!totalHours}"/></apex:outputText></div>
+                </td>
+                <td style="width:25%;">
+                    <div class="kpi-label">Margin</div>
+                    <div class="kpi-value"><apex:outputText value="{0,number,0.0}"><apex:param value="{!totalMargin}"/></apex:outputText>%</div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="section-title">Paid Discovery</div>
+        <table class="grid">
+            <tr>
+                <th>Fee</th><th>Sessions</th><th>Status</th><th>Delivery Hours</th><th>Rate Class</th><th class="num">Cost</th><th class="num">Margin</th>
+            </tr>
+            <tr>
+                <td><apex:outputText value="{0,number,currency}"><apex:param value="{!estimate.Discovery_Fee__c}"/></apex:outputText></td>
+                <td>{!estimate.Discovery_Sessions__c}</td>
+                <td>{!estimate.Discovery_Status__c}</td>
+                <td>{!estimate.Discovery_Hours__c}</td>
+                <td>{!estimate.Discovery_Rate_Class__c}</td>
+                <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!estimate.Discovery_Cost__c}"/></apex:outputText></td>
+                <td class="num"><apex:outputText value="{0,number,0.0}"><apex:param value="{!estimate.Discovery_Margin__c}"/></apex:outputText>%</td>
+            </tr>
+        </table>
+
+        <div class="section-title">Rate Card</div>
+        <table class="grid">
+            <tr><th>Rate Class</th><th class="num">Cost / hr</th><th class="num">Price / hr</th><th class="num">Managed Svcs / hr</th></tr>
+            <apex:repeat value="{!rates}" var="r">
+                <tr>
+                    <td>{!r.Rate_Class__c}</td>
+                    <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!r.Cost_Per_Hour__c}"/></apex:outputText></td>
+                    <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!r.Price_Per_Hour__c}"/></apex:outputText></td>
+                    <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!r.Managed_Services_Price_Per_Hour__c}"/></apex:outputText></td>
+                </tr>
+            </apex:repeat>
+        </table>
+
+        <apex:outputPanel rendered="{!estimate.Recommended_Track__c == 'Project' || teamLines.size > 0 || fixedLines.size > 0}">
+            <div class="section-title">Project</div>
+
+            <div class="timeline-legend">Phase timeline (relative duration)</div>
+            <table class="timeline-table">
+                <tr>
+                    <apex:repeat value="{!phaseSegments}" var="seg">
+                        <td style="background-color:{!seg.color}; width:{!seg.widthPercent}%;">{!seg.phaseName} ({!seg.weeks}w)</td>
+                    </apex:repeat>
+                </tr>
+            </table>
+
+            <apex:outputPanel rendered="{!teamLines.size > 0}">
+                <table class="grid">
+                    <tr>
+                        <th>Role</th><th>Rate Class</th><th class="num">Total Hrs</th><th class="num">Cost/hr</th>
+                        <th class="num">Price/hr</th><th class="num">Line Cost</th><th class="num">Line Price</th><th class="num">Margin</th>
+                    </tr>
+                    <apex:repeat value="{!teamLines}" var="li">
+                        <tr>
+                            <td>{!li.Name}</td>
+                            <td>{!li.Rate_Class__c}</td>
+                            <td class="num">{!li.Total_Hours__c}</td>
+                            <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!li.Cost_Per_Hour__c}"/></apex:outputText></td>
+                            <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!li.Price_Per_Hour__c}"/></apex:outputText></td>
+                            <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!li.Line_Cost__c}"/></apex:outputText></td>
+                            <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!li.Line_Price__c}"/></apex:outputText></td>
+                            <td class="num"><apex:outputText value="{0,number,0.0}"><apex:param value="{!li.Margin__c}"/></apex:outputText>%</td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+            </apex:outputPanel>
+
+            <apex:outputPanel rendered="{!fixedLines.size > 0}">
+                <table class="grid">
+                    <tr>
+                        <th>Functionality</th><th>Deliverable</th><th>Phase</th><th class="num">Est. Hours</th>
+                        <th class="num">Line Cost</th><th class="num">Fixed Price</th><th class="num">Margin</th>
+                    </tr>
+                    <apex:repeat value="{!fixedLines}" var="li">
+                        <tr>
+                            <td>{!li.Name}</td>
+                            <td>{!li.Deliverable__c}</td>
+                            <td>{!li.Phase__c}</td>
+                            <td class="num">{!li.Total_Hours__c}</td>
+                            <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!li.Line_Cost__c}"/></apex:outputText></td>
+                            <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!li.Fixed_Price__c}"/></apex:outputText></td>
+                            <td class="num"><apex:outputText value="{0,number,0.0}"><apex:param value="{!li.Margin__c}"/></apex:outputText>%</td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+            </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!msLines.size > 0}">
+            <div class="section-title">Managed Services (Subscription)</div>
+            <div class="doc-meta">
+                Named Lead: {!estimate.MS_Lead__c} &#183; Cadence: {!estimate.MS_Cadence__c} &#183;
+                Contract Length: {!estimate.MS_Contract_Months__c} months &#183; QBR: {!estimate.MS_QBR_Cadence__c}
+            </div>
+            <table class="grid">
+                <tr><th>Delivery Tier</th><th>Rate Class</th><th class="num">Hrs / Week</th><th class="num">Cost/hr</th><th class="num">Price/hr</th><th class="num">Margin</th></tr>
+                <apex:repeat value="{!msLines}" var="li">
+                    <tr>
+                        <td>{!li.Delivery_Tier__c}</td>
+                        <td>{!li.Rate_Class__c}</td>
+                        <td class="num">{!li.Hours_Per_Week__c}</td>
+                        <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!li.Cost_Per_Hour__c}"/></apex:outputText></td>
+                        <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!li.Price_Per_Hour__c}"/></apex:outputText></td>
+                        <td class="num"><apex:outputText value="{0,number,0.0}"><apex:param value="{!li.Margin__c}"/></apex:outputText>%</td>
+                    </tr>
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!tmLines.size > 0}">
+            <div class="section-title">Ad-Hoc T&amp;M (Client Portal)</div>
+            <div class="doc-meta">Est. Requests / Month: {!estimate.TM_Requests_Per_Month__c}</div>
+            <table class="grid">
+                <tr><th>Rate Class</th><th>SLA Tier</th><th class="num">Est. Hours</th><th class="num">Cost/hr</th><th class="num">Price/hr</th><th class="num">Margin</th></tr>
+                <apex:repeat value="{!tmLines}" var="li">
+                    <tr>
+                        <td>{!li.Rate_Class__c}</td>
+                        <td>{!li.SLA_Tier__c}</td>
+                        <td class="num">{!li.Total_Hours__c}</td>
+                        <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!li.Cost_Per_Hour__c}"/></apex:outputText></td>
+                        <td class="num"><apex:outputText value="{0,number,currency}"><apex:param value="{!li.Price_Per_Hour__c}"/></apex:outputText></td>
+                        <td class="num"><apex:outputText value="{0,number,0.0}"><apex:param value="{!li.Margin__c}"/></apex:outputText>%</td>
+                    </tr>
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+
+        <div class="footer-note">Generated from Demand Chain's Engagement Scoping &amp; Estimate tool. Figures reflect the estimate version noted above and are subject to change until an SOW is executed.</div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!estimate == null}">
+        <p>No estimate was found for the given Id.</p>
+    </apex:outputPanel>
+</body>
+</apex:page>

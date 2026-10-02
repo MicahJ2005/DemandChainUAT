@@ -1,0 +1,48 @@
+<apex:page showHeader="false" id="SiteTemplate" title="Healthcare Salesforce.com Success | Center for Diagnostic Imaging Case Study " standardStylesheets="true">
+  <html>
+<head>
+    <title>Healthcare Salesforce.com Success | Center for Diagnostic Imaging Case Study</title>
+  	<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+	</head>
+	<body>  
+<apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+				
+					<apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >		 	
+				    	 <c:leftLinks navigation="clients" />
+						<apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+						<apex:outputText ><span style="font-size:10px;">"DCS knowledge of on-demand CRM made it easy for them to seamlessly integrate great sales tools with our lead generation and property management systems. Now, when our sales people enter sales opportunity information our meeting professionals are right on it. That helps us close sales more efficiently and deliver outstanding customer service," said Dee Gullikson, Carlson Hotels Worldwide."<br />
+				   		</span>
+				   		</apex:outputText>	
+				   		<br/>
+				   		<c:gd />
+				    </apex:panelGrid>
+					<apex:panelGrid cellpadding="0" cellspacing="0">
+						<div class="Title" align="left">Center for Diagnostic Imaging</div>
+						<br/>
+						<div align="left">
+							<p>
+								<strong>CDI takes it one step at time for Salesforce.com success</strong>
+							</p>
+							<p><i>Founded in 1981, CDI was one of the first freestanding, outpatient imaging providers in the country. CDI is now a national network of imaging providers offering a full range of diagnostic imaging, pain management and interventional radiology services. CDI has more than 50 centers located throughout the United States. </i></p>
+							<p>CDI's first attempt at CRM left much to be desired. The SalesLogix software the company implemented was confusing, difficult to support, and the synching of data from the field was a time-consuming and error-ridden chore. Sales reps at first started using the system enthusiastically, but adoption rates and utilization soon plummeted.</p>
+							<p>When the company decided to implement a new system, it turned to DCS to ensure that it didn't make the same mistakes twice. DCS did an analysis of CDI's requirements and matched them against leading CRM systems, including Salesforce.com, Microsoft CRM, Siebel, and a newer version of SalesLogix. In the end, Salesforce.com emerged the clear winner. Once the CRM system was selected, DCS then planned a phased implementation that ensured CDI never bit off more than it could chew. The first phase was geared toward the initial implementation of Salesforce.com's core functionality and getting the sales reps familiar with and using the system. The phase also included DCS staging and migrating data from CDI's legacy customer master database into Salesforce.com. During later phases, once it was deemed system usage was solid, additional customized capabilities would be added that would add even more value to sales rep activity and drive adoption and utilization rates even higher. </p>
+							<p>More recently, as part of its phased approach, DCS integrated physician volumes, or the number and types of CDI services physicians have referred patients to, directly into Salesforce.com. Before, this information was only tracked by back office legacy systems. Now sales reps have physician volume data delivered to them directly within Salesforce.com in a rolling eight-week period, giving them greater visibility into customer activity and allowing them to more strategically plan their sales calls. "DCS is helping us work more efficiently as a team and take full advantage of every sales opportunity by customizing Salesforce.com with features that add value and drive utilization," says Holly Huso, CDI Vice President of Sales.
+							</p>
+						</div>
+					</apex:panelGrid>
+               	 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

@@ -1,0 +1,25 @@
+<aura:component >
+	<aura:attribute name="title" type="String" />
+	<aura:attribute name="total" type="Integer" />
+	<aura:attribute name="percentValue" type="Integer" />
+	<aura:attribute name="svgId" type="String" />
+	<aura:attribute name="yellow" type="Integer" default="75" />
+	<aura:attribute name="red" type="Integer" default="50" />
+    <aura:attribute name="comparison" type="String" default="pos" />
+
+    <ltng:require scripts="{!$Resource.d3 + '/d3.v3.min.js' + ',' + $Resource.d3 + '/liquidFillGauge.js'}"  afterScriptsLoaded="{!c.doInit}"/>
+		<ul class="slds-list--vertical slds-has-cards--space has-selections">
+    		<li class="slds-list__item" style="list-style: none;">
+      			<div class="slds-tile slds-tile--board">
+        			<p class="slds-tile__title slds-truncate">{!v.title}</p>
+        			<div class="slds-tile__detail">
+          				<p class="slds-truncate" style="text-align: center;">
+                            <span aura:id="container">
+    							<span aura:id="assistiveText" class="slds-assistive-text">Liquid Gauge</span>
+  							</span>
+						</p>
+      				</div>
+    			</div>
+    		</li>
+ 		</ul>
+</aura:component>

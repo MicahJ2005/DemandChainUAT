@@ -1,0 +1,7 @@
+<apex:page standardController="Weekly_Survey__c" title="DCS Mood Survey for {!Weekly_Survey__c.Survey_Date_Formatted__c}">
+    <h1>DCS Mood Survey for {!Weekly_Survey__c.Survey_Date_Formatted__c}</h1>
+    <flow:interview name="Weekly_Survey" finishLocation="{!URLFOR('/home/home.jsp')}">
+        <apex:param name="WeeklySurveyId" value="{!Weekly_Survey__c.Id}" />
+        <apex:param name="CurrentUserId" value="{!$User.Id}" />
+    </flow:interview>
+</apex:page>

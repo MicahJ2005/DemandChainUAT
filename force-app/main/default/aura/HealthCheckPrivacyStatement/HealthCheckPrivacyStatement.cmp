@@ -1,0 +1,23 @@
+<aura:component implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="displayPrivacyStatement" type="Boolean" default="true"/>
+    <aura:handler event="c:HealthCheckLoginEvent" action="{!c.doInit}" />
+    
+    <aura:renderIf isTrue="{!displayPrivacyStatement}">
+        <div class="slds-tile slds-theme--alert-texture">
+            <div class="slds-notify__content slds-grid">
+                <lightning:icon iconName="utility:warning" size="small" />
+                <div class="slds-col slds-align-middle">
+                    <h2 class="slds-text-heading--small">Thank you for participating in the DCS Health Check. Below are the items that DCS tracks and stores as part of the health check.</h2>
+                    <p><b>What are we tracking?</b></p>
+                    <p>Your organization's limit information, such as file, data, and api use.</p>
+                    <p>The number of profiles, roles, licenses.</p>
+                    <p>The number of users for profiles, roles, and licenses.</p>
+                    <p>The number of records for core CRM objects such as Accounts, Leads, Contacts, Opportunities, Campaigns, Cases, and Products.</p>
+                    <p>The number of users in the org.</p>
+                    <p><b>What are we storing?</b></p>
+                    <p>Your basic contact information (Email, Name, and Company Name).</p>
+                </div>
+            </div>
+        </div>
+    </aura:renderIf>
+</aura:component>

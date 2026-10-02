@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Strategic_Skill_Min_Certified__c</fullName>
+    <description>Minimum certified resources per strategic skill before it is considered covered.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Minimum certified resources per strategic skill before it is considered covered.</inlineHelpText>
+    <label>Strategic Skill Minimum Certified</label>
+    <precision>16</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

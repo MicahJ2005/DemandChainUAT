@@ -1,0 +1,60 @@
+<aura:component controller="HealthCheckCRMCtrl" implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="crmWrapper" type="HealthCheckCRMCtrl.CRMWrapper" />
+    <aura:handler event="c:HealthCheckLoginEvent" action="{!c.doInit}" />
+	<aura:renderIf isTrue="{!not(empty(v.crmWrapper))}">
+            <div class="slds-page-header" role="banner">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-media--center slds-no-space slds-grow">
+                        <div class="slds-media__figure">
+                            <c:svgIcon class="slds-icon slds-icon-standard-account" svgPath="standard-sprite/svg/symbols.svg#account" />
+                        </div>
+                        <div class="slds-media__body">
+                            <p class="slds-text-heading--label">CRM Objects</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table--bordered">
+            <tbody>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Accounts">Accounts:</td>
+                        <td class="slds-truncate" data-label="Account Count">{!v.crmWrapper.accounts}</td>
+                    </tr>
+                    <aura:renderIf isTrue="{!if(v.crmWrapper.displayCampaigns,true,false)}">
+                        <tr class="slds-hint-parent">
+                            <td class="slds-truncate" data-label="Campaigns">Campaigns:</td>
+                            <td class="slds-truncate" data-label="Campaign Count">{!v.crmWrapper.campaigns}</td>
+                        </tr>
+                     </aura:renderIf>
+                	<aura:renderIf isTrue="{!if(v.crmWrapper.displayCases,true,false)}">
+                        <tr class="slds-hint-parent">
+                            <td class="slds-truncate" data-label="Cases">Cases:</td>
+                            <td class="slds-truncate" data-label="Case Count">{!v.crmWrapper.cases}</td>
+                        </tr>
+                    </aura:renderIf>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Contacts">Contacts:</td>
+                        <td class="slds-truncate" data-label="Contact count">{!v.crmWrapper.contacts}</td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-truncate" data-label="Leads">Leads:</td>
+                        <td class="slds-truncate" data-label="Lead count">{!v.crmWrapper.leads}</td>
+                    </tr>
+                    <aura:renderIf isTrue="{!if(v.crmWrapper.displayOpportunities,true,false)}">
+                        <tr class="slds-hint-parent">
+                            <td class="slds-truncate" data-label="Opportunities">Opportunities:</td>
+                            <td class="slds-truncate" data-label="Opportunity Count">{!v.crmWrapper.opportunities}</td>
+                        </tr>
+                    </aura:renderIf>
+                	<aura:renderIf isTrue="{!if(v.crmWrapper.displayProducts,true,false)}">
+                        <tr class="slds-hint-parent">
+                            <td class="slds-truncate" data-label="Opportunities">Products:</td>
+                            <td class="slds-truncate" data-label="Opportunity Count">{!v.crmWrapper.products}</td>
+                        </tr>
+                    </aura:renderIf>
+            </tbody>
+        </table>
+    </aura:renderIf>
+</aura:component>

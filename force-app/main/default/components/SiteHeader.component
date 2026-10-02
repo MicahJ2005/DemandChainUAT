@@ -1,0 +1,25 @@
+<apex:component id="headerComponent">
+  <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="10" style="text-align: left;" id="theHeader">
+    <apex:image id="Banner1" value="{!$Resource.Banner1}"/>
+    <apex:outputLink value="/apex/successfulCrm" >
+        <apex:image id="Banner2" value="{!$Resource.SuccessfulCrmButton}"/>
+    </apex:outputLink>
+    <apex:outputLink value="/apex/whyDCS" >
+        <apex:image id="Banner3" value="{!$Resource.whyDCSButton}"/>
+    </apex:outputLink>
+    <apex:outputLink value="/apex/crmServices" >
+        <apex:image id="Banner4" value="{!$Resource.crmServicesButton}"/>
+    </apex:outputLink>
+    <apex:outputLink value="/apex/clients" >
+        <apex:image id="Banner5" value="{!$Resource.clientsButton}"/>
+    </apex:outputLink>
+    <apex:outputLink value="/apex/aboutDCS" >
+        <apex:image id="Banner6" value="{!$Resource.aboutDCSbutton}"/>
+    </apex:outputLink>
+    <apex:image id="Banner7" value="{!$Resource.BannerSpacer2}"/><apex:outputLink value="/apex/contactUs" >
+    <apex:image id="Banner8" value="{!$Resource.contactButton}"/>
+    </apex:outputLink><apex:image id="Banner9" value="{!$Resource.bannerSpacer3}"/>
+    <apex:outputLink value="/apex/careers" >
+ <apex:image id="Banner10" value="{!$Resource.careersButton}"/>
+  </apex:outputLink></apex:panelGrid>
+</apex:component>

@@ -1,0 +1,77 @@
+<apex:page showHeader="false" id="SiteTemplate" title="CRM Resources | Resources for Good CRM Strategy and Implementation" standardStylesheets="true">
+  <html>
+	<head>
+    <title>CRM Resources | Resources for Good CRM Strategy and Implementation</title>
+    
+	<meta name="description" content="Here are additional CRM resources to help you get up-to-speed fast on why a good CRM strategy and implementation can give your business a boost." />
+	<meta name="keywords" content="good CRm strategy" />
+	<apex:stylesheet value="{!$Resource.dcsWebsiteStyleSheet}"/>
+  	</head>
+  	<body>
+  
+   <apex:outputPanel id="thePanel" styleClass="bdy" layout="block" > 
+          <apex:insert name="header">
+            <c:SiteHeader />
+          </apex:insert>
+          <apex:insert name="body"/>
+            <apex:panelGrid cellpadding="0" cellspacing="0" width="972" border="0" columns="1" style="text-align: left;" id="theHeader">
+                <apex:image id="Banner5" value="{!$Resource.largeBanner}"/>
+                <apex:panelGrid styleClass="whtBk"  cellpadding="10" cellspacing="15" width="972" border="0" columns="2" columnClasses="top" style="text-align: left;" id="body">
+                
+                    <apex:panelGrid cellpadding="0" cellspacing="0" width="150" border="0" columns="1" style="text-align: left; vertical-align: top;" >         
+                        <c:leftLinks navigation="successfulCRM"/>
+                        <apex:outputText ><span style="color:#097c98;font-size:10;">WHAT OUR CLIENTS SAY:</span> </apex:outputText>
+                        <apex:outputText ><span style="font-size:10px">"DCS made it easy for our Navision and Salesforce.com systems to 'talk' to each other like they were one application,¿ said Keith Lewis, VP of Business Development at GN ReSound.  ¿That gives our sales representatives a complete picture on how their accounts are trending and enables them to provide exceptional customer service. DCS's knowledge of how to integrate the best CRM tools with ERP and other back-end systems is outstanding. And their ability to execute fast and efficiently is exceptional."  </span> 
+                        <br />
+                        <br />
+                            <c:gd />
+                        </apex:outputText>
+                    </apex:panelGrid>
+                    <apex:panelGrid cellpadding="0" cellspacing="0">
+                        <div class="Title" align="left">Useful Links for Good CRM Strategy</div>
+                        <br/>
+                        <div align="left">
+                		<p>Here are some additional CRM resources to help you get up-to-speed fast on why a good CRM strategy and implementation can give your business a boost:</p>
+           				<p>
+           					<strong>CRM Guru
+           					</strong><br />
+           					<a href="http://www.crmguru.com " target="_blank">http://www.crmguru.com </a>
+           				</p>
+           				<p>
+           					<strong>Destination CRM</strong><br />
+           					<a href="" target="_blank">http://www.destinationcrm.com </a>
+           				</p>
+           				<p>
+           					<strong>Gartner Research
+           					</strong><br />
+           					<a href="http://www.gartner.com " target="_blank">http://www.gartner.com </a>
+           				</p>
+           				<p>
+           					<strong>Twin Cities salesforce.com User Group</strong><br />
+           					<a href="http://usergroups.salesforce.com/twincities " target="_blank">http://usergroups.salesforce.com/twincities </a>
+           				</p>
+           				<p>
+           					<strong>Thoughts & Comments Blog</strong><br />
+           					<a href="http://demandchainsystems.blogspot.com/ " target="_blank">http://demandchainsystems.blogspot.com/ </a>
+           				</p>
+           				<p>
+           					<strong>Salesforce.com Community </strong><br />
+           					<a href="http://success.salesforce.com/ " target="_blank">http://success.salesforce.com/ </a>
+           				</p>
+           				<p>
+           					<strong>Gartner Group's Magic Quadrant for Customer Relationship Management</strong><br />
+           					<a href="" target="_blank">Contact DCS for a copy... </a>
+           				</p>
+           				<p>Now that you're informed, contact Demand Chain Systems to start moving forward. <a href="/dcs/contactUs">Get started</a>
+           				</p>
+                        </div>
+                    </apex:panelGrid>
+                 </apex:panelGrid>
+            </apex:panelGrid>
+          <apex:insert name="footer">
+            <c:SiteFooter />
+          </apex:insert> 
+    </apex:outputPanel>
+    </body>
+    </html>
+</apex:page>

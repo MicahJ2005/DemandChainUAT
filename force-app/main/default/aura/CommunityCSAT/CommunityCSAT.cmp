@@ -1,0 +1,6 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,lightning:availableForFlowScreens,lightning:isUrlAddressable" access="global" >
+	<aura:attribute name="surveyRecordId" type="String" />
+    <aura:attribute name="flowDevName" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <lightning:flow aura:id="CSAT_Wizard_Container" />
+</aura:component>

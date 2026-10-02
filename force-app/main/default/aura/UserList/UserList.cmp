@@ -1,0 +1,26 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="users" type="List" default="[]" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="title" type="String" />
+    <aura:attribute name="iconName" type="String" />
+    <lightning:card iconName="{!v.iconName}">
+        <aura:set attribute="title">
+            <h2><b>{!v.title}&nbsp;{!'(' + v.users.length + ')'}</b></h2>
+        </aura:set>
+        <ul class="slds-has-dividers_bottom-space">
+            <aura:iteration items="{!v.users}" var="u">
+                <li class="slds-item">
+                    <lightning:tile  label="{!u.Name}">
+                        <aura:set attribute="media">
+                            <lightning:avatar src="{!u.SmallPhotoUrl}" fallbackIconName="standard:person_account" />
+                        </aura:set>
+                        <ul class="slds-list_horizontal slds-has-dividers_right">
+                            <li class="slds-item">{!u.Email}</li>
+                            <li class="slds-item">{!u.Phone}</li>
+                        </ul>
+                    </lightning:tile>
+                </li>
+            </aura:iteration>
+        </ul>
+    </lightning:card>
+</aura:component>
