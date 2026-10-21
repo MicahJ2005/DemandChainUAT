@@ -201,6 +201,7 @@ private class BusinessHealthPagesTest {
             if (row.get('name') == 'Architect') {
                 System.assertEquals(100, row.get('util4'), 'billable hours over available hours, net of excluded pre-sales');
                 System.assertEquals(100, row.get('util13'));
+                System.assertEquals(BusinessHealthModel.pct(100, 60), row.get('vsTarget'), '% of target: utilization / the 60% Utilization Target');
             }
         }
 

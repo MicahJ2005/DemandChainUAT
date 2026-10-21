@@ -439,6 +439,15 @@ public with sharing class BusinessHealthModel {
         return numerator / denominator;
     }
 
+    /**
+     * @description " That is 92% of your target." for a percent metric and its target - the
+     * attainment PSA calls Utilization Target Attainment - or '' when either is missing.
+     */
+    public static String ofTarget(Decimal value, Decimal target, String targetName) {
+        Decimal share = pct(value, target);
+        return share == null ? '' : ' That is ' + share.setScale(0) + '% of ' + targetName + '.';
+    }
+
     /** Safe percentage (0-100) returning null when the denominator is zero or null. */
     public static Decimal pct(Decimal numerator, Decimal denominator) {
         Decimal r = ratio(numerator, denominator);

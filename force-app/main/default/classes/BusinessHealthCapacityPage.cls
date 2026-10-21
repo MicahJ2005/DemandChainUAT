@@ -190,12 +190,15 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
         }
         Decimal capacity8 = n * hpw * FUTURE_WEEKS;
         Decimal available8 = Math.max(capacity8 * firmTarget / 100 - sched8, 0);
-        page.addKpi(new BusinessHealthModel.Kpi('util4', 'Utilization (last 4 weeks)', BusinessHealthModel.pct(u4, available4), 'percent'))
+        Decimal util4Firm = BusinessHealthModel.pct(u4, available4);
+        Decimal util13Firm = BusinessHealthModel.pct(u13, available13);
+        page.addKpi(new BusinessHealthModel.Kpi('util4', 'Utilization (last 4 weeks)', util4Firm, 'percent'))
             .target(firmTarget, 'higher', 0.1)
             .note(n + ' internal delivery resources. Billable + credited hours / available hours (' + hpw.setScale(0) +
-                ' a week, less time PSA excludes such as pre-sales).');
-        page.addKpi(new BusinessHealthModel.Kpi('util13', 'Utilization (last 13 weeks)', BusinessHealthModel.pct(u13, available13), 'percent'))
-            .target(firmTarget, 'higher', 0.1);
+                ' a week, less time PSA excludes such as pre-sales).' + BusinessHealthModel.ofTarget(util4Firm, firmTarget, 'the firm target'));
+        page.addKpi(new BusinessHealthModel.Kpi('util13', 'Utilization (last 13 weeks)', util13Firm, 'percent'))
+            .target(firmTarget, 'higher', 0.1)
+            .note(BusinessHealthModel.ofTarget(util13Firm, firmTarget, 'the firm target').trim());
         page.addKpi(new BusinessHealthModel.Kpi('forecast8', 'Forecast utilization (next 8 weeks)', BusinessHealthModel.pct(sched8, capacity8), 'percent'))
             .target(firmTarget, 'higher', 0.15)
             .note('Scheduled hours on billable or credited assignments (PSA Est vs Actuals). Low numbers mean unsold capacity, or schedules not yet entered.');
@@ -268,13 +271,15 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             byRole.get(role).add(p);
         }
         BusinessHealthModel.Table roleTable = new BusinessHealthModel.Table('byRole', 'Utilization by role',
-            'Target is the average of each person\'s Utilization Target on their resource record (role default where blank).')
+            'Target is the average of each person\'s Utilization Target on their resource record (role default where blank). ' +
+                '% of target = 13-week utilization / target.')
             .col('role', 'Role', 'text')
             .col('headcount', 'People', 'number')
             .col('util4', 'Last 4 wks', 'percent')
             .col('util13', 'Last 13 wks', 'percent')
             .col('forecast', 'Next 8 wks', 'percent')
             .col('target', 'Target', 'percent')
+            .col('vsTarget', '% of target (13 wks)', 'percent')
             .col('status', 'Status', 'status');
         List<String> roleNames = new List<String>();
         List<Decimal> roleUtil = new List<Decimal>();
@@ -305,6 +310,7 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
                     'util13' => roleU13,
                     'forecast' => BusinessHealthModel.pct(rs8, rn * hpw * FUTURE_WEEKS),
                     'target' => target,
+                    'vsTarget' => BusinessHealthModel.pct(roleU13, target),
                     'status' => BusinessHealthModel.evaluate(roleU13, target, 'higher', 0.1)
                 }
             );
@@ -322,7 +328,8 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
 
         // ---- by person ----------------------------------------------------------------
         BusinessHealthModel.Table personTable = new BusinessHealthModel.Table('byPerson', 'Utilization by person',
-            'Sorted by scheduled utilization for the next 8 weeks, lowest first, so bench risk is at the top.')
+            'Sorted by scheduled utilization for the next 8 weeks, lowest first, so bench risk is at the top. ' +
+                '% of target = 13-week utilization / the person\'s target.')
             .link('name', 'Resource', 'id')
             .col('role', 'Role', 'text')
             .col('practice', 'Practice', 'text')
@@ -331,12 +338,14 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             .col('forecast', 'Next 8 wks', 'percent')
             .col('available', 'Open hrs (8 wks)', 'hours')
             .col('target', 'Target', 'percent')
+            .col('vsTarget', '% of target (13 wks)', 'percent')
             .col('flag', 'Flag', 'text')
             .col('status', 'Status', 'status');
         for (Person p : people.values()) {
             Decimal f8 = BusinessHealthModel.pct(p.scheduled8, hpw * FUTURE_WEEKS);
             Decimal f4 = BusinessHealthModel.pct(p.scheduled4, hpw * 4);
             Decimal target = ctx.resourceTarget(p.c);
+            Decimal personU13 = BusinessHealthModel.pct(p.utilized13, available(hpw, PAST_WEEKS, p.excluded13));
             String flag = f4 != null && f4 < BENCH_THRESHOLD ? 'Bench risk' : (f8 != null && f8 > OVERALLOCATED_THRESHOLD ? 'Over-allocated' : '');
             personTable.rows.add(
                 new Map<String, Object>{
@@ -345,10 +354,11 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
                     'role' => p.c.pse__Resource_Role__c,
                     'practice' => p.c.pse__Practice__r == null ? null : p.c.pse__Practice__r.Name,
                     'util4' => BusinessHealthModel.pct(p.utilized4, available(hpw, 4, p.excluded4)),
-                    'util13' => BusinessHealthModel.pct(p.utilized13, available(hpw, PAST_WEEKS, p.excluded13)),
+                    'util13' => personU13,
                     'forecast' => f8,
                     'available' => Math.max(hpw * FUTURE_WEEKS * target / 100 - p.scheduled8, 0).setScale(0),
                     'target' => target,
+                    'vsTarget' => BusinessHealthModel.pct(personU13, target),
                     'flag' => flag,
                     'status' => BusinessHealthModel.evaluate(f8, target, 'higher', 0.15)
                 }
@@ -364,9 +374,8 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             page.signal(BusinessHealthModel.STATUS_INFO, 'No open resource requests. Demand is only visible once pipeline deals raise PSA resource requests.');
         }
         Decimal f8firm = BusinessHealthModel.pct(sched8, capacity8);
-        Decimal u4firm = BusinessHealthModel.pct(u4, available4);
-        if (f8firm != null && u4firm != null && f8firm < u4firm - 20) {
-            page.signal(BusinessHealthModel.STATUS_WARN, 'Scheduled utilization drops ' + (u4firm - f8firm).setScale(0) +
+        if (f8firm != null && util4Firm != null && f8firm < util4Firm - 20) {
+            page.signal(BusinessHealthModel.STATUS_WARN, 'Scheduled utilization drops ' + (util4Firm - f8firm).setScale(0) +
                 ' points below recent actuals. Either work is ending without replacements, or assignment schedules are not being kept current.');
         }
         page.dataGaps.add('Forecast depends on PSA assignment schedules. Work without a scheduled assignment is invisible here.');

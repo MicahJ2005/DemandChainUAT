@@ -268,6 +268,10 @@ private class BusinessHealthTest {
         BusinessHealthModel.sortRowsAscending(rows, 'v');
         System.assertEquals(2, rows[0].get('v'));
         System.assertEquals(2, BusinessHealthModel.first(rows, 2).size());
+
+        System.assertEquals(' That is 164% of your target.', BusinessHealthModel.ofTarget(82, 50, 'your target'));
+        System.assertEquals('', BusinessHealthModel.ofTarget(null, 50, 'your target'), 'no value, no attainment');
+        System.assertEquals('', BusinessHealthModel.ofTarget(82, 0, 'your target'), 'no target, no attainment');
     }
 
     private static BusinessHealthData.TimecardFact fact(String monthKey, Date endDate, Decimal hours, Decimal billable, Decimal revenue, Decimal cost, Id resourceId) {

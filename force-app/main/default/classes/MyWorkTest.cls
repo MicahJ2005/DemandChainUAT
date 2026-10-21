@@ -247,6 +247,7 @@ private class MyWorkTest {
         System.assertEquals(50, c.get('scheduled4').target);
         System.assertEquals((hpw * 50 / 100).setScale(1), c.get('lastWeekBillable').target);
         System.assert(c.get('util4').note.contains('Utilization Target on your resource record'), c.get('util4').note);
+        System.assert(c.get('util4').note.contains('% of your target.'), 'utilization and % of target are both shown');
     }
 
     @IsTest

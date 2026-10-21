@@ -209,15 +209,17 @@ public with sharing class MyWorkSupport {
             : 'Target: ' + u.targetPct.setScale(0) + '%, the default for ' +
                 (String.isBlank(c.pse__Resource_Role__c) ? 'your role' : c.pse__Resource_Role__c) +
                 '. Your resource record has no Utilization Target.';
-        page.addKpi(new BusinessHealthModel.Kpi('util4', 'Utilization, last 4 weeks', BusinessHealthModel.pct(u.utilized4, Math.max(hpw * 4 - u.excluded4, 0)), 'percent'))
+        Decimal util4 = BusinessHealthModel.pct(u.utilized4, Math.max(hpw * 4 - u.excluded4, 0));
+        Decimal utilYtd = BusinessHealthModel.pct(u.utilizedYtd, Math.max(hpw * Math.max(1, u.weeksYtd) - u.excludedYtd, 0));
+        page.addKpi(new BusinessHealthModel.Kpi('util4', 'Utilization, last 4 weeks', util4, 'percent'))
             .target(u.targetPct, 'higher', 0.1)
             .note('Billable + credited hours / available hours (' + hpw.setScale(0) +
-                ' a week, less time PSA excludes such as pre-sales). ' + targetSource);
-        page.addKpi(new BusinessHealthModel.Kpi('utilYtd', 'Utilization, year to date',
-                BusinessHealthModel.pct(u.utilizedYtd, Math.max(hpw * Math.max(1, u.weeksYtd) - u.excludedYtd, 0)), 'percent'))
+                ' a week, less time PSA excludes such as pre-sales). ' + targetSource + BusinessHealthModel.ofTarget(util4, u.targetPct, 'your target'));
+        page.addKpi(new BusinessHealthModel.Kpi('utilYtd', 'Utilization, year to date', utilYtd, 'percent'))
             .target(u.targetPct, 'higher', 0.1)
             .note(u.utilizedYtd.setScale(0) + ' billable + credited hours over ' + u.weeksYtd + ' weeks' +
-                (u.excludedYtd > 0 ? ', with ' + u.excludedYtd.setScale(0) + ' excluded hours taken out of available time.' : '.'));
+                (u.excludedYtd > 0 ? ', with ' + u.excludedYtd.setScale(0) + ' excluded hours taken out of available time.' : '.') +
+                BusinessHealthModel.ofTarget(utilYtd, u.targetPct, 'your target'));
         page.addKpi(new BusinessHealthModel.Kpi('scheduled4', 'Scheduled, next 4 weeks', BusinessHealthModel.pct(u.scheduled4, hpw * FUTURE_WEEKS), 'percent'))
             .target(u.targetPct, 'higher', 0.2)
             .note(u.scheduled4.setScale(0) + ' hours on your billable or credited assignment schedules. Low means you need your next project lined up.');

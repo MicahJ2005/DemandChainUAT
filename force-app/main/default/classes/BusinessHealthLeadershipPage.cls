@@ -77,10 +77,13 @@ public with sharing class BusinessHealthLeadershipPage implements BusinessHealth
         // 4. Utilization: billable + credited hours over available hours.
         List<Decimal> utilTrend = BusinessHealthData.utilizationSeries(tcs, billableStaff.keySet(), trendKeys, ctx.hoursPerWeek());
         List<Decimal> util3 = BusinessHealthData.utilizationSeries(tcs, billableStaff.keySet(), keys3, ctx.hoursPerWeek());
-        page.addKpi(new BusinessHealthModel.Kpi('utilization', 'Utilization (T3M)', average(util3), 'percent'))
-            .target(ctx.num(s.Delivery_Utilization_Target__c, 75), 'higher', 0.1)
+        Decimal utilT3m = average(util3);
+        Decimal utilTarget = ctx.num(s.Delivery_Utilization_Target__c, 75);
+        page.addKpi(new BusinessHealthModel.Kpi('utilization', 'Utilization (T3M)', utilT3m, 'percent'))
+            .target(utilTarget, 'higher', 0.1)
             .note(billableStaff.size() + ' internal delivery resources; billable + credited hours / available hours (' +
-                ctx.hoursPerWeek().setScale(0) + ' a week, less time PSA excludes such as pre-sales).')
+                ctx.hoursPerWeek().setScale(0) + ' a week, less time PSA excludes such as pre-sales).' +
+                BusinessHealthModel.ofTarget(utilT3m, utilTarget, 'the firm target'))
             .trend(trendLabels, utilTrend);
 
         // 4b. Rate realization (T12M), same basis and target as the Financial page.
