@@ -24,18 +24,23 @@ public with sharing class BusinessHealthMarketingPage implements BusinessHealthP
     public static final Set<String> MARKETING_SOURCES = new Set<String>{
         'Website',
         'Lead form on Demand Chain',
+        'Contact Us Form',
         'Campaign/Email',
         'Event',
         'LinkedIn',
         'Outbound Lead Gen',
-        'Zoominfo'
+        'Zoominfo',
+        'Apollo'
     };
+
+    /** Prospecting tools and purchased lists (outbound), as opposed to inbound demand. */
+    public static final Set<String> OUTBOUND_SOURCES = new Set<String>{ 'Outbound Lead Gen', 'Zoominfo', 'Apollo' };
 
     public static String channel(String source) {
         if (String.isBlank(source)) {
             return 'Not recorded';
         }
-        if (source == 'Outbound Lead Gen' || source == 'Zoominfo') {
+        if (OUTBOUND_SOURCES.contains(source)) {
             return 'Outbound & lists';
         }
         if (source == 'Sales') {

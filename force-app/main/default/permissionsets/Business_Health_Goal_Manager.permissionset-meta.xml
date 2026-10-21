@@ -3,6 +3,16 @@
     <description>Create and edit Business Health goal sets (versioned targets). Assign to leadership alongside Business Health Viewer.</description>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Business_Health_Goal_Set__c.Bookings_Quota__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Business_Health_Goal_Set__c.User__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Business_Health_Goal_Set__c.Annual_Revenue_Target__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -258,7 +268,7 @@
         <allowDelete>true</allowDelete>
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>false</modifyAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
         <object>Business_Health_Goal_Set__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>

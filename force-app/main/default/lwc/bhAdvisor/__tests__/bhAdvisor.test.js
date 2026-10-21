@@ -39,7 +39,7 @@ describe('c-bh-advisor', () => {
         document.body.appendChild(el);
         await wait();
         expect(getAdvice).toHaveBeenCalledTimes(1);
-        expect(getAdvice).toHaveBeenCalledWith({ pageKey: 'sales', asOfDate: null, practiceId: null, forceRefresh: false });
+        expect(getAdvice).toHaveBeenCalledWith({ pageKey: 'sales', asOfDate: null, practiceId: null, forceRefresh: false, view: null });
         expect(el.shadowRoot.querySelector('.headline').textContent).toBe('Pipeline is thin for Q2.');
         expect(el.shadowRoot.querySelectorAll('.rec')).toHaveLength(1);
         expect(el.shadowRoot.querySelector('.badge').textContent).toContain('Claude Sonnet 4.5');

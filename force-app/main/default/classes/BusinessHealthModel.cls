@@ -16,6 +16,11 @@ public with sharing class BusinessHealthModel {
     public static final String STATUS_NEUTRAL = 'neutral';
     public static final String STATUS_INFO = 'info';
 
+    public static final String VIEW_FULL = 'full';
+    public static final String VIEW_BRIEF = 'brief';
+    /** Optional row key naming the KPI a table row describes (used by abbreviate()). */
+    public static final String ROW_METRIC = 'metricKey';
+
     public class HealthPage {
         @AuraEnabled
         public String key;
@@ -46,6 +51,17 @@ public with sharing class BusinessHealthModel {
         public List<Signal> signals = new List<Signal>();
         @AuraEnabled
         public List<String> dataGaps = new List<String>();
+        /**
+         * KPI keys shown in the abbreviated view, in display order. Empty when the page
+         * has no abbreviated view (the UI then hides the view toggle).
+         */
+        @AuraEnabled
+        public List<String> briefMetrics = new List<String>();
+        /** VIEW_FULL or VIEW_BRIEF: which view this instance holds. */
+        @AuraEnabled
+        public String view = VIEW_FULL;
+        /** Data gap text -> the KPI key it concerns; untagged gaps are full-view only. */
+        private Map<String, String> dataGapMetrics = new Map<String, String>();
 
         public HealthPage(String key, String title, String subtitle, String audience) {
             this.key = key;
@@ -63,6 +79,19 @@ public with sharing class BusinessHealthModel {
             signals.add(new Signal(severity, message));
         }
 
+        /** A signal about one KPI, so the abbreviated view can keep it. */
+        public void signal(String severity, String message, String metric) {
+            Signal sg = new Signal(severity, message);
+            sg.metric = metric;
+            signals.add(sg);
+        }
+
+        /** A data gap about one KPI, so the abbreviated view can keep it. */
+        public void dataGap(String text, String metric) {
+            dataGaps.add(text);
+            dataGapMetrics.put(text, metric);
+        }
+
         /**
          * @description Adds a warn/bad signal for every KPI that missed its target, so
          * the page's signal list and the AI prompt always agree with the tile colors.
@@ -70,9 +99,74 @@ public with sharing class BusinessHealthModel {
         public void signalMissedKpis() {
             for (Kpi k : kpis) {
                 if (k.status == STATUS_BAD || k.status == STATUS_WARN) {
-                    signals.add(new Signal(k.status, k.label + ' is ' + k.displayValue() + ' against a target of ' + k.targetLabel + '.'));
+                    signal(k.status, k.label + ' is ' + k.displayValue() + ' against a target of ' + k.targetLabel + '.', k.key);
                 }
             }
+        }
+
+        /**
+         * @description Reduces this page to its abbreviated view: only the briefMetrics
+         * KPIs (in that order), and only the charts, signals, table rows and data gaps
+         * tagged with one of them. Tables keep rows whose ROW_METRIC is in the set, or
+         * the whole table when the table itself is tagged. No-op when briefMetrics is
+         * empty. Returns this page for chaining.
+         */
+        public HealthPage abbreviate() {
+            if (briefMetrics.isEmpty()) {
+                return this;
+            }
+            Set<String> keep = new Set<String>(briefMetrics);
+            Map<String, Kpi> byKey = new Map<String, Kpi>();
+            for (Kpi k : kpis) {
+                byKey.put(k.key, k);
+            }
+            kpis = new List<Kpi>();
+            for (String m : briefMetrics) {
+                if (byKey.containsKey(m)) {
+                    kpis.add(byKey.get(m));
+                }
+            }
+            List<Chart> keptCharts = new List<Chart>();
+            for (Chart c : charts) {
+                if (keep.contains(c.metric)) {
+                    keptCharts.add(c);
+                }
+            }
+            charts = keptCharts;
+            List<Signal> keptSignals = new List<Signal>();
+            for (Signal sg : signals) {
+                if (keep.contains(sg.metric)) {
+                    keptSignals.add(sg);
+                }
+            }
+            signals = keptSignals;
+            List<Table> keptTables = new List<Table>();
+            for (Table t : tables) {
+                if (keep.contains(t.metric)) {
+                    keptTables.add(t);
+                    continue;
+                }
+                List<Map<String, Object>> rows = new List<Map<String, Object>>();
+                for (Map<String, Object> r : t.rows) {
+                    if (keep.contains((String) r.get(ROW_METRIC))) {
+                        rows.add(r);
+                    }
+                }
+                if (!rows.isEmpty()) {
+                    t.rows = rows;
+                    keptTables.add(t);
+                }
+            }
+            tables = keptTables;
+            List<String> keptGaps = new List<String>();
+            for (String g : dataGaps) {
+                if (keep.contains(dataGapMetrics.get(g))) {
+                    keptGaps.add(g);
+                }
+            }
+            dataGaps = keptGaps;
+            view = VIEW_BRIEF;
+            return this;
         }
     }
 
@@ -167,6 +261,9 @@ public with sharing class BusinessHealthModel {
         public Decimal targetLine;
         @AuraEnabled
         public String targetLabel;
+        /** The KPI key this chart illustrates, if any. */
+        @AuraEnabled
+        public String metric;
 
         public Chart(String key, String title, String type, String format) {
             this.key = key;
@@ -188,6 +285,11 @@ public with sharing class BusinessHealthModel {
         public Chart target(Decimal value, String label) {
             this.targetLine = value;
             this.targetLabel = label;
+            return this;
+        }
+
+        public Chart metric(String metric) {
+            this.metric = metric;
             return this;
         }
     }
@@ -217,6 +319,9 @@ public with sharing class BusinessHealthModel {
         public List<Map<String, Object>> rows = new List<Map<String, Object>>();
         @AuraEnabled
         public String emptyMessage = 'No rows for the selected scope.';
+        /** The KPI key this whole table describes, if any (else rows may carry ROW_METRIC). */
+        @AuraEnabled
+        public String metric;
 
         public Table(String key, String title, String subtitle) {
             this.key = key;
@@ -262,6 +367,9 @@ public with sharing class BusinessHealthModel {
         public String severity;
         @AuraEnabled
         public String message;
+        /** The KPI key this signal is about, if any. */
+        @AuraEnabled
+        public String metric;
 
         public Signal(String severity, String message) {
             this.severity = severity;

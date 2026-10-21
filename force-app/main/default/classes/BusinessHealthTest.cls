@@ -1,5 +1,11 @@
 @IsTest
 private class BusinessHealthTest {
+    // Firm pages require the Business_Health_Viewer custom permission; grant it for every
+    // test in this class (access rules themselves are tested in MyWorkTest).
+    static {
+        BusinessHealthAccess.testGrants = new Set<String>{ BusinessHealthAccess.VIEWER };
+    }
+
     // PSA's managed-package automation can make an outbound callout while fixtures are
     // created; test methods can't call out, so absorb it (see FinancialHealthControllerTest).
     private class NoOpCalloutMock implements HttpCalloutMock {
@@ -66,7 +72,7 @@ private class BusinessHealthTest {
         Test.setMock(HttpCalloutMock.class, new NoOpCalloutMock());
         Test.startTest();
         for (String key : BusinessHealthController.PAGE_ORDER) {
-            BusinessHealthModel.HealthPage firm = BusinessHealthController.getPage(key, Date.today(), null);
+            BusinessHealthModel.HealthPage firm = BusinessHealthController.getPage(key, Date.today(), null, null);
             System.assertEquals(key, firm.key);
             System.assert(!firm.kpis.isEmpty(), key + ' has KPIs');
             System.assertEquals('All practices', firm.scopeLabel);
@@ -80,7 +86,7 @@ private class BusinessHealthTest {
         Id practiceId = [SELECT Id FROM pse__Practice__c LIMIT 1].Id;
         Test.startTest();
         for (String key : BusinessHealthController.PAGE_ORDER) {
-            BusinessHealthModel.HealthPage scoped = BusinessHealthController.getPage(key, Date.today(), practiceId);
+            BusinessHealthModel.HealthPage scoped = BusinessHealthController.getPage(key, Date.today(), practiceId, null);
             System.assertEquals('Test Practice practice', scoped.scopeLabel);
         }
         Test.stopTest();
@@ -89,7 +95,7 @@ private class BusinessHealthTest {
     @IsTest
     static void unknownPageIsRejected() {
         try {
-            BusinessHealthController.getPage('nope', null, null);
+            BusinessHealthController.getPage('nope', null, null, null);
             System.assert(false, 'expected an error');
         } catch (AuraHandledException e) {
             System.assert(e.getMessage().contains('Unknown Business Health page'), e.getMessage());
@@ -98,7 +104,7 @@ private class BusinessHealthTest {
 
     @IsTest
     static void filterOptionsListPagesInOrderAndPractices() {
-        BusinessHealthController.FilterOptions o = BusinessHealthController.getFilterOptions();
+        BusinessHealthController.FilterOptions o = BusinessHealthController.getFilterOptions(null);
         System.assertEquals(BusinessHealthController.PAGE_ORDER.size(), o.pages.size());
         System.assertEquals('leadership', o.pages[0].key);
         System.assertEquals(1, o.practices.size());
@@ -318,6 +324,8 @@ private class BusinessHealthTest {
     static void marketingChannelsAndSourcing() {
         System.assertEquals('Inbound marketing', BusinessHealthMarketingPage.channel('Website'));
         System.assertEquals('Outbound & lists', BusinessHealthMarketingPage.channel('Zoominfo'));
+        System.assertEquals('Outbound & lists', BusinessHealthMarketingPage.channel('Apollo'));
+        System.assertEquals('Inbound marketing', BusinessHealthMarketingPage.channel('Contact Us Form'));
         System.assertEquals('Sales team', BusinessHealthMarketingPage.channel('Sales'));
         System.assertEquals('Salesforce referral', BusinessHealthMarketingPage.channel('Referral - Salesforce'));
         System.assertEquals('Other referrals', BusinessHealthMarketingPage.channel('Referral - Client'));
@@ -330,12 +338,21 @@ private class BusinessHealthTest {
     @IsTest
     static void marketingPageCountsLeadsAndCampaigns() {
         Test.setMock(HttpCalloutMock.class, new NoOpCalloutMock());
-        insert new List<Lead>{
+        List<Lead> leads = new List<Lead>{
             new Lead(LastName = 'One', Company = 'Acme', LeadSource = 'Website', Status = 'Open'),
             new Lead(LastName = 'Two', Company = 'Beta', Status = 'Open')
         };
-        insert new Campaign(Name = 'Test Webinar', Type = 'Webinar', StartDate = Date.today().addDays(-10), IsActive = true);
-        BusinessHealthModel.HealthPage page = BusinessHealthController.getPage('marketing', Date.today(), null);
+        insert leads;
+        Campaign webinar = new Campaign(Name = 'Test Webinar', Type = 'Webinar', StartDate = Date.today().addDays(-10), IsActive = true, ActualCost = 5000);
+        insert webinar;
+        // A contact at the test opportunity's account responds the day the opportunity is created.
+        Contact responder = new Contact(LastName = 'Responder', AccountId = [SELECT Id FROM Account LIMIT 1].Id);
+        insert responder;
+        insert new List<CampaignMember>{
+            new CampaignMember(CampaignId = webinar.Id, ContactId = responder.Id, Status = 'Responded'),
+            new CampaignMember(CampaignId = webinar.Id, LeadId = leads[0].Id, Status = 'Sent')
+        };
+        BusinessHealthModel.HealthPage page = BusinessHealthController.getPage('marketing', Date.today(), null, null);
         Map<String, BusinessHealthModel.Kpi> byKey = new Map<String, BusinessHealthModel.Kpi>();
         for (BusinessHealthModel.Kpi k : page.kpis) {
             byKey.put(k.key, k);
@@ -343,7 +360,13 @@ private class BusinessHealthTest {
         System.assertEquals(2, byKey.get('newLeads').value);
         System.assertEquals(50.0, byKey.get('leadsNoSource').value);
         System.assertEquals(100.0, byKey.get('untouchedLeads').value);
-        System.assert(byKey.get('costPerOpp').unavailable, 'no campaign costs recorded');
+        System.assertEquals(5000, byKey.get('costPerOpp').value, 'campaign spend over the one influenced opportunity');
+        for (BusinessHealthModel.Table t : page.tables) {
+            if (t.key == 'campaigns') {
+                System.assertEquals(1, t.rows.size());
+                System.assertEquals(50.0, t.rows[0].get('rate'), 'one of two members responded');
+            }
+        }
     }
 
     @IsTest
@@ -354,9 +377,9 @@ private class BusinessHealthTest {
         BusinessHealthContext.settingsOverride = new Business_Health_Setting__mdt(AI_Enabled__c = true, AI_Cache_Hours__c = 12);
 
         Test.startTest();
-        BusinessHealthAdvisor.Advice first = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, false);
-        BusinessHealthAdvisor.Advice second = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, false);
-        BusinessHealthAdvisor.Advice forced = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, true);
+        BusinessHealthAdvisor.Advice first = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, false, null);
+        BusinessHealthAdvisor.Advice second = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, false, null);
+        BusinessHealthAdvisor.Advice forced = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, true, null);
         Test.stopTest();
 
         System.assert(first.aiGenerated);
@@ -380,7 +403,7 @@ private class BusinessHealthTest {
         stub.fail = true;
         BusinessHealthAdvisor.llm = stub;
         BusinessHealthContext.settingsOverride = new Business_Health_Setting__mdt(AI_Enabled__c = true);
-        BusinessHealthAdvisor.Advice a = BusinessHealthAdvisor.getAdvice('leadership', Date.today(), null, true);
+        BusinessHealthAdvisor.Advice a = BusinessHealthAdvisor.getAdvice('leadership', Date.today(), null, true, null);
         System.assert(!a.aiGenerated);
         System.assert(a.notice.contains('Model offline'), a.notice);
         System.assertNotEquals(null, a.headline);
@@ -392,10 +415,116 @@ private class BusinessHealthTest {
         StubLlm stub = new StubLlm(GOOD_JSON);
         BusinessHealthAdvisor.llm = stub;
         BusinessHealthContext.settingsOverride = new Business_Health_Setting__mdt(AI_Enabled__c = false);
-        BusinessHealthAdvisor.Advice a = BusinessHealthAdvisor.getAdvice('delivery', Date.today(), null, false);
+        BusinessHealthAdvisor.Advice a = BusinessHealthAdvisor.getAdvice('delivery', Date.today(), null, false, null);
         System.assert(!a.aiGenerated);
         System.assert(a.notice.contains('turned off'));
         System.assertEquals(0, stub.calls);
+    }
+
+    @IsTest
+    static void advisorUsesRulesWhenEinsteinIsUnavailable() {
+        BusinessHealthAdvisor.llm = null;
+        BusinessHealthContext.settingsOverride = new Business_Health_Setting__mdt(AI_Enabled__c = true);
+        BusinessHealthAdvisor.Advice a = BusinessHealthAdvisor.getAdvice('finance', Date.today(), null, false, null);
+        System.assert(!a.aiGenerated);
+        System.assert(a.notice.contains('not enabled'), a.notice);
+    }
+
+    @IsTest
+    static void leadershipAbbreviatedViewKeepsOnlyItsMetrics() {
+        Test.setMock(HttpCalloutMock.class, new NoOpCalloutMock());
+        Test.startTest();
+        BusinessHealthModel.HealthPage full = BusinessHealthController.getPage('leadership', Date.today(), null, null);
+        BusinessHealthModel.HealthPage brief = BusinessHealthController.getPage('leadership', Date.today(), null, BusinessHealthModel.VIEW_BRIEF);
+        Test.stopTest();
+
+        Set<String> fullKeys = new Set<String>();
+        for (BusinessHealthModel.Kpi k : full.kpis) {
+            fullKeys.add(k.key);
+        }
+        System.assert(fullKeys.contains('rateRealization'), 'full view includes realization');
+        System.assert(fullKeys.contains('backlogRunway'), 'full view is unchanged otherwise');
+        System.assertEquals(BusinessHealthModel.VIEW_FULL, full.view);
+
+        System.assertEquals(BusinessHealthModel.VIEW_BRIEF, brief.view);
+        List<String> briefKeys = new List<String>();
+        for (BusinessHealthModel.Kpi k : brief.kpis) {
+            briefKeys.add(k.key);
+        }
+        System.assertEquals(new List<String>{ 'bookToBill', 'utilization', 'grossMargin', 'rateRealization' }, briefKeys);
+        System.assertEquals(3, brief.charts.size(), 'revenue mix chart is dropped');
+        for (BusinessHealthModel.Signal sg : brief.signals) {
+            System.assert(brief.briefMetrics.contains(sg.metric), sg.message);
+        }
+        for (BusinessHealthModel.Table t : brief.tables) {
+            for (Map<String, Object> r : t.rows) {
+                System.assert(brief.briefMetrics.contains((String) r.get(BusinessHealthModel.ROW_METRIC)), String.valueOf(r));
+            }
+        }
+        System.assert(brief.dataGaps.isEmpty(), 'leadership data gaps concern other metrics');
+    }
+
+    @IsTest
+    static void abbreviateFiltersEveryPartAndIsANoOpWithoutBriefMetrics() {
+        BusinessHealthModel.HealthPage page = new BusinessHealthModel.HealthPage('leadership', 'T', 'S', 'A');
+        page.addKpi(new BusinessHealthModel.Kpi('a', 'A', 1, 'number'));
+        page.addKpi(new BusinessHealthModel.Kpi('b', 'B', 2, 'number'));
+        page.addKpi(new BusinessHealthModel.Kpi('c', 'C', 3, 'number'));
+        page.charts.add(new BusinessHealthModel.Chart('ca', 'A', 'line', 'number').metric('a'));
+        page.charts.add(new BusinessHealthModel.Chart('cx', 'X', 'bar', 'number'));
+        page.signal(BusinessHealthModel.STATUS_BAD, 'about c', 'c');
+        page.signal(BusinessHealthModel.STATUS_WARN, 'about b', 'b');
+        page.signal(BusinessHealthModel.STATUS_WARN, 'untagged');
+        BusinessHealthModel.Table rows = new BusinessHealthModel.Table('rows', 'Rows', null);
+        rows.rows.add(new Map<String, Object>{ BusinessHealthModel.ROW_METRIC => 'a' });
+        rows.rows.add(new Map<String, Object>{ BusinessHealthModel.ROW_METRIC => 'b' });
+        BusinessHealthModel.Table tagged = new BusinessHealthModel.Table('tagged', 'Tagged', null);
+        tagged.metric = 'c';
+        BusinessHealthModel.Table other = new BusinessHealthModel.Table('other', 'Other', null);
+        other.rows.add(new Map<String, Object>{ 'x' => 1 });
+        page.tables.addAll(new List<BusinessHealthModel.Table>{ rows, tagged, other });
+        page.dataGap('gap about a', 'a');
+        page.dataGaps.add('untagged gap');
+
+        page.abbreviate();
+        System.assertEquals(3, page.kpis.size(), 'no briefMetrics means no filtering');
+        System.assertEquals(BusinessHealthModel.VIEW_FULL, page.view);
+
+        page.briefMetrics = new List<String>{ 'c', 'a' };
+        page.abbreviate();
+        System.assertEquals(BusinessHealthModel.VIEW_BRIEF, page.view);
+        System.assertEquals('c', page.kpis[0].key, 'KPIs follow briefMetrics order');
+        System.assertEquals('a', page.kpis[1].key);
+        System.assertEquals(2, page.kpis.size());
+        System.assertEquals(1, page.charts.size());
+        System.assertEquals('ca', page.charts[0].key);
+        System.assertEquals(1, page.signals.size());
+        System.assertEquals('about c', page.signals[0].message);
+        System.assertEquals(2, page.tables.size(), 'untagged table is dropped');
+        System.assertEquals('rows', page.tables[0].key);
+        System.assertEquals(1, page.tables[0].rows.size());
+        System.assertEquals('tagged', page.tables[1].key);
+        System.assertEquals(new List<String>{ 'gap about a' }, page.dataGaps);
+    }
+
+    @IsTest
+    static void advisorStoresAbbreviatedViewAdviceSeparately() {
+        Test.setMock(HttpCalloutMock.class, new NoOpCalloutMock());
+        StubLlm stub = new StubLlm(GOOD_JSON);
+        BusinessHealthAdvisor.llm = stub;
+        BusinessHealthContext.settingsOverride = new Business_Health_Setting__mdt(AI_Enabled__c = true, AI_Cache_Hours__c = 12);
+
+        Test.startTest();
+        BusinessHealthAdvisor.Advice brief = BusinessHealthAdvisor.getAdvice('leadership', Date.today(), null, false, BusinessHealthModel.VIEW_BRIEF);
+        BusinessHealthAdvisor.Advice full = BusinessHealthAdvisor.getAdvice('leadership', Date.today(), null, false, null);
+        Test.stopTest();
+
+        System.assert(brief.aiGenerated);
+        System.assert(!full.fromCache, 'the full view does not reuse the abbreviated view\'s advice');
+        System.assertEquals(2, stub.calls);
+        Business_Health_Insight__c row = [SELECT Metrics_Snapshot__c FROM Business_Health_Insight__c WHERE Page__c = 'leadership:brief'];
+        System.assert(!row.Metrics_Snapshot__c.contains('Backlog runway'), 'abbreviated advice only sees its metrics');
+        System.assertEquals(1, [SELECT COUNT() FROM Business_Health_Insight__c WHERE Page__c = 'leadership']);
     }
 
     @IsTest

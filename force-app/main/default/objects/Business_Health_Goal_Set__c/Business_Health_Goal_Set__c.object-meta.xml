@@ -10,6 +10,7 @@
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
     <label>Business Health Goal Set</label>
     <nameField>
         <label>Goal Set Name</label>
@@ -17,6 +18,6 @@
         <type>Text</type>
     </nameField>
     <pluralLabel>Business Health Goal Sets</pluralLabel>
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>Private</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

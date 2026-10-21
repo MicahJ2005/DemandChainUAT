@@ -9,19 +9,35 @@ const COLLAPSED_ROWS = 10;
 const SPARK_W = 120;
 const SPARK_H = 30;
 const NUMERIC_TYPES = new Set(['currency', 'percent', 'number', 'ratio', 'hours', 'score']);
+const VIEW_FULL = 'full';
+const VIEW_BRIEF = 'brief';
+const MODE_MY_WORK = 'mywork';
 
 /**
  * Renders any Business Health page (Leadership, Sales & Pipeline, Financial,
  * Utilization & Capacity, Delivery, Client Portfolio, People) from the generic page
  * model BusinessHealthController returns: KPI tiles, AI Advisor, signals, charts and
  * tables. Each Lightning tab hosts this component with a different Page Key; the
- * as-of date and practice filters travel between tabs in the URL state.
+ * as-of date and practice filters travel between tabs in the URL state. Pages that
+ * define an abbreviated view (briefMetrics) get a Full / Abbreviated toggle; the
+ * server does the filtering so the AI Advisor sees the same view.
+ *
+ * In My Work mode (mode = 'mywork') the same renderer shows the running user's personal
+ * views instead: the server lists only the views their permission sets grant, and the
+ * user switches between them in place (no tab navigation, no practice filter).
  */
 export default class BusinessHealthPage extends NavigationMixin(LightningElement) {
     @api pageKey = 'leadership';
+    /** 'business' (firm pages) or 'mywork' (the running user's personal views). */
+    @api mode = 'business';
 
+    /** The page being shown: pageKey in business mode, the selected view in My Work. */
+    activeKey;
+    personaParam = null;
+    noViews = false;
     asOfParam = null;
     practiceParam = null;
+    viewParam = VIEW_FULL;
     options;
     page;
     error;
@@ -34,18 +50,36 @@ export default class BusinessHealthPage extends NavigationMixin(LightningElement
         const state = (ref && ref.state) || {};
         this.asOfParam = state.c__asOf || null;
         this.practiceParam = state.c__practice || null;
+        this.viewParam = state.c__view === VIEW_BRIEF ? VIEW_BRIEF : VIEW_FULL;
+        this.personaParam = state.c__persona || null;
     }
 
-    @wire(getFilterOptions)
-    wiredOptions({ data, error }) {
-        if (data) {
-            this.options = data;
-        } else if (error) {
-            this.error = this.message(error);
+    connectedCallback() {
+        if (!this.isMyWork) {
+            this.activeKey = this.pageKey;
         }
     }
 
-    @wire(getPage, { pageKey: '$pageKey', asOfDate: '$asOfParam', practiceId: '$practiceParam' })
+    @wire(getFilterOptions, { mode: '$mode' })
+    wiredOptions({ data, error }) {
+        if (data) {
+            this.options = data;
+            if (this.isMyWork) {
+                const keys = (data.pages || []).map((p) => p.key);
+                if (!keys.length) {
+                    this.noViews = true;
+                    this.loading = false;
+                } else if (!keys.includes(this.activeKey)) {
+                    this.activeKey = keys.includes(this.personaParam) ? this.personaParam : keys[0];
+                }
+            }
+        } else if (error) {
+            this.error = this.message(error);
+            this.loading = false;
+        }
+    }
+
+    @wire(getPage, { pageKey: '$activeKey', asOfDate: '$asOfParam', practiceId: '$practiceParam', view: '$viewParam' })
     wiredPage(result) {
         this.wiredPageResult = result;
         const { data, error } = result;
@@ -61,8 +95,25 @@ export default class BusinessHealthPage extends NavigationMixin(LightningElement
 
     // ---- header / nav / filters ------------------------------------------------------
 
+    get isMyWork() {
+        return this.mode === MODE_MY_WORK;
+    }
+
+    get eyebrow() {
+        return this.isMyWork ? 'Demand Chain · My Work' : 'Demand Chain · Business Health';
+    }
+
+    get greeting() {
+        const name = this.options && this.options.firstName;
+        return this.isMyWork && name ? `Hi ${name}. ` : '';
+    }
+
+    get showPracticeFilter() {
+        return !this.isMyWork;
+    }
+
     get pageTitle() {
-        return this.page ? this.page.title : 'Business Health';
+        return this.page ? this.page.title : this.isMyWork ? 'My Work' : 'Business Health';
     }
 
     get pageSubtitle() {
@@ -88,8 +139,8 @@ export default class BusinessHealthPage extends NavigationMixin(LightningElement
     get navItems() {
         return ((this.options && this.options.pages) || []).map((p) => ({
             ...p,
-            cls: p.key === this.pageKey ? 'nav-item nav-item-active' : 'nav-item',
-            current: p.key === this.pageKey ? 'page' : null
+            cls: p.key === this.activeKey ? 'nav-item nav-item-active' : 'nav-item',
+            current: p.key === this.activeKey ? 'page' : null
         }));
     }
 
@@ -122,6 +173,16 @@ export default class BusinessHealthPage extends NavigationMixin(LightningElement
     }
 
     handleNav(event) {
+        if (this.isMyWork) {
+            // My Work views switch in place; the server re-checks access on every load.
+            const key = event.currentTarget.dataset.key;
+            if (key !== this.activeKey) {
+                this.loading = true;
+                this.tableState = {};
+                this.activeKey = key;
+            }
+            return;
+        }
         const tabName = event.currentTarget.dataset.tab;
         const state = {};
         if (this.asOfParam) {
@@ -129,6 +190,9 @@ export default class BusinessHealthPage extends NavigationMixin(LightningElement
         }
         if (this.practiceParam) {
             state.c__practice = this.practiceParam;
+        }
+        if (this.viewParam === VIEW_BRIEF) {
+            state.c__view = VIEW_BRIEF;
         }
         this[NavigationMixin.Navigate]({ type: 'standard__navItemPage', attributes: { apiName: tabName }, state });
     }
@@ -151,6 +215,40 @@ export default class BusinessHealthPage extends NavigationMixin(LightningElement
             this.loading = true;
             this.asOfParam = asOf;
             this.practiceParam = practice;
+        }
+    }
+
+    // ---- full / abbreviated view --------------------------------------------------------
+
+    get hasBriefView() {
+        return !!(this.page && this.page.briefMetrics && this.page.briefMetrics.length);
+    }
+
+    get isBriefView() {
+        return this.viewParam === VIEW_BRIEF;
+    }
+
+    get fullViewClass() {
+        return this.isBriefView ? 'view-btn' : 'view-btn view-btn-active';
+    }
+
+    get briefViewClass() {
+        return this.isBriefView ? 'view-btn view-btn-active' : 'view-btn';
+    }
+
+    get fullViewPressed() {
+        return String(!this.isBriefView);
+    }
+
+    get briefViewPressed() {
+        return String(this.isBriefView);
+    }
+
+    handleViewChange(event) {
+        const view = event.currentTarget.dataset.view;
+        if (view !== this.viewParam) {
+            this.loading = true;
+            this.viewParam = view;
         }
     }
 

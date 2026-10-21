@@ -2,12 +2,17 @@
  * @group BusinessHealth
  *
  * @description Leadership Scorecard: the compact, trend-based view - book-to-bill,
- * backlog runway, gross margin, utilization, cash (unbilled WIP / DSO), attrition,
- * client concentration and recurring revenue growth, month over month against
- * targets. Operational drill-downs live on the director pages.
+ * backlog runway, gross margin, utilization, rate realization, cash (unbilled WIP /
+ * DSO), attrition, client concentration and recurring revenue growth, month over
+ * month against targets. Operational drill-downs live on the director pages.
+ *
+ * The abbreviated view (BRIEF_METRICS) keeps only book-to-bill, utilization, gross
+ * margin and realization; charts, signals and scorecard rows are tagged with their
+ * KPI key so HealthPage.abbreviate() can keep just the related ones.
  */
 public with sharing class BusinessHealthLeadershipPage implements BusinessHealthPageBuilder {
     private static final Integer TREND_MONTHS = 6;
+    private static final List<String> BRIEF_METRICS = new List<String>{ 'bookToBill', 'utilization', 'grossMargin', 'rateRealization' };
 
     public BusinessHealthModel.HealthPage build(BusinessHealthContext ctx) {
         BusinessHealthModel.HealthPage page = new BusinessHealthModel.HealthPage(
@@ -17,6 +22,7 @@ public with sharing class BusinessHealthLeadershipPage implements BusinessHealth
                 BusinessHealthContext.monthLabel(ctx.referenceMonthStart()) + '.',
             'Leadership'
         );
+        page.briefMetrics = BRIEF_METRICS;
         Business_Health_Goal_Set__c s = ctx.goals;
 
         // 16 complete months: 12 for trailing-year metrics, plus 3 more so the first
@@ -75,6 +81,18 @@ public with sharing class BusinessHealthLeadershipPage implements BusinessHealth
             .target(ctx.num(s.Delivery_Utilization_Target__c, 75), 'higher', 0.1)
             .note(billableStaff.size() + ' internal delivery resources; billable hours / ' + ctx.hoursPerWeek().setScale(0) + ' hrs per week.')
             .trend(trendLabels, utilTrend);
+
+        // 4b. Rate realization (T12M), same basis and target as the Financial page.
+        List<Map<String, Decimal>> realization = BusinessHealthData.realizationByMonth(tcs, BusinessHealthData.standardRates());
+        List<Decimal> realizationTrend = new List<Decimal>();
+        for (String k : trendKeys) {
+            realizationTrend.add(BusinessHealthModel.pct(BusinessHealthData.nz(realization[0].get(k)), BusinessHealthData.nz(realization[1].get(k))));
+        }
+        page.addKpi(new BusinessHealthModel.Kpi('rateRealization', 'Rate realization (T12M)',
+                BusinessHealthModel.pct(BusinessHealthData.sumLast(realization[0], keys12, 12), BusinessHealthData.sumLast(realization[1], keys12, 12)), 'percent'))
+            .target(ctx.num(s.Rate_Realization_Target__c, 90), 'higher', 0.1)
+            .note('Effective bill rate on billed T&M hours / Default Rate Card rate for the assignment role. Exposes discounting.')
+            .trend(trendLabels, realizationTrend);
 
         // 5. Cash: unbilled WIP (days) and DSO.
         List<Decimal> wip = BusinessHealthData.unbilledWip(tcs, ctx.asOfDate);
@@ -143,17 +161,20 @@ public with sharing class BusinessHealthLeadershipPage implements BusinessHealth
         BusinessHealthModel.Chart b2bChart = new BusinessHealthModel.Chart('bookToBillTrend', 'Book-to-bill, trailing 3 months', 'line', 'ratio')
             .labels(labels12)
             .addSeries('Book-to-bill', BusinessHealthData.tail(BusinessHealthData.rollingRatio(bookings, delivered, keys16, 3), 12))
-            .target(ctx.num(s.Book_To_Bill_Target__c, 1.1), 'Target');
+            .target(ctx.num(s.Book_To_Bill_Target__c, 1.1), 'Target')
+            .metric('bookToBill');
         page.charts.add(b2bChart);
         BusinessHealthModel.Chart utilChart = new BusinessHealthModel.Chart('utilizationTrend', 'Billable utilization by month', 'line', 'percent')
             .labels(labels12)
             .addSeries('Utilization', BusinessHealthData.utilizationSeries(tcs, billableStaff.keySet(), keys12, ctx.hoursPerWeek()))
-            .target(ctx.num(s.Delivery_Utilization_Target__c, 75), 'Target');
+            .target(ctx.num(s.Delivery_Utilization_Target__c, 75), 'Target')
+            .metric('utilization');
         page.charts.add(utilChart);
         BusinessHealthModel.Chart marginChart = new BusinessHealthModel.Chart('marginTrend', 'Delivery gross margin by month', 'line', 'percent')
             .labels(labels12)
             .addSeries('Gross margin', BusinessHealthData.marginSeries(delivered, cost, keys12))
-            .target(ctx.num(s.Gross_Margin_Target__c, 40), 'Target');
+            .target(ctx.num(s.Gross_Margin_Target__c, 40), 'Target')
+            .metric('grossMargin');
         page.charts.add(marginChart);
 
         // Scorecard: each trended KPI, current vs 1, 3 and 5 months earlier.
@@ -176,7 +197,8 @@ public with sharing class BusinessHealthLeadershipPage implements BusinessHealth
             Decimal latest = k.trend[TREND_MONTHS - 1];
             scorecard.rows.add(
                 new Map<String, Object>{
-                    'metric' => k.label.replace(' (T3M)', ''),
+                    BusinessHealthModel.ROW_METRIC => k.key,
+                    'metric' => k.label.replace(' (T3M)', '').replace(' (T12M)', ''),
                     'm0' => BusinessHealthModel.formatValue(latest, k.format),
                     'm1' => BusinessHealthModel.formatValue(k.trend[TREND_MONTHS - 2], k.format),
                     'm3' => BusinessHealthModel.formatValue(k.trend[TREND_MONTHS - 4], k.format),
@@ -197,7 +219,7 @@ public with sharing class BusinessHealthLeadershipPage implements BusinessHealth
                 }
             }
             if (below == 3) {
-                page.signal(BusinessHealthModel.STATUS_BAD, 'Book-to-bill has been below 1.0 for three consecutive months, so the backlog is shrinking.');
+                page.signal(BusinessHealthModel.STATUS_BAD, 'Book-to-bill has been below 1.0 for three consecutive months, so the backlog is shrinking.', 'bookToBill');
             }
         }
         page.dataGaps.add('DSO and AR aging need invoice payment dates, which are not stored in Salesforce today.');

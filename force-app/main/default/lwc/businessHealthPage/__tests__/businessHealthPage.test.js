@@ -168,11 +168,87 @@ describe('c-business-health-page', () => {
         expect(advisor.pageKey).toBe('leadership');
     });
 
+    it('hides the view toggle on pages without an abbreviated view', async () => {
+        const element = await render();
+        expect(element.shadowRoot.querySelector('.view-toggle')).toBeNull();
+    });
+
+    it('switches to the abbreviated view and tells Apex and the AI Advisor', async () => {
+        const element = await render();
+        getPage.emit({ ...PAGE, briefMetrics: ['bookToBill'] });
+        await flush();
+        const buttons = element.shadowRoot.querySelectorAll('.view-btn');
+        expect(buttons).toHaveLength(2);
+        expect(buttons[0].getAttribute('aria-pressed')).toBe('true');
+        buttons[1].click();
+        await flush();
+        expect(getPage.getLastConfig()).toEqual(expect.objectContaining({ pageKey: 'leadership', view: 'brief' }));
+        expect(element.shadowRoot.querySelector('c-bh-advisor').view).toBe('brief');
+        expect(element.shadowRoot.querySelectorAll('.view-btn')[1].classList).toContain('view-btn-active');
+    });
+
     it('shows an error banner when the page fails to load', async () => {
         const element = createElement('c-business-health-page', { is: BusinessHealthPage });
         document.body.appendChild(element);
         getPage.error({ message: 'Boom' });
         await flush();
         expect(element.shadowRoot.querySelector('.banner-error').textContent).toContain('Boom');
+    });
+
+    describe('My Work mode', () => {
+        const MY_OPTIONS = {
+            mode: 'mywork',
+            firstName: 'Matt',
+            practices: [],
+            pages: [
+                { key: 'my-ae', label: 'Account Executive', description: 'Quota and pipeline' },
+                { key: 'my-consultant', label: 'Consultant', description: 'Utilization' }
+            ],
+            defaultAsOfDate: '2026-10-19',
+            asOfIsStale: false,
+            aiEnabled: true
+        };
+
+        async function renderMyWork(options) {
+            const element = createElement('c-business-health-page', { is: BusinessHealthPage });
+            element.mode = 'mywork';
+            document.body.appendChild(element);
+            CurrentPageReference.emit({ state: {} });
+            getFilterOptions.emit(options);
+            await flush();
+            return element;
+        }
+
+        it('lists only the granted views, loads the first, and hides the practice filter', async () => {
+            const element = await renderMyWork(MY_OPTIONS);
+            expect(getFilterOptions.getLastConfig()).toEqual({ mode: 'mywork' });
+            expect(getPage.getLastConfig().pageKey).toBe('my-ae');
+            getPage.emit({ ...PAGE, key: 'my-ae', title: 'My pipeline & quota', subtitle: 'Am I on pace?' });
+            await flush();
+            const nav = element.shadowRoot.querySelectorAll('.nav-item');
+            expect(nav).toHaveLength(2);
+            expect(nav[0].classList).toContain('nav-item-active');
+            expect(element.shadowRoot.querySelector('select')).toBeNull();
+            expect(element.shadowRoot.querySelector('.eyebrow').textContent).toContain('My Work');
+            expect(element.shadowRoot.querySelector('.sub').textContent).toContain('Hi Matt.');
+        });
+
+        it('switches views in place and points the AI coach at the new view', async () => {
+            const element = await renderMyWork(MY_OPTIONS);
+            getPage.emit({ ...PAGE, key: 'my-ae' });
+            await flush();
+            element.shadowRoot.querySelectorAll('.nav-item')[1].click();
+            await flush();
+            expect(getPage.getLastConfig().pageKey).toBe('my-consultant');
+            getPage.emit({ ...PAGE, key: 'my-consultant' });
+            await flush();
+            expect(element.shadowRoot.querySelector('c-bh-advisor').pageKey).toBe('my-consultant');
+        });
+
+        it('explains how to get access when no views are granted', async () => {
+            const element = await renderMyWork({ ...MY_OPTIONS, pages: [] });
+            expect(element.shadowRoot.querySelector('.empty-views').textContent).toContain('My Work permission set');
+            expect(element.shadowRoot.querySelectorAll('.kpi')).toHaveLength(0);
+        });
     });
 });

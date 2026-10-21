@@ -14,6 +14,7 @@ export default class BhAdvisor extends LightningElement {
     _pageKey;
     _asOfDate;
     _practiceId;
+    _view;
 
     advice;
     error;
@@ -48,6 +49,16 @@ export default class BhAdvisor extends LightningElement {
         this.scheduleLoad();
     }
 
+    /** 'brief' for the page's abbreviated view; advice is stored per view. */
+    @api
+    get view() {
+        return this._view;
+    }
+    set view(v) {
+        this._view = v;
+        this.scheduleLoad();
+    }
+
     connectedCallback() {
         this.connected = true;
         this.scheduleLoad();
@@ -57,7 +68,7 @@ export default class BhAdvisor extends LightningElement {
         if (!this.connected || !this._pageKey) {
             return;
         }
-        // Batch the three setters that fire together on first render into one call.
+        // Batch the setters that fire together on first render into one call.
         clearTimeout(this.timer);
         // eslint-disable-next-line @lwc/lwc/no-async-operation
         this.timer = setTimeout(() => this.load(false), 50);
@@ -76,7 +87,8 @@ export default class BhAdvisor extends LightningElement {
                 pageKey: this._pageKey,
                 asOfDate: this._asOfDate || null,
                 practiceId: this._practiceId || null,
-                forceRefresh
+                forceRefresh,
+                view: this._view || null
             });
             // Ignore responses for a filter combination the user has already moved past.
             if (seq === this.requestSeq) {

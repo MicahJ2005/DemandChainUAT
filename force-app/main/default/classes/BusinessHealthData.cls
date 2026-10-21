@@ -21,6 +21,13 @@ public with sharing class BusinessHealthData {
     public static final Set<String> RECURRING_PRACTICES = new Set<String>{ 'Managed Services' };
     public static final String SALESFORCE_REFERRAL = 'Referral - Salesforce';
 
+    // Tests supply facts here rather than creating approved PSA timecards and milestones,
+    // whose managed-package automation makes fixtures slow and org-dependent.
+    @TestVisible
+    private static List<TimecardFact> testTimecards;
+    @TestVisible
+    private static List<MilestoneFact> testMilestones;
+
     // ---- timecard facts -------------------------------------------------------
 
     public class TimecardFact {
@@ -60,6 +67,15 @@ public with sharing class BusinessHealthData {
      * practice's consultants count all their hours, whichever project they bill.
      */
     public static List<TimecardFact> timecards(BusinessHealthContext ctx, Date fromDate, String practiceField) {
+        if (testTimecards != null) {
+            List<TimecardFact> inWindow = new List<TimecardFact>();
+            for (TimecardFact f : testTimecards) {
+                if (f.endDate >= fromDate && f.endDate <= ctx.asOfDate) {
+                    inWindow.add(f);
+                }
+            }
+            return inWindow;
+        }
         ctx.bind('tcFrom', fromDate);
         String soql =
             'SELECT pse__Project__c, pse__Project__r.Name, pse__Project__r.pse__Account__c, pse__Project__r.pse__Account__r.Name,' +
@@ -125,6 +141,15 @@ public with sharing class BusinessHealthData {
 
     /** Approved milestones on non-T&M projects with Actual Date in [fromDate, asOf]. */
     public static List<MilestoneFact> milestoneRevenue(BusinessHealthContext ctx, Date fromDate) {
+        if (testMilestones != null) {
+            List<MilestoneFact> inWindow = new List<MilestoneFact>();
+            for (MilestoneFact m : testMilestones) {
+                if (m.actualDate >= fromDate && m.actualDate <= ctx.asOfDate) {
+                    inWindow.add(m);
+                }
+            }
+            return inWindow;
+        }
         ctx.bind('msFrom', fromDate);
         String soql =
             'SELECT pse__Project__c, pse__Project__r.Name, pse__Project__r.pse__Account__c, pse__Project__r.pse__Account__r.Name,' +
@@ -352,6 +377,25 @@ public with sharing class BusinessHealthData {
             c += nz(cost.get(k));
         }
         return BusinessHealthModel.pct(rev - c, rev);
+    }
+
+    /**
+     * @description Rate realization inputs by month, on the same basis as the Financial
+     * page: client T&M (not Fixed Price) timecards whose assignment role has a Default
+     * Rate Card rate. Returns [revenue by month, billable hours at standard rate by month].
+     */
+    public static List<Map<String, Decimal>> realizationByMonth(List<TimecardFact> tcs, Map<String, Decimal> rates) {
+        Map<String, Decimal> revenue = new Map<String, Decimal>();
+        Map<String, Decimal> standard = new Map<String, Decimal>();
+        for (TimecardFact f : tcs) {
+            Decimal stdRate = f.assignmentRole == null ? null : rates.get(normalizeRole(f.assignmentRole));
+            if (!f.clientProject || stdRate == null || f.billingType == 'Fixed Price') {
+                continue;
+            }
+            add(revenue, f.monthKey, f.revenue);
+            add(standard, f.monthKey, f.billableHours * stdRate);
+        }
+        return new List<Map<String, Decimal>>{ revenue, standard };
     }
 
     public static final Decimal DELIVERY_MIN_QUARTER_HOURS = 40;

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Business Health Viewer</label>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Business_Health_Viewer</name>
+    </customPermissions>
     <description>Business Health app, dashboard tabs, Apex, and AI Advisor history. Page data still follows the user&apos;s own record access. The AI Advisor also requires Einstein generative AI access.</description>
     <applicationVisibilities>
         <application>Business_Health</application>
@@ -14,6 +18,16 @@
         <apexClass>BusinessHealthController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Business_Health_Goal_Set__c.Bookings_Quota__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Business_Health_Goal_Set__c.User__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>Business_Health_Insight__c.Page__c</field>

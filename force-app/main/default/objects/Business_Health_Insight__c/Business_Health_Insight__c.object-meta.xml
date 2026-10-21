@@ -10,6 +10,7 @@
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
     <label>Business Health Insight</label>
     <nameField>
         <displayFormat>BHI-{000000}</displayFormat>
@@ -17,6 +18,6 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Business Health Insights</pluralLabel>
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>Private</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

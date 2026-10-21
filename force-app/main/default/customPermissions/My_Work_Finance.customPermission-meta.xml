@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Show the Finance view in My Work: firm-wide WIP, approvals, billing and cash.</description>
+    <isLicensed>false</isLicensed>
+    <label>My Work - Finance</label>
+</CustomPermission>

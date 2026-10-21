@@ -1,15 +1,15 @@
 <template>
     <div class="bh">
         <header class="bh-header">
-            <div class="eyebrow">Demand Chain · Business Health</div>
+            <div class="eyebrow">{eyebrow}</div>
             <div class="title-row">
                 <h1>{pageTitle}</h1>
                 <template lwc:if={audience}><span class="audience">For {audience}</span></template>
             </div>
-            <p class="sub">{pageSubtitle}</p>
+            <p class="sub">{greeting}{pageSubtitle}</p>
             <nav class="nav" aria-label="Business Health pages">
                 <template for:each={navItems} for:item="n">
-                    <button key={n.key} class={n.cls} aria-current={n.current} data-tab={n.tabName} onclick={handleNav}>{n.label}</button>
+                    <button key={n.key} class={n.cls} aria-current={n.current} data-key={n.key} data-tab={n.tabName} title={n.description} onclick={handleNav}>{n.label}</button>
                 </template>
             </nav>
         </header>
@@ -22,14 +22,22 @@
             <template lwc:if={isCustomAsOf}>
                 <button class="link-btn" onclick={handleResetAsOf}>Reset to latest</button>
             </template>
-            <div class="field">
-                <label for="practice">Practice</label>
-                <select id="practice" onchange={handlePracticeChange}>
-                    <template for:each={practiceOptions} for:item="o">
-                        <option key={o.value} value={o.value} selected={o.selected}>{o.label}</option>
-                    </template>
-                </select>
-            </div>
+            <template lwc:if={showPracticeFilter}>
+                <div class="field">
+                    <label for="practice">Practice</label>
+                    <select id="practice" onchange={handlePracticeChange}>
+                        <template for:each={practiceOptions} for:item="o">
+                            <option key={o.value} value={o.value} selected={o.selected}>{o.label}</option>
+                        </template>
+                    </select>
+                </div>
+            </template>
+            <template lwc:if={hasBriefView}>
+                <div class="view-toggle" role="group" aria-label="View">
+                    <button class={fullViewClass} aria-pressed={fullViewPressed} data-view="full" onclick={handleViewChange}>Full view</button>
+                    <button class={briefViewClass} aria-pressed={briefViewPressed} data-view="brief" onclick={handleViewChange}>Abbreviated view</button>
+                </div>
+            </template>
             <button class="btn-secondary" onclick={handleRefresh}>Refresh data</button>
             <template lwc:if={hasPage}>
                 <span class="scope">
@@ -48,6 +56,13 @@
 
         <template lwc:if={error}>
             <div class="banner banner-error" role="alert">Could not load this page: {error}</div>
+        </template>
+
+        <template lwc:if={noViews}>
+            <div class="card empty-views">
+                <h2>No My Work views yet</h2>
+                <p class="sub">My Work shows dashboards for the roles you play: Account Executive, Solution Architect, Project Manager, Consultant or Finance. Ask your Salesforce admin to assign the My Work permission set for each role you have.</p>
+            </div>
         </template>
 
         <div class="body">
@@ -81,7 +96,7 @@
                     </template>
                 </section>
 
-                <c-bh-advisor class="advisor" page-key={pageKey} as-of-date={advisorAsOf} practice-id={practiceParam}></c-bh-advisor>
+                <c-bh-advisor class="advisor" page-key={activeKey} as-of-date={advisorAsOf} practice-id={practiceParam} view={viewParam}></c-bh-advisor>
 
                 <template lwc:if={hasSignals}>
                     <section class="card">

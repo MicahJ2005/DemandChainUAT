@@ -10,6 +10,7 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__AppPage,lightning__HomePage">
+            <property name="mode" type="String" label="Mode" default="business" datasource="business,mywork" description="business: firm-level Business Health pages. mywork: the running user's personal My Work views." />
             <property name="pageKey" type="String" label="Page" default="leadership" datasource="leadership,sales,finance,capacity,delivery,portfolio,marketing,people" description="Which Business Health page to show." />
         </targetConfig>
     </targetConfigs>

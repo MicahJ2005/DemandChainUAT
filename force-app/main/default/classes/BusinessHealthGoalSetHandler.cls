@@ -2,7 +2,7 @@
  * @group BusinessHealth
  *
  * @description Keeps Business Health goal versions unambiguous: two Active goal sets
- * for the same scope (firm-wide, or the same practice) may not have overlapping
+ * for the same scope (firm-wide, the same practice, or the same person) may not have overlapping
  * effective dates, so exactly one version is in force for any date. Checked against
  * the database and within the same save. Runs without sharing so the rule holds even
  * against versions the editor cannot see.
@@ -12,38 +12,24 @@ public without sharing class BusinessHealthGoalSetHandler {
 
     public static void validate(List<Business_Health_Goal_Set__c> records) {
         List<Business_Health_Goal_Set__c> active = new List<Business_Health_Goal_Set__c>();
-        Set<Id> practiceIds = new Set<Id>();
-        Boolean anyFirmWide = false;
+        Set<Id> selfIds = new Set<Id>();
         for (Business_Health_Goal_Set__c g : records) {
             if (g.Status__c == 'Active' && g.Effective_Start__c != null) {
                 active.add(g);
-                if (g.Practice__c == null) {
-                    anyFirmWide = true;
-                } else {
-                    practiceIds.add(g.Practice__c);
+                if (g.Id != null) {
+                    selfIds.add(g.Id);
                 }
             }
         }
         if (active.isEmpty()) {
             return;
         }
-        Set<Id> selfIds = new Set<Id>();
-        for (Business_Health_Goal_Set__c g : active) {
-            if (g.Id != null) {
-                selfIds.add(g.Id);
-            }
-        }
-        List<Business_Health_Goal_Set__c> existing = [
-            SELECT Id, Name, Practice__c, Effective_Start__c, Effective_End__c
+        // Goal sets are a small configuration table, so compare against every other Active one.
+        List<Business_Health_Goal_Set__c> pool = [
+            SELECT Id, Name, Practice__c, User__c, Effective_Start__c, Effective_End__c
             FROM Business_Health_Goal_Set__c
-            WHERE Status__c = 'Active' AND Id NOT IN :selfIds AND (Practice__c IN :practiceIds OR Practice__c = null)
+            WHERE Status__c = 'Active' AND Id NOT IN :selfIds
         ];
-        List<Business_Health_Goal_Set__c> pool = new List<Business_Health_Goal_Set__c>();
-        for (Business_Health_Goal_Set__c e : existing) {
-            if (e.Practice__c != null || anyFirmWide) {
-                pool.add(e);
-            }
-        }
         for (Integer i = 0; i < active.size(); i++) {
             Business_Health_Goal_Set__c g = active[i];
             for (Business_Health_Goal_Set__c other : pool) {
@@ -67,7 +53,7 @@ public without sharing class BusinessHealthGoalSetHandler {
     }
 
     private static Boolean sameScope(Business_Health_Goal_Set__c a, Business_Health_Goal_Set__c b) {
-        return a.Practice__c == b.Practice__c;
+        return a.Practice__c == b.Practice__c && a.User__c == b.User__c;
     }
 
     private static String conflictMessage(Business_Health_Goal_Set__c other) {
