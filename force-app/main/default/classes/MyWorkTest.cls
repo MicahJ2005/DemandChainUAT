@@ -18,6 +18,18 @@ private class MyWorkTest {
         }
     }
 
+    // Field access for the advisor's user-mode cache; see BusinessHealthTest.assignViewerPermissionSet.
+    @TestSetup
+    static void setup() {
+        Id me = UserInfo.getUserId();
+        PermissionSet viewer = [SELECT Id FROM PermissionSet WHERE Name = :BusinessHealthAccess.VIEWER];
+        if ([SELECT COUNT() FROM PermissionSetAssignment WHERE AssigneeId = :me AND PermissionSetId = :viewer.Id] == 0) {
+            System.runAs(new User(Id = me)) {
+                insert new PermissionSetAssignment(AssigneeId = me, PermissionSetId = viewer.Id);
+            }
+        }
+    }
+
     private static void grant(List<String> permissions) {
         BusinessHealthAccess.testGrants = new Set<String>(permissions);
     }
@@ -246,8 +258,12 @@ private class MyWorkTest {
         StubLlm stub = new StubLlm();
         BusinessHealthAdvisor.llm = stub;
         BusinessHealthContext.settingsOverride = new Business_Health_Setting__mdt(AI_Enabled__c = true, AI_Cache_Hours__c = 12);
+        BusinessHealthAdvisor.Advice a;
         Test.startTest();
-        BusinessHealthAdvisor.Advice a = BusinessHealthAdvisor.getAdvice('my-consultant', Date.today(), null, false, null);
+        // runAs reloads the running user's permissions, picking up the Viewer permission set from setup.
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            a = BusinessHealthAdvisor.getAdvice('my-consultant', Date.today(), null, false, null);
+        }
         Test.stopTest();
         System.assert(a.aiGenerated);
         System.assert(stub.lastPrompt.contains('speak to them directly as "you"'), 'personal pages use the coaching voice');

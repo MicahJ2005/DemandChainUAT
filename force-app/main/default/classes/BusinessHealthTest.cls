@@ -41,8 +41,29 @@ private class BusinessHealthTest {
         '"recommendations":[{"title":"Build pipeline","action":"Plan accounts","why":"0.7x","impact":"+$1M","owner":"Sales","timeframe":"This month","metric":"Coverage"}],' +
         '"watch":["Bookings"],"dataFixes":["Add FSC"]}\n```';
 
+    /**
+     * The advisor reads and writes its cache in user mode, and a fresh deploy grants no field
+     * access on Business_Health_Insight__c; give the running user the Viewer permission set,
+     * as real users have.
+     */
+    private static void assignViewerPermissionSet() {
+        Id me = UserInfo.getUserId();
+        PermissionSet viewer = [SELECT Id FROM PermissionSet WHERE Name = :BusinessHealthAccess.VIEWER];
+        if ([SELECT COUNT() FROM PermissionSetAssignment WHERE AssigneeId = :me AND PermissionSetId = :viewer.Id] == 0) {
+            System.runAs(new User(Id = me)) {
+                insert new PermissionSetAssignment(AssigneeId = me, PermissionSetId = viewer.Id);
+            }
+        }
+    }
+
+    // runAs reloads the running user's permissions, picking up the Viewer permission set from setup.
+    private static User viewer() {
+        return new User(Id = UserInfo.getUserId());
+    }
+
     @TestSetup
     static void setup() {
+        assignViewerPermissionSet();
         Test.setMock(HttpCalloutMock.class, new NoOpCalloutMock());
         Account acc = new Account(Name = 'Business Health Test Account');
         insert acc;
@@ -376,10 +397,15 @@ private class BusinessHealthTest {
         BusinessHealthAdvisor.llm = stub;
         BusinessHealthContext.settingsOverride = new Business_Health_Setting__mdt(AI_Enabled__c = true, AI_Cache_Hours__c = 12);
 
+        BusinessHealthAdvisor.Advice first;
+        BusinessHealthAdvisor.Advice second;
+        BusinessHealthAdvisor.Advice forced;
         Test.startTest();
-        BusinessHealthAdvisor.Advice first = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, false, null);
-        BusinessHealthAdvisor.Advice second = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, false, null);
-        BusinessHealthAdvisor.Advice forced = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, true, null);
+        System.runAs(viewer()) {
+            first = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, false, null);
+            second = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, false, null);
+            forced = BusinessHealthAdvisor.getAdvice('sales', Date.today(), null, true, null);
+        }
         Test.stopTest();
 
         System.assert(first.aiGenerated);
@@ -425,7 +451,10 @@ private class BusinessHealthTest {
     static void advisorUsesRulesWhenEinsteinIsUnavailable() {
         BusinessHealthAdvisor.llm = null;
         BusinessHealthContext.settingsOverride = new Business_Health_Setting__mdt(AI_Enabled__c = true);
-        BusinessHealthAdvisor.Advice a = BusinessHealthAdvisor.getAdvice('finance', Date.today(), null, false, null);
+        BusinessHealthAdvisor.Advice a;
+        System.runAs(viewer()) {
+            a = BusinessHealthAdvisor.getAdvice('finance', Date.today(), null, false, null);
+        }
         System.assert(!a.aiGenerated);
         System.assert(a.notice.contains('not enabled'), a.notice);
     }
@@ -514,9 +543,13 @@ private class BusinessHealthTest {
         BusinessHealthAdvisor.llm = stub;
         BusinessHealthContext.settingsOverride = new Business_Health_Setting__mdt(AI_Enabled__c = true, AI_Cache_Hours__c = 12);
 
+        BusinessHealthAdvisor.Advice brief;
+        BusinessHealthAdvisor.Advice full;
         Test.startTest();
-        BusinessHealthAdvisor.Advice brief = BusinessHealthAdvisor.getAdvice('leadership', Date.today(), null, false, BusinessHealthModel.VIEW_BRIEF);
-        BusinessHealthAdvisor.Advice full = BusinessHealthAdvisor.getAdvice('leadership', Date.today(), null, false, null);
+        System.runAs(viewer()) {
+            brief = BusinessHealthAdvisor.getAdvice('leadership', Date.today(), null, false, BusinessHealthModel.VIEW_BRIEF);
+            full = BusinessHealthAdvisor.getAdvice('leadership', Date.today(), null, false, null);
+        }
         Test.stopTest();
 
         System.assert(brief.aiGenerated);
