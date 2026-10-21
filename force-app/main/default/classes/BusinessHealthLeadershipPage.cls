@@ -74,12 +74,13 @@ public with sharing class BusinessHealthLeadershipPage implements BusinessHealth
             .note('(Delivered revenue - labor cost of all hours on client projects) / delivered revenue.')
             .trend(trendLabels, marginTrend);
 
-        // 4. Billable utilization.
+        // 4. Utilization: billable + credited hours over available hours.
         List<Decimal> utilTrend = BusinessHealthData.utilizationSeries(tcs, billableStaff.keySet(), trendKeys, ctx.hoursPerWeek());
         List<Decimal> util3 = BusinessHealthData.utilizationSeries(tcs, billableStaff.keySet(), keys3, ctx.hoursPerWeek());
-        page.addKpi(new BusinessHealthModel.Kpi('utilization', 'Billable utilization (T3M)', average(util3), 'percent'))
+        page.addKpi(new BusinessHealthModel.Kpi('utilization', 'Utilization (T3M)', average(util3), 'percent'))
             .target(ctx.num(s.Delivery_Utilization_Target__c, 75), 'higher', 0.1)
-            .note(billableStaff.size() + ' internal delivery resources; billable hours / ' + ctx.hoursPerWeek().setScale(0) + ' hrs per week.')
+            .note(billableStaff.size() + ' internal delivery resources; billable + credited hours / available hours (' +
+                ctx.hoursPerWeek().setScale(0) + ' a week, less time PSA excludes such as pre-sales).')
             .trend(trendLabels, utilTrend);
 
         // 4b. Rate realization (T12M), same basis and target as the Financial page.
@@ -164,7 +165,7 @@ public with sharing class BusinessHealthLeadershipPage implements BusinessHealth
             .target(ctx.num(s.Book_To_Bill_Target__c, 1.1), 'Target')
             .metric('bookToBill');
         page.charts.add(b2bChart);
-        BusinessHealthModel.Chart utilChart = new BusinessHealthModel.Chart('utilizationTrend', 'Billable utilization by month', 'line', 'percent')
+        BusinessHealthModel.Chart utilChart = new BusinessHealthModel.Chart('utilizationTrend', 'Utilization by month', 'line', 'percent')
             .labels(labels12)
             .addSeries('Utilization', BusinessHealthData.utilizationSeries(tcs, billableStaff.keySet(), keys12, ctx.hoursPerWeek()))
             .target(ctx.num(s.Delivery_Utilization_Target__c, 75), 'Target')

@@ -60,37 +60,41 @@ public with sharing class BusinessHealthPeoplePage implements BusinessHealthPage
             .target(departures.size(), 'higher', 0.25)
             .note('Target: at least replace departures (' + departures.size() + ').');
 
-        // ---- new-hire ramp: billable utilization in the first 13 weeks -----------------------
+        // ---- new-hire ramp: utilization in the first 13 weeks ----------------------------------
         List<BusinessHealthData.TimecardFact> tcs = BusinessHealthData.timecards(ctx, from12, 'pse__Resource__r.pse__Practice__c');
         Map<Id, Contact> hireById = new Map<Id, Contact>(hires);
         // Only hires who log time (delivery hires) with 4+ weeks of tenure are measured.
-        Map<Id, Decimal> rampBillableById = new Map<Id, Decimal>();
+        Map<Id, Decimal> rampUtilizedById = new Map<Id, Decimal>();
+        Map<Id, Decimal> rampExcludedById = new Map<Id, Decimal>();
         Set<Id> logsTime = new Set<Id>();
         for (BusinessHealthData.TimecardFact f : tcs) {
             Contact c = hireById.get(f.resourceId);
             if (c != null && f.endDate <= c.pse__Start_Date__c.addDays(7 * RAMP_WEEKS)) {
                 logsTime.add(c.Id);
-                BusinessHealthData.add(rampBillableById, c.Id, f.billableHours);
+                BusinessHealthData.add(rampUtilizedById, c.Id, f.utilizedHours);
+                BusinessHealthData.add(rampExcludedById, c.Id, f.excludedHours);
             }
         }
         Integer rampPeople = 0;
         Decimal rampWeeks = 0;
-        Decimal rampBillable = 0;
+        Decimal rampUtilized = 0;
+        Decimal rampExcluded = 0;
         for (Contact c : hires) {
             Integer weeksIn = Math.min(RAMP_WEEKS, c.pse__Start_Date__c.daysBetween(asOf) / 7);
             if (weeksIn >= 4 && logsTime.contains(c.Id)) {
                 rampPeople++;
                 rampWeeks += weeksIn;
-                rampBillable += BusinessHealthData.nz(rampBillableById.get(c.Id));
+                rampUtilized += BusinessHealthData.nz(rampUtilizedById.get(c.Id));
+                rampExcluded += BusinessHealthData.nz(rampExcludedById.get(c.Id));
             }
         }
         BusinessHealthModel.Kpi rampKpi = page.addKpi(new BusinessHealthModel.Kpi('ramp', 'New-hire ramp (first 13 weeks)',
-            rampPeople == 0 ? null : BusinessHealthModel.pct(rampBillable, rampWeeks * ctx.hoursPerWeek()), 'percent'));
+            rampPeople == 0 ? null : BusinessHealthModel.pct(rampUtilized, Math.max(rampWeeks * ctx.hoursPerWeek() - rampExcluded, 0)), 'percent'));
         if (rampPeople == 0) {
             rampKpi.markUnavailable('No delivery hires (people logging time) with at least 4 weeks of tenure in the last 12 months.');
         } else {
             rampKpi.target(ctx.num(s.New_Hire_Ramp_Target__c, 45), 'higher', 0.25)
-                .note('Billable utilization of ' + rampPeople + ' recent hires in their first weeks.');
+                .note('Utilization (billable + credited) of ' + rampPeople + ' recent hires in their first weeks.');
         }
 
         // ---- recruiting ------------------------------------------------------------------------

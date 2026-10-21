@@ -234,10 +234,10 @@ private class MyWorkTest {
         BusinessHealthModel.HealthPage pm = BusinessHealthController.getPage('my-pm', Date.today(), null, null);
         Test.stopTest();
         // Org automation decides the new timecard's status and billability; the page must agree with it.
-        pse__Timecard_Header__c tc = [SELECT pse__Status__c, pse__Billable__c, pse__Total_Hours__c FROM pse__Timecard_Header__c];
+        pse__Timecard_Header__c tc = [SELECT pse__Status__c, pse__Billable__c, pse__Time_Credited__c, pse__Total_Hours__c FROM pse__Timecard_Header__c];
         Map<String, BusinessHealthModel.Kpi> c = kpis(consultant);
         System.assertEquals(40, tc.pse__Total_Hours__c);
-        System.assertEquals(tc.pse__Billable__c ? 40 : 0, c.get('lastWeekBillable').value);
+        System.assertEquals(tc.pse__Billable__c || tc.pse__Time_Credited__c ? 40 : 0, c.get('lastWeekBillable').value);
         System.assertEquals(tc.pse__Status__c == 'Saved' ? 1 : 0, c.get('savedTimecards').value);
         System.assertEquals(1, kpis(pm).get('activeProjects').value);
 

@@ -208,7 +208,7 @@ public with sharing class BusinessHealthAdvisor {
         'portfolio' => 'You are advising the CEO and client-facing leaders. Focus on concentration risk, specific win-back and expansion targets, retention, and growing recurring managed-services revenue.',
         'marketing' => 'You are advising the CEO and the marketing lead. Judge whether marketing is filling the funnel with leads that become pipeline: lead volume and quality by source, follow-up discipline, which campaigns and campaign types earn pipeline and which do not, and where to shift effort (events, webinars, email, Salesforce co-marketing, outbound). Name specific campaigns and lead sources from the data.',
         'my-ae' => 'You are coaching one Account Executive on their own book of business. Focus on hitting their number: which specific deals to advance or clean up this week, where pipeline is thin against the remaining quota, warm campaign responders and leads to follow up, and renewals to start early.',
-        'my-architect' => 'You are coaching one Solution Architect. Balance pre-sales and delivery: which supported deals need a solution or SOW next, how to raise the win rate on deals they support, and how to keep their own billable utilization on target.',
+        'my-architect' => 'You are coaching one Solution Architect. Balance pre-sales and delivery: which supported deals need a solution or SOW next, how to raise the win rate on deals they support, and how to keep their own utilization on target.',
         'my-pm' => 'You are coaching one Project Manager on the projects they run. Focus on this week\'s actions per project: forecast overruns, red or yellow projects, timecards to approve, overdue status reports, projects ending soon (close-out and CSAT), and open staffing requests.',
         'my-consultant' => 'You are coaching one consultant on their own utilization and time. Focus on reaching their billable goal, getting their next weeks scheduled, timecard compliance, and certifications that would make them easier to staff on strategic work.',
         'my-finance' => 'You are advising the finance team on billing and cash operations. Focus on converting delivered work to cash: oldest unbilled WIP, approvals blocking billing (name the project managers), late timecards, projects near their budget cap, and collections.',
@@ -219,7 +219,7 @@ public with sharing class BusinessHealthAdvisor {
     private static final String BENCHMARKS =
         'Industry benchmarks for Salesforce consulting partners: weighted pipeline coverage ~3x the next-two-quarter revenue target; ' +
         'book-to-bill above 1.0 means growth, below 1.0 for several months is an early warning; backlog runway of 3-6 months; ' +
-        'project gross margin 35-50% depending on offshore mix; rate realization 90%+ of rate card; billable utilization 70-85% ' +
+        'project gross margin 35-50% depending on offshore mix; rate realization 90%+ of rate card; utilization (billable + credited) 70-85% ' +
         'for delivery consultants (architects and leaders lower); top-5 clients above 30-40% of revenue is a concentration risk; ' +
         'recurring managed-services revenue smooths project swings and raises firm valuation; voluntary attrition above ~15% is costly; ' +
         'certifications in Agentforce and Data Cloud drive Salesforce lead flow and partner tier.';
@@ -404,9 +404,9 @@ public with sharing class BusinessHealthAdvisor {
         'unbilledWip' => new List<String>{ 'Bill faster', 'Approve timecards and release billing events weekly; chase the largest unbilled projects first.', 'Billing / finance' },
         'unbilledWipDays' => new List<String>{ 'Bill faster', 'Approve timecards and release billing events weekly; chase the largest unbilled projects first.', 'Billing / finance' },
         'billedNotInvoiced' => new List<String>{ 'Invoice released billing events', 'Send invoices for every released billing event this week.', 'Billing / finance' },
-        'utilization' => new List<String>{ 'Lift billable utilization', 'Staff bench consultants onto funded work, or into pre-sales and certification, and review role targets.', 'Delivery leader' },
-        'util4' => new List<String>{ 'Lift billable utilization', 'Staff bench consultants onto funded work, or into pre-sales and certification, and review role targets.', 'Delivery leader' },
-        'util13' => new List<String>{ 'Lift billable utilization', 'Staff bench consultants onto funded work, or into pre-sales and certification, and review role targets.', 'Delivery leader' },
+        'utilization' => new List<String>{ 'Lift utilization', 'Staff bench consultants onto funded work, or into pre-sales and certification, and review role targets.', 'Delivery leader' },
+        'util4' => new List<String>{ 'Lift utilization', 'Staff bench consultants onto funded work, or into pre-sales and certification, and review role targets.', 'Delivery leader' },
+        'util13' => new List<String>{ 'Lift utilization', 'Staff bench consultants onto funded work, or into pre-sales and certification, and review role targets.', 'Delivery leader' },
         'forecast8' => new List<String>{ 'Fill the next 8 weeks', 'Low scheduled hours: push near-close deals to start, and make sure PMs keep assignment schedules current.', 'Delivery leader' },
         'bench' => new List<String>{ 'Redeploy the bench', 'Assign bench consultants to open requests, managed-services queues, or targeted certifications this week.', 'Resource manager' },
         'attrition' => new List<String>{ 'Reduce attrition', 'Hold stay interviews with top performers and review compensation and career paths for at-risk roles.', 'CEO / people lead' },

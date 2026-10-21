@@ -276,6 +276,7 @@ private class BusinessHealthTest {
         f.endDate = endDate;
         f.hours = hours;
         f.billableHours = billable;
+        f.utilizedHours = billable;
         f.revenue = revenue;
         f.cost = cost;
         f.resourceId = resourceId;
@@ -292,6 +293,14 @@ private class BusinessHealthTest {
             fact('2025-01', Date.newInstance(2025, 1, 25), 40, 30, 3000, 1500, r1),
             fact('2024-09', Date.newInstance(2024, 9, 7), 40, 40, 100, 50, r1)
         };
+        // Non-billable time PSA credits (managed services, fixed fee) counts as utilized;
+        // time it excludes (pre-sales) comes out of available hours.
+        BusinessHealthData.TimecardFact credited = fact('2025-01', Date.newInstance(2025, 1, 18), 5, 0, 0, 0, r1);
+        credited.utilizedHours = 5;
+        BusinessHealthData.TimecardFact presales = fact('2025-01', Date.newInstance(2025, 1, 11), 10, 0, 0, 0, r1);
+        presales.excludedHours = 10;
+        tcs.add(credited);
+        tcs.add(presales);
         BusinessHealthData.MilestoneFact m = new BusinessHealthData.MilestoneFact();
         m.monthKey = '2025-01';
         m.amount = 1000;
@@ -307,7 +316,7 @@ private class BusinessHealthTest {
         System.assertEquals(3000, BusinessHealthData.recurringByMonth(tcs, ms).get('2025-01'));
 
         List<Decimal> util = BusinessHealthData.utilizationSeries(tcs, new Set<Id>{ r1 }, new List<String>{ '2025-01' }, 40);
-        System.assertEquals(BusinessHealthModel.pct(30, 40 * 31 / 7.0), util[0]);
+        System.assertEquals(BusinessHealthModel.pct(30 + 5, 40 * 31 / 7.0 - 10), util[0]);
 
         List<Decimal> wip = BusinessHealthData.unbilledWip(tcs, Date.newInstance(2025, 2, 15));
         System.assertEquals(3000, wip[0], 'recent unbilled time is WIP');

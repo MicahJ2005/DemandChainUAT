@@ -1,7 +1,8 @@
 /**
  * @group BusinessHealth
  *
- * @description Utilization & Capacity: billable utilization by role and by person
+ * @description Utilization & Capacity: utilization (billable + PSA credited hours over
+ * available hours; see BusinessHealthData) by role and by person
  * against each person's Utilization Target (resource Contact), bench, forecast utilization for the next 8 weeks (from PSA
  * assignment schedules), open demand (unfilled resource requests) vs available
  * capacity, and subcontractor mix. Together these answer: hire, use subcontractors,
@@ -19,8 +20,10 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
 
     private class Person {
         Contact c;
-        Decimal billable4 = 0;
-        Decimal billable13 = 0;
+        Decimal utilized4 = 0;
+        Decimal utilized13 = 0;
+        Decimal excluded4 = 0;
+        Decimal excluded13 = 0;
         Decimal scheduled8 = 0;
         Decimal scheduled4 = 0;
     }
@@ -29,7 +32,7 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
         BusinessHealthModel.HealthPage page = new BusinessHealthModel.HealthPage(
             'capacity',
             'Utilization & Capacity',
-            'Are people busy on billable work, and is there enough work, or too much, coming in the next 8 weeks?',
+            'Are people busy on client work, and is there enough work, or too much, coming in the next 8 weeks?',
             'Directors'
         );
         Business_Health_Goal_Set__c s = ctx.goals;
@@ -55,7 +58,8 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
         }
 
         // ---- actuals ------------------------------------------------------------------
-        Map<Date, Decimal> billableByWeek = new Map<Date, Decimal>();
+        Map<Date, Decimal> utilizedByWeek = new Map<Date, Decimal>();
+        Map<Date, Decimal> excludedByWeek = new Map<Date, Decimal>();
         Decimal externalBillable = 0;
         Decimal totalBillable = 0;
         for (BusinessHealthData.TimecardFact f : tcs) {
@@ -71,14 +75,17 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             if (p == null) {
                 continue;
             }
-            addDate(billableByWeek, wk, f.billableHours);
-            p.billable13 += f.billableHours;
+            addDate(utilizedByWeek, wk, f.utilizedHours);
+            addDate(excludedByWeek, wk, f.excludedHours);
+            p.utilized13 += f.utilizedHours;
+            p.excluded13 += f.excludedHours;
             if (wk >= fourWeeksStart) {
-                p.billable4 += f.billableHours;
+                p.utilized4 += f.utilizedHours;
+                p.excluded4 += f.excludedHours;
             }
         }
 
-        // ---- forecast: scheduled billable hours (weekly Est vs Actuals) -------------------
+        // ---- forecast: scheduled billable + credited hours (weekly Est vs Actuals) ---------
         ctx.bind('futureStart', firstFutureWeekStart);
         ctx.bind('futureEnd', futureEnd.addDays(6));
         ctx.bind('deliveryIds', people.keySet());
@@ -86,7 +93,8 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
         Date fourWeekForecastEnd = firstFutureWeekStart.addDays(7 * 4);
         for (AggregateResult ar : ctx.aggregate(
             'SELECT pse__Resource__c res, pse__End_Date__c wkEnd, SUM(pse__Estimated_Hours__c) hrs FROM pse__Est_Vs_Actuals__c' +
-                ' WHERE pse__Time_Period_Type__c = \'Week\' AND pse__Assignment__r.pse__Is_Billable__c = true' +
+                ' WHERE pse__Time_Period_Type__c = \'Week\' AND pse__Assignment__r.pse__Exclude_From_Utilization__c = false' +
+                ' AND (pse__Assignment__r.pse__Is_Billable__c = true OR pse__Assignment__r.pse__Time_Credited__c = true)' +
                 ' AND pse__Resource__c IN :deliveryIds AND pse__End_Date__c >= :futureStart AND pse__End_Date__c <= :futureEnd' +
                 ' GROUP BY pse__Resource__c, pse__End_Date__c'
         )) {
@@ -159,14 +167,18 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
 
         // ---- firm-level KPIs --------------------------------------------------------------
         Integer n = people.size();
-        Decimal b4 = 0;
-        Decimal b13 = 0;
+        Decimal u4 = 0;
+        Decimal u13 = 0;
+        Decimal available4 = 0;
+        Decimal available13 = 0;
         Decimal sched8 = 0;
         Integer bench = 0;
         Integer overallocated = 0;
         for (Person p : people.values()) {
-            b4 += p.billable4;
-            b13 += p.billable13;
+            u4 += p.utilized4;
+            u13 += p.utilized13;
+            available4 += available(hpw, 4, p.excluded4);
+            available13 += available(hpw, PAST_WEEKS, p.excluded13);
             sched8 += p.scheduled8;
             Decimal f4 = BusinessHealthModel.pct(p.scheduled4, hpw * 4);
             if (f4 != null && f4 < BENCH_THRESHOLD) {
@@ -178,18 +190,19 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
         }
         Decimal capacity8 = n * hpw * FUTURE_WEEKS;
         Decimal available8 = Math.max(capacity8 * firmTarget / 100 - sched8, 0);
-        page.addKpi(new BusinessHealthModel.Kpi('util4', 'Billable utilization (last 4 weeks)', BusinessHealthModel.pct(b4, n * hpw * 4), 'percent'))
+        page.addKpi(new BusinessHealthModel.Kpi('util4', 'Utilization (last 4 weeks)', BusinessHealthModel.pct(u4, available4), 'percent'))
             .target(firmTarget, 'higher', 0.1)
-            .note(n + ' internal delivery resources, billable hours / ' + hpw.setScale(0) + ' hrs per week.');
-        page.addKpi(new BusinessHealthModel.Kpi('util13', 'Billable utilization (last 13 weeks)', BusinessHealthModel.pct(b13, n * hpw * PAST_WEEKS), 'percent'))
+            .note(n + ' internal delivery resources. Billable + credited hours / available hours (' + hpw.setScale(0) +
+                ' a week, less time PSA excludes such as pre-sales).');
+        page.addKpi(new BusinessHealthModel.Kpi('util13', 'Utilization (last 13 weeks)', BusinessHealthModel.pct(u13, available13), 'percent'))
             .target(firmTarget, 'higher', 0.1);
         page.addKpi(new BusinessHealthModel.Kpi('forecast8', 'Forecast utilization (next 8 weeks)', BusinessHealthModel.pct(sched8, capacity8), 'percent'))
             .target(firmTarget, 'higher', 0.15)
-            .note('Scheduled billable assignment hours (PSA Est vs Actuals). Low numbers mean unsold capacity, or schedules not yet entered.');
+            .note('Scheduled hours on billable or credited assignments (PSA Est vs Actuals). Low numbers mean unsold capacity, or schedules not yet entered.');
         Integer benchTarget = Math.max(1, (Integer) Math.floor(n * ctx.num(s.Bench_Threshold__c, 10) / 100));
         page.addKpi(new BusinessHealthModel.Kpi('bench', 'On the bench (next 4 weeks)', bench, 'number'))
             .target(benchTarget, 'lower', 0.5)
-            .note('Delivery resources scheduled under ' + BENCH_THRESHOLD.setScale(0) + '% billable for the next 4 weeks. ' +
+            .note('Delivery resources scheduled under ' + BENCH_THRESHOLD.setScale(0) + '% for the next 4 weeks. ' +
                 overallocated + ' are over-allocated (>' + OVERALLOCATED_THRESHOLD.setScale(0) + '%).');
         Decimal demandRatio = available8 == 0 ? null : (openDemand / available8).setScale(2);
         BusinessHealthModel.Kpi demandKpi = page.addKpi(new BusinessHealthModel.Kpi('demandRatio', 'Open demand / available capacity', demandRatio, 'ratio'))
@@ -212,7 +225,7 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
         for (Integer w = 0; w < PAST_WEEKS; w++) {
             Date ws = firstPastWeekStart.addDays(7 * w);
             weekLabels.add(Datetime.newInstance(ws.year(), ws.month(), ws.day()).format('M/d'));
-            actualSeries.add(BusinessHealthModel.pct(BusinessHealthData.nz(billableByWeek.get(ws)), n * hpw));
+            actualSeries.add(BusinessHealthModel.pct(BusinessHealthData.nz(utilizedByWeek.get(ws)), available(n * hpw, 1, BusinessHealthData.nz(excludedByWeek.get(ws)))));
             forecastSeries.add(null);
         }
         List<String> futureLabels = new List<String>();
@@ -231,7 +244,7 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             demandSeries.add(BusinessHealthData.nz(demandByWeek.get(ws)).setScale(0));
         }
         page.charts.add(
-            new BusinessHealthModel.Chart('weeklyUtilization', 'Weekly billable utilization: actual and scheduled', 'line', 'percent')
+            new BusinessHealthModel.Chart('weeklyUtilization', 'Weekly utilization: actual and scheduled', 'line', 'percent')
                 .labels(weekLabels)
                 .addSeries('Actual', actualSeries)
                 .addSeries('Scheduled', forecastSeries)
@@ -266,38 +279,42 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
         List<String> roleNames = new List<String>();
         List<Decimal> roleUtil = new List<Decimal>();
         for (String role : byRole.keySet()) {
-            Decimal rb4 = 0;
-            Decimal rb13 = 0;
+            Decimal ru4 = 0;
+            Decimal ru13 = 0;
+            Decimal ra4 = 0;
+            Decimal ra13 = 0;
             Decimal rs8 = 0;
             Decimal targetSum = 0;
             for (Person p : byRole.get(role)) {
-                rb4 += p.billable4;
-                rb13 += p.billable13;
+                ru4 += p.utilized4;
+                ru13 += p.utilized13;
+                ra4 += available(hpw, 4, p.excluded4);
+                ra13 += available(hpw, PAST_WEEKS, p.excluded13);
                 rs8 += p.scheduled8;
                 targetSum += ctx.resourceTarget(p.c);
             }
             Integer rn = byRole.get(role).size();
-            Decimal u13 = BusinessHealthModel.pct(rb13, rn * hpw * PAST_WEEKS);
+            Decimal roleU13 = BusinessHealthModel.pct(ru13, ra13);
             // Everyone shares the same standard week, so the capacity-weighted target is the plain average.
             Decimal target = (targetSum / rn).setScale(1);
             roleTable.rows.add(
                 new Map<String, Object>{
                     'role' => role,
                     'headcount' => rn,
-                    'util4' => BusinessHealthModel.pct(rb4, rn * hpw * 4),
-                    'util13' => u13,
+                    'util4' => BusinessHealthModel.pct(ru4, ra4),
+                    'util13' => roleU13,
                     'forecast' => BusinessHealthModel.pct(rs8, rn * hpw * FUTURE_WEEKS),
                     'target' => target,
-                    'status' => BusinessHealthModel.evaluate(u13, target, 'higher', 0.1)
+                    'status' => BusinessHealthModel.evaluate(roleU13, target, 'higher', 0.1)
                 }
             );
             roleNames.add(role);
-            roleUtil.add(u13);
+            roleUtil.add(roleU13);
         }
         BusinessHealthModel.sortRows(roleTable.rows, 'headcount');
         page.tables.add(roleTable);
         page.charts.add(
-            new BusinessHealthModel.Chart('utilByRole', 'Billable utilization by role (last 13 weeks)', 'hbar', 'percent')
+            new BusinessHealthModel.Chart('utilByRole', 'Utilization by role (last 13 weeks)', 'hbar', 'percent')
                 .labels(roleNames)
                 .addSeries('Utilization', roleUtil)
                 .target(firmTarget, 'Firm target')
@@ -317,7 +334,6 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             .col('flag', 'Flag', 'text')
             .col('status', 'Status', 'status');
         for (Person p : people.values()) {
-            Decimal u13 = BusinessHealthModel.pct(p.billable13, hpw * PAST_WEEKS);
             Decimal f8 = BusinessHealthModel.pct(p.scheduled8, hpw * FUTURE_WEEKS);
             Decimal f4 = BusinessHealthModel.pct(p.scheduled4, hpw * 4);
             Decimal target = ctx.resourceTarget(p.c);
@@ -328,8 +344,8 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
                     'name' => p.c.Name,
                     'role' => p.c.pse__Resource_Role__c,
                     'practice' => p.c.pse__Practice__r == null ? null : p.c.pse__Practice__r.Name,
-                    'util4' => BusinessHealthModel.pct(p.billable4, hpw * 4),
-                    'util13' => u13,
+                    'util4' => BusinessHealthModel.pct(p.utilized4, available(hpw, 4, p.excluded4)),
+                    'util13' => BusinessHealthModel.pct(p.utilized13, available(hpw, PAST_WEEKS, p.excluded13)),
                     'forecast' => f8,
                     'available' => Math.max(hpw * FUTURE_WEEKS * target / 100 - p.scheduled8, 0).setScale(0),
                     'target' => target,
@@ -348,7 +364,7 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             page.signal(BusinessHealthModel.STATUS_INFO, 'No open resource requests. Demand is only visible once pipeline deals raise PSA resource requests.');
         }
         Decimal f8firm = BusinessHealthModel.pct(sched8, capacity8);
-        Decimal u4firm = BusinessHealthModel.pct(b4, n * hpw * 4);
+        Decimal u4firm = BusinessHealthModel.pct(u4, available4);
         if (f8firm != null && u4firm != null && f8firm < u4firm - 20) {
             page.signal(BusinessHealthModel.STATUS_WARN, 'Scheduled utilization drops ' + (u4firm - f8firm).setScale(0) +
                 ' points below recent actuals. Either work is ending without replacements, or assignment schedules are not being kept current.');
@@ -364,6 +380,11 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             page.dataGaps.add(noTarget + ' delivery resources have no Utilization Target on their resource record, so their role default is used.');
         }
         return page;
+    }
+
+    /** Standard hours over `weeks`, less PSA-excluded hours (pre-sales, internal enablement). */
+    private static Decimal available(Decimal hoursPerWeek, Integer weeks, Decimal excluded) {
+        return Math.max(hoursPerWeek * weeks - excluded, 0);
     }
 
     private static void addDate(Map<Date, Decimal> m, Date key, Decimal value) {

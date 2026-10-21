@@ -57,7 +57,7 @@ public with sharing class MyWorkSupport {
     }
 
     /**
-     * @description Personal billable utilization target (percent): the Utilization Target
+     * @description Personal utilization target (percent): the Utilization Target
      * on the resource Contact; when that is blank or 0, the personal goal set's Delivery
      * Utilization Target, else the target for the resource's role.
      */
@@ -94,16 +94,19 @@ public with sharing class MyWorkSupport {
     public class Utilization {
         public Decimal targetPct;
         public Decimal weeklyGoal;
-        public Decimal lastWeekBillable = 0;
-        public Decimal billable4 = 0;
-        public Decimal billableYtd = 0;
+        /** Billable + PSA credited hours (see BusinessHealthData); excluded hours come off available hours. */
+        public Decimal lastWeekUtilized = 0;
+        public Decimal utilized4 = 0;
+        public Decimal utilizedYtd = 0;
+        public Decimal excluded4 = 0;
+        public Decimal excludedYtd = 0;
         public Integer weeksYtd = 0;
         public Decimal scheduled4 = 0;
         public Integer underLoggedWeeks = 0;
         public Integer savedTimecards = 0;
         public List<Date> weeks = new List<Date>();
-        public Map<Date, Decimal> billableByWeek = new Map<Date, Decimal>();
-        public Map<Date, Decimal> nonBillableByWeek = new Map<Date, Decimal>();
+        public Map<Date, Decimal> utilizedByWeek = new Map<Date, Decimal>();
+        public Map<Date, Decimal> otherByWeek = new Map<Date, Decimal>();
         public Map<Date, Decimal> scheduledByWeek = new Map<Date, Decimal>();
         public Map<Date, String> statusByWeek = new Map<Date, String>();
         public Map<String, Decimal> hoursByProject = new Map<String, Decimal>();
@@ -111,7 +114,7 @@ public with sharing class MyWorkSupport {
 
     /**
      * @description Loads the resource's timecards (year to date and the trailing
-     * PAST_WEEKS weeks) and scheduled billable hours (next FUTURE_WEEKS weeks), and
+     * PAST_WEEKS weeks) and scheduled billable or credited hours (next FUTURE_WEEKS weeks), and
      * adds the utilization KPIs and weekly hours chart to the page.
      * @param includeCompliance also add timecard compliance KPIs (missing / unsubmitted)
      */
@@ -130,29 +133,32 @@ public with sharing class MyWorkSupport {
         }
 
         for (pse__Timecard_Header__c tc : [
-            SELECT pse__End_Date__c, pse__Total_Hours__c, pse__Billable__c, pse__Status__c, pse__Project__r.Name
+            SELECT pse__End_Date__c, pse__Total_Hours__c, pse__Billable__c, pse__Time_Credited__c, pse__Time_Excluded__c,
+                pse__Exclude_From_Utilization__c, pse__Status__c, pse__Project__r.Name
             FROM pse__Timecard_Header__c
             WHERE pse__Resource__c = :c.Id AND pse__End_Date__c >= :from0 AND pse__End_Date__c <= :lastWeekEnd
             WITH USER_MODE
         ]) {
             Date wk = tc.pse__End_Date__c.toStartOfWeek();
             Decimal h = BusinessHealthData.nz(tc.pse__Total_Hours__c);
-            Boolean counts = tc.pse__Status__c != 'Rejected';
-            if (tc.pse__Billable__c && counts) {
-                if (wk >= yearStart) {
-                    u.billableYtd += h;
-                }
-                if (wk >= lastWeek.addDays(-21)) {
-                    u.billable4 += h;
-                }
-                if (wk == lastWeek) {
-                    u.lastWeekBillable += h;
-                }
+            Boolean counts = tc.pse__Status__c != 'Rejected' && !tc.pse__Exclude_From_Utilization__c;
+            Boolean utilized = counts && (tc.pse__Billable__c || tc.pse__Time_Credited__c);
+            Decimal excluded = counts && !utilized && tc.pse__Time_Excluded__c ? h : 0;
+            if (wk >= yearStart) {
+                u.utilizedYtd += utilized ? h : 0;
+                u.excludedYtd += excluded;
+            }
+            if (wk >= lastWeek.addDays(-21)) {
+                u.utilized4 += utilized ? h : 0;
+                u.excluded4 += excluded;
+            }
+            if (wk == lastWeek && utilized) {
+                u.lastWeekUtilized += h;
             }
             if (wk < firstWeek) {
                 continue;
             }
-            Map<Date, Decimal> bucket = tc.pse__Billable__c ? u.billableByWeek : u.nonBillableByWeek;
+            Map<Date, Decimal> bucket = utilized ? u.utilizedByWeek : u.otherByWeek;
             bucket.put(wk, BusinessHealthData.nz(bucket.get(wk)) + h);
             if (tc.pse__Status__c == 'Saved') {
                 u.savedTimecards++;
@@ -171,19 +177,20 @@ public with sharing class MyWorkSupport {
         }
         for (Integer w = PAST_WEEKS - 4; w < PAST_WEEKS; w++) {
             Date wk = u.weeks[w];
-            Decimal logged = BusinessHealthData.nz(u.billableByWeek.get(wk)) + BusinessHealthData.nz(u.nonBillableByWeek.get(wk));
+            Decimal logged = BusinessHealthData.nz(u.utilizedByWeek.get(wk)) + BusinessHealthData.nz(u.otherByWeek.get(wk));
             if (logged < hpw * UNDER_LOGGED_SHARE) {
                 u.underLoggedWeeks++;
             }
         }
 
-        // Scheduled billable hours, next FUTURE_WEEKS weeks.
+        // Scheduled billable or credited hours, next FUTURE_WEEKS weeks.
         Date futureStart = lastWeek.addDays(7);
         Date futureEnd = futureStart.addDays(7 * FUTURE_WEEKS - 1);
         for (AggregateResult ar : [
             SELECT pse__End_Date__c wkEnd, SUM(pse__Estimated_Hours__c) hrs
             FROM pse__Est_Vs_Actuals__c
-            WHERE pse__Resource__c = :c.Id AND pse__Time_Period_Type__c = 'Week' AND pse__Assignment__r.pse__Is_Billable__c = true
+            WHERE pse__Resource__c = :c.Id AND pse__Time_Period_Type__c = 'Week' AND pse__Assignment__r.pse__Exclude_From_Utilization__c = false
+                AND (pse__Assignment__r.pse__Is_Billable__c = true OR pse__Assignment__r.pse__Time_Credited__c = true)
                 AND pse__End_Date__c >= :futureStart AND pse__End_Date__c <= :futureEnd
             WITH USER_MODE
             GROUP BY pse__End_Date__c
@@ -194,7 +201,7 @@ public with sharing class MyWorkSupport {
             u.scheduled4 += h;
         }
 
-        page.addKpi(new BusinessHealthModel.Kpi('lastWeekBillable', 'Billable hours, last week', u.lastWeekBillable.setScale(1), 'hours'))
+        page.addKpi(new BusinessHealthModel.Kpi('lastWeekBillable', 'Billable + credited hours, last week', u.lastWeekUtilized.setScale(1), 'hours'))
             .target(u.weeklyGoal, 'higher', 0.15)
             .note('Week ending ' + lastWeek.addDays(6).format() + '. Your weekly goal is ' + u.weeklyGoal.setScale(1) + ' hours.');
         String targetSource = BusinessHealthData.hasUtilizationTarget(c)
@@ -202,15 +209,18 @@ public with sharing class MyWorkSupport {
             : 'Target: ' + u.targetPct.setScale(0) + '%, the default for ' +
                 (String.isBlank(c.pse__Resource_Role__c) ? 'your role' : c.pse__Resource_Role__c) +
                 '. Your resource record has no Utilization Target.';
-        page.addKpi(new BusinessHealthModel.Kpi('util4', 'Billable utilization, last 4 weeks', BusinessHealthModel.pct(u.billable4, hpw * 4), 'percent'))
+        page.addKpi(new BusinessHealthModel.Kpi('util4', 'Utilization, last 4 weeks', BusinessHealthModel.pct(u.utilized4, Math.max(hpw * 4 - u.excluded4, 0)), 'percent'))
             .target(u.targetPct, 'higher', 0.1)
-            .note('Billable hours / ' + hpw.setScale(0) + ' standard hours a week. ' + targetSource);
-        page.addKpi(new BusinessHealthModel.Kpi('utilYtd', 'Billable utilization, year to date', BusinessHealthModel.pct(u.billableYtd, hpw * Math.max(1, u.weeksYtd)), 'percent'))
+            .note('Billable + credited hours / available hours (' + hpw.setScale(0) +
+                ' a week, less time PSA excludes such as pre-sales). ' + targetSource);
+        page.addKpi(new BusinessHealthModel.Kpi('utilYtd', 'Utilization, year to date',
+                BusinessHealthModel.pct(u.utilizedYtd, Math.max(hpw * Math.max(1, u.weeksYtd) - u.excludedYtd, 0)), 'percent'))
             .target(u.targetPct, 'higher', 0.1)
-            .note(u.billableYtd.setScale(0) + ' billable hours over ' + u.weeksYtd + ' weeks.');
+            .note(u.utilizedYtd.setScale(0) + ' billable + credited hours over ' + u.weeksYtd + ' weeks' +
+                (u.excludedYtd > 0 ? ', with ' + u.excludedYtd.setScale(0) + ' excluded hours taken out of available time.' : '.'));
         page.addKpi(new BusinessHealthModel.Kpi('scheduled4', 'Scheduled, next 4 weeks', BusinessHealthModel.pct(u.scheduled4, hpw * FUTURE_WEEKS), 'percent'))
             .target(u.targetPct, 'higher', 0.2)
-            .note(u.scheduled4.setScale(0) + ' billable hours on your assignment schedules. Low means you need your next project lined up.');
+            .note(u.scheduled4.setScale(0) + ' hours on your billable or credited assignment schedules. Low means you need your next project lined up.');
         if (includeCompliance) {
             page.addKpi(new BusinessHealthModel.Kpi('missingTimecards', 'Weeks under-logged (last 4)', u.underLoggedWeeks, 'number'))
                 .target(0, 'lower', 0)
@@ -222,28 +232,28 @@ public with sharing class MyWorkSupport {
 
         // Weekly hours chart: past weeks actuals, next weeks scheduled.
         List<String> labels = new List<String>();
-        List<Decimal> billable = new List<Decimal>();
-        List<Decimal> nonBillable = new List<Decimal>();
+        List<Decimal> utilized = new List<Decimal>();
+        List<Decimal> other = new List<Decimal>();
         List<Decimal> scheduled = new List<Decimal>();
         for (Date wk : u.weeks) {
             labels.add(weekLabel(wk));
-            billable.add(BusinessHealthData.nz(u.billableByWeek.get(wk)).setScale(1));
-            nonBillable.add(BusinessHealthData.nz(u.nonBillableByWeek.get(wk)).setScale(1));
+            utilized.add(BusinessHealthData.nz(u.utilizedByWeek.get(wk)).setScale(1));
+            other.add(BusinessHealthData.nz(u.otherByWeek.get(wk)).setScale(1));
             scheduled.add(null);
         }
         for (Integer w = 0; w < FUTURE_WEEKS; w++) {
             Date wk = futureStart.addDays(7 * w);
             labels.add(weekLabel(wk));
-            billable.add(null);
-            nonBillable.add(null);
+            utilized.add(null);
+            other.add(null);
             scheduled.add(BusinessHealthData.nz(u.scheduledByWeek.get(wk)).setScale(1));
         }
         page.charts.add(
             new BusinessHealthModel.Chart('weeklyHours', 'Your hours by week: logged and scheduled', 'bar', 'hours')
                 .labels(labels)
-                .addSeries('Billable', billable)
-                .addSeries('Non-billable', nonBillable)
-                .addSeries('Scheduled (billable)', scheduled)
+                .addSeries('Billable + credited', utilized)
+                .addSeries('Other', other)
+                .addSeries('Scheduled', scheduled)
                 .target(u.weeklyGoal, 'Weekly goal')
                 .metric('util4')
         );

@@ -57,6 +57,8 @@ private class BusinessHealthPagesTest {
                 DCS_Billable_Goal__c = 40, pse__Default_Cost_Rate__c = 60, pse__Start_Date__c = today.addYears(-3), pse__Utilization_Target__c = 90),
             new Contact(LastName = 'New Hire', pse__Is_Resource__c = true, pse__Is_Resource_Active__c = true, pse__Resource_Role__c = 'Senior Consultant',
                 DCS_Billable_Goal__c = 40, pse__Default_Cost_Rate__c = 70, pse__Start_Date__c = today.addDays(-70)),
+            new Contact(LastName = 'Architect', pse__Is_Resource__c = true, pse__Is_Resource_Active__c = true, pse__Resource_Role__c = 'Technical Architect',
+                DCS_Billable_Goal__c = 20, pse__Utilization_Target__c = 60, pse__Start_Date__c = today.addYears(-2)),
             new Contact(LastName = 'Benched', pse__Is_Resource__c = true, pse__Is_Resource_Active__c = true, DCS_Billable_Goal__c = 40,
                 pse__Start_Date__c = today.addYears(-1)),
             new Contact(LastName = 'Leaver', pse__Is_Resource__c = true, pse__Is_Resource_Active__c = false, pse__Resource_Role__c = 'Consultant',
@@ -85,6 +87,8 @@ private class BusinessHealthPagesTest {
         f.monthKey = BusinessHealthContext.monthKey(endDate);
         f.hours = hours;
         f.billableHours = billable ? hours : 0;
+        // As in the org, fixed-fee time is logged non-billable and PSA credits it to utilization.
+        f.utilizedHours = billable || f.billingType == 'Fixed Price' ? hours : 0;
         f.revenue = billable && f.billingType != 'Fixed Price' ? hours * 200 : 0;
         f.cost = hours * 60;
         f.unbilled = f.revenue > 0 && endDate > Date.today().addDays(-60);
@@ -130,6 +134,18 @@ private class BusinessHealthPagesTest {
         facts.add(sub);
         // Time logged after the last complete week is left out of weekly utilization.
         facts.add(fact(people.get('Veteran'), build, Date.today(), 4, true));
+        // The architect splits every week evenly between billable work and pre-sales, which
+        // PSA excludes from available hours, so they are exactly 100% utilized.
+        Decimal half = BusinessHealthContext.build(Date.today(), null).hoursPerWeek() / 2;
+        Date lastCompleteWeekEnd = MyWorkSupport.lastCompleteWeekStart(Date.today()).addDays(6);
+        for (Integer w = 0; w < 20; w++) {
+            Date weekEnd = lastCompleteWeekEnd.addDays(-7 * w);
+            facts.add(fact(people.get('Architect'), build, weekEnd, half, true));
+            BusinessHealthData.TimecardFact presales = fact(people.get('Architect'), build, weekEnd, half, false);
+            presales.clientProject = false;
+            presales.excludedHours = half;
+            facts.add(presales);
+        }
         BusinessHealthData.testTimecards = facts;
 
         List<BusinessHealthData.MilestoneFact> milestones = new List<BusinessHealthData.MilestoneFact>();
@@ -178,9 +194,15 @@ private class BusinessHealthPagesTest {
     @IsTest
     static void capacityRanksPeopleAndRolesFromTimecards() {
         BusinessHealthModel.HealthPage page = build('capacity');
-        // Veteran, New Hire and Benched have billable goals; the subcontractor is external.
-        System.assertEquals(3, table(page, 'byPerson').rows.size());
-        System.assertEquals(3, table(page, 'byRole').rows.size(), 'Consultant, Senior Consultant and No role set');
+        // Veteran, New Hire, Architect and Benched have billable goals; the subcontractor is external.
+        System.assertEquals(4, table(page, 'byPerson').rows.size());
+        System.assertEquals(4, table(page, 'byRole').rows.size(), 'Consultant, Senior Consultant, Technical Architect and No role set');
+        for (Map<String, Object> row : table(page, 'byPerson').rows) {
+            if (row.get('name') == 'Architect') {
+                System.assertEquals(100, row.get('util4'), 'billable hours over available hours, net of excluded pre-sales');
+                System.assertEquals(100, row.get('util13'));
+            }
+        }
 
         // Targets come from each person's Utilization Target, else their role's default.
         Decimal seniorDefault = BusinessHealthContext.build(Date.today(), null).roleTarget('Senior Consultant');
@@ -197,7 +219,7 @@ private class BusinessHealthPagesTest {
         }
         Boolean flagged = false;
         for (String gap : page.dataGaps) {
-            flagged |= gap.startsWith('2 delivery resources have no Utilization Target');
+            flagged |= gap.startsWith('2 delivery resources have no Utilization Target'); // New Hire and Benched
         }
         System.assert(flagged, page.dataGaps);
     }
@@ -228,7 +250,7 @@ private class BusinessHealthPagesTest {
     static void peopleCountsHiresDeparturesAndRamp() {
         BusinessHealthModel.HealthPage page = build('people');
         Map<String, BusinessHealthModel.Kpi> k = kpis(page);
-        System.assertEquals(3, k.get('headcount').value, 'active employees; the subcontractor is counted separately');
+        System.assertEquals(4, k.get('headcount').value, 'active employees; the subcontractor is counted separately');
         System.assertEquals(1, k.get('hires').value);
         System.assert(!k.get('ramp').unavailable, 'the new hire logs time in their first weeks');
         System.assertEquals(1, table(page, 'departures').rows.size());

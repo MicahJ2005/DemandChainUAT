@@ -15,6 +15,11 @@
  * - Labor cost: timecard hours x timecard cost rate (falling back to the resource's
  *   default cost rate), across billable AND non-billable hours on client projects -
  *   so write-offs and unbilled effort show up as lost margin.
+ *
+ * Utilization follows PSA's own definition and the org's timecard flags: utilized
+ * hours are billable or Time Credited (managed services, fixed fee, PTO), divided by
+ * available hours - standard hours less Time Excluded hours (pre-sales, internal
+ * enablement). Timecards marked Exclude from Utilization count as neither.
  */
 public with sharing class BusinessHealthData {
     public static final Set<String> ACTIVE_PROJECT_STAGES = new Set<String>{ 'Planning', 'In Progress', 'On Hold', 'Wrapping_Up' };
@@ -48,6 +53,10 @@ public with sharing class BusinessHealthData {
         public String monthKey;
         public Decimal hours;
         public Decimal billableHours;
+        /** Billable or PSA Time Credited hours: the utilization numerator. */
+        public Decimal utilizedHours = 0;
+        /** PSA Time Excluded hours: taken out of available hours. */
+        public Decimal excludedHours = 0;
         public Decimal revenue;
         public Decimal cost;
         public Boolean unbilled;
@@ -83,7 +92,8 @@ public with sharing class BusinessHealthData {
             ' pse__Project__r.pse__Is_Billable__c, pse__Project__r.DCS_Primary_Practice__c, pse__Resource__c, pse__Resource__r.Name,' +
             ' pse__Resource__r.pse__Resource_Role__c, pse__Resource__r.pse__Default_Cost_Rate__c, pse__Assignment__r.pse__Role__c,' +
             ' pse__External_Resource__c, pse__End_Date__c, pse__Total_Hours__c, pse__Total_Billable_Amount__c, pse__Billable__c,' +
-            ' pse__Billed__c, pse__Status__c, pse__Cost_Rate_Amount__c' +
+            ' pse__Billed__c, pse__Status__c, pse__Cost_Rate_Amount__c, pse__Time_Credited__c, pse__Time_Excluded__c,' +
+            ' pse__Exclude_From_Utilization__c' +
             ' FROM pse__Timecard_Header__c' +
             ' WHERE pse__Status__c IN (\'Approved\', \'Submitted\') AND pse__End_Date__c >= :tcFrom AND pse__End_Date__c <= :asOf' +
             ctx.practiceClause(practiceField);
@@ -108,6 +118,9 @@ public with sharing class BusinessHealthData {
             f.monthKey = BusinessHealthContext.monthKey(f.endDate);
             f.hours = nz(tc.pse__Total_Hours__c);
             f.billableHours = tc.pse__Billable__c ? f.hours : 0;
+            Boolean counted = !tc.pse__Exclude_From_Utilization__c;
+            f.utilizedHours = counted && (tc.pse__Billable__c || tc.pse__Time_Credited__c) ? f.hours : 0;
+            f.excludedHours = counted && f.utilizedHours == 0 && tc.pse__Time_Excluded__c ? f.hours : 0;
             f.revenue = tc.pse__Billable__c && f.billingType != 'Fixed Price' ? nz(tc.pse__Total_Billable_Amount__c) : 0;
             Decimal costRate = tc.pse__Cost_Rate_Amount__c != null && tc.pse__Cost_Rate_Amount__c > 0
                 ? tc.pse__Cost_Rate_Amount__c
@@ -408,21 +421,22 @@ public with sharing class BusinessHealthData {
     /**
      * @description Internal delivery resources - the utilization denominator: active
      * employees (not subcontractors) with a billable goal or a Utilization Target, or who
-     * logged at least DELIVERY_MIN_QUARTER_HOURS billable hours in the 3 months before
-     * as-of. Goals are sparsely populated, so they alone would miss people who bill.
+     * logged at least DELIVERY_MIN_QUARTER_HOURS utilized (billable or credited) hours in
+     * the 3 months before as-of. Goals are sparsely populated, so they alone would miss
+     * people who deliver.
      */
     public static Map<Id, Contact> internalBillable(List<Contact> resources, List<TimecardFact> tcs, Date asOf) {
         Date since = asOf.addMonths(-3);
-        Map<Id, Decimal> recentBillable = new Map<Id, Decimal>();
+        Map<Id, Decimal> recentUtilized = new Map<Id, Decimal>();
         for (TimecardFact f : tcs) {
             if (f.endDate > since) {
-                add(recentBillable, f.resourceId, f.billableHours);
+                add(recentUtilized, f.resourceId, f.utilizedHours);
             }
         }
         Map<Id, Contact> result = new Map<Id, Contact>();
         for (Contact c : resources) {
             if (!c.pse__External_Resource__c &&
-                (weeklyGoal(c) > 0 || hasUtilizationTarget(c) || nz(recentBillable.get(c.Id)) >= DELIVERY_MIN_QUARTER_HOURS)) {
+                (weeklyGoal(c) > 0 || hasUtilizationTarget(c) || nz(recentUtilized.get(c.Id)) >= DELIVERY_MIN_QUARTER_HOURS)) {
                 result.put(c.Id, c);
             }
         }
@@ -430,10 +444,10 @@ public with sharing class BusinessHealthData {
     }
 
     /**
-     * @description Billable utilization % per month for the given resource set:
-     * billable hours / (resources x standard hours/week x weeks in month). Uses the
-     * CURRENT roster for every month, so it is approximate for months before recent
-     * hires or departures.
+     * @description Utilization % per month for the given resource set: utilized
+     * (billable + credited) hours / (resources x standard hours/week x weeks in month,
+     * less their excluded hours). Uses the CURRENT roster for every month, so it is
+     * approximate for months before recent hires or departures.
      */
     public static List<Decimal> utilizationSeries(
         List<TimecardFact> tcs,
@@ -441,10 +455,12 @@ public with sharing class BusinessHealthData {
         List<String> keys,
         Decimal hoursPerWeek
     ) {
-        Map<String, Decimal> billable = new Map<String, Decimal>();
+        Map<String, Decimal> utilized = new Map<String, Decimal>();
+        Map<String, Decimal> excluded = new Map<String, Decimal>();
         for (TimecardFact f : tcs) {
             if (resourceIds.contains(f.resourceId)) {
-                add(billable, f.monthKey, f.billableHours);
+                add(utilized, f.monthKey, f.utilizedHours);
+                add(excluded, f.monthKey, f.excludedHours);
             }
         }
         List<Decimal> values = new List<Decimal>();
@@ -452,7 +468,8 @@ public with sharing class BusinessHealthData {
             Integer y = Integer.valueOf(k.left(4));
             Integer m = Integer.valueOf(k.right(2));
             Decimal weeks = Decimal.valueOf(Date.daysInMonth(y, m)) / 7;
-            values.add(BusinessHealthModel.pct(nz(billable.get(k)), resourceIds.size() * hoursPerWeek * weeks));
+            Decimal available = resourceIds.size() * hoursPerWeek * weeks - nz(excluded.get(k));
+            values.add(available <= 0 ? null : BusinessHealthModel.pct(nz(utilized.get(k)), available));
         }
         return values;
     }

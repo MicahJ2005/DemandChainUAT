@@ -127,15 +127,15 @@ public with sharing class MyWorkConsultantPage implements BusinessHealthPageBuil
         BusinessHealthModel.Table weeks = new BusinessHealthModel.Table('myWeeks', 'My timecards by week',
             'Most recent first. Status shows the least-advanced timecard for the week.')
             .col('weekEnding', 'Week ending', 'date')
-            .col('billable', 'Billable hrs', 'hours')
-            .col('nonBillable', 'Non-billable hrs', 'hours')
+            .col('billable', 'Billable + credited hrs', 'hours')
+            .col('nonBillable', 'Other hrs', 'hours')
             .col('total', 'Total hrs', 'hours')
             .col('status', 'Status', 'text')
             .col('flag', 'Flag', 'text');
         for (Integer w = u.weeks.size() - 1; w >= 0; w--) {
             Date wk = u.weeks[w];
-            Decimal b = BusinessHealthData.nz(u.billableByWeek.get(wk));
-            Decimal nb = BusinessHealthData.nz(u.nonBillableByWeek.get(wk));
+            Decimal b = BusinessHealthData.nz(u.utilizedByWeek.get(wk));
+            Decimal nb = BusinessHealthData.nz(u.otherByWeek.get(wk));
             String status = u.statusByWeek.get(wk);
             String flag = b + nb < ctx.hoursPerWeek() * MyWorkSupport.UNDER_LOGGED_SHARE ? 'Under-logged' : (status == 'Saved' ? 'Not submitted' : '');
             weeks.rows.add(new Map<String, Object>{ 'weekEnding' => wk.addDays(6), 'billable' => b, 'nonBillable' => nb, 'total' => b + nb,
@@ -147,7 +147,7 @@ public with sharing class MyWorkConsultantPage implements BusinessHealthPageBuil
 
         page.signalMissedKpis();
         if (u.scheduled4 == 0) {
-            page.signal(BusinessHealthModel.STATUS_WARN, 'Nothing billable is scheduled for you in the next 4 weeks. Talk to your resource manager about your next project.', 'scheduled4');
+            page.signal(BusinessHealthModel.STATUS_WARN, 'Nothing billable or credited is scheduled for you in the next 4 weeks. Talk to your resource manager about your next project.', 'scheduled4');
         }
         page.briefMetrics = new List<String>{ 'util4', 'scheduled4', 'missingTimecards', 'savedTimecards' };
         return page;
