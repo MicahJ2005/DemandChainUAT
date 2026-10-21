@@ -32,8 +32,8 @@ public with sharing class MyWorkSupport {
             }
         }
         List<Contact> contacts = [
-            SELECT Id, Name, pse__Resource_Role__c, DCS_Billable_Goal__c, pse__External_Resource__c, pse__Practice__r.Name,
-                pse__Is_Resource_Active__c, pse__Region__c
+            SELECT Id, Name, pse__Resource_Role__c, DCS_Billable_Goal__c, pse__Utilization_Target__c, pse__External_Resource__c,
+                pse__Practice__r.Name, pse__Is_Resource_Active__c, pse__Region__c
             FROM Contact
             WHERE Id = :mapped OR pse__Salesforce_User__c = :userId
             WITH USER_MODE
@@ -57,21 +57,28 @@ public with sharing class MyWorkSupport {
     }
 
     /**
-     * @description Personal billable utilization target (percent): the personal goal
-     * set's Delivery Utilization Target when one is set, else the target for the
-     * resource's role.
+     * @description Personal billable utilization target (percent): the Utilization Target
+     * on the resource Contact; when that is blank or 0, the personal goal set's Delivery
+     * Utilization Target, else the target for the resource's role.
      */
     public static Decimal utilizationTarget(BusinessHealthContext ctx, Contact c) {
+        if (BusinessHealthData.hasUtilizationTarget(c)) {
+            return c.pse__Utilization_Target__c;
+        }
         if (ctx.userGoalSet != null && ctx.userGoalSet.Delivery_Utilization_Target__c != null) {
             return ctx.userGoalSet.Delivery_Utilization_Target__c;
         }
         return ctx.roleTarget(c.pse__Resource_Role__c);
     }
 
-    /** Weekly billable hours goal: the resource's DCS Billable Goal, else standard hours x target. */
+    /**
+     * @description Weekly billable hours goal: standard hours x the Utilization Target when
+     * the resource Contact has one (so hours and utilization agree), else the resource's DCS
+     * Billable Goal, else standard hours x the fallback target.
+     */
     public static Decimal weeklyGoalHours(BusinessHealthContext ctx, Contact c, Decimal targetPct) {
         Decimal g = BusinessHealthData.weeklyGoal(c);
-        return g > 0 ? g : (ctx.hoursPerWeek() * targetPct / 100).setScale(1);
+        return g > 0 && !BusinessHealthData.hasUtilizationTarget(c) ? g : (ctx.hoursPerWeek() * targetPct / 100).setScale(1);
     }
 
     /** First day (Sunday) of the latest complete week on or before the as-of date. */
@@ -190,10 +197,14 @@ public with sharing class MyWorkSupport {
         page.addKpi(new BusinessHealthModel.Kpi('lastWeekBillable', 'Billable hours, last week', u.lastWeekBillable.setScale(1), 'hours'))
             .target(u.weeklyGoal, 'higher', 0.15)
             .note('Week ending ' + lastWeek.addDays(6).format() + '. Your weekly goal is ' + u.weeklyGoal.setScale(1) + ' hours.');
+        String targetSource = BusinessHealthData.hasUtilizationTarget(c)
+            ? 'Your target: ' + u.targetPct.setScale(0) + '% (Utilization Target on your resource record).'
+            : 'Target: ' + u.targetPct.setScale(0) + '%, the default for ' +
+                (String.isBlank(c.pse__Resource_Role__c) ? 'your role' : c.pse__Resource_Role__c) +
+                '. Your resource record has no Utilization Target.';
         page.addKpi(new BusinessHealthModel.Kpi('util4', 'Billable utilization, last 4 weeks', BusinessHealthModel.pct(u.billable4, hpw * 4), 'percent'))
             .target(u.targetPct, 'higher', 0.1)
-            .note('Billable hours / ' + hpw.setScale(0) + ' standard hours a week. Target for ' +
-                (String.isBlank(c.pse__Resource_Role__c) ? 'your role' : c.pse__Resource_Role__c) + ': ' + u.targetPct.setScale(0) + '%.');
+            .note('Billable hours / ' + hpw.setScale(0) + ' standard hours a week. ' + targetSource);
         page.addKpi(new BusinessHealthModel.Kpi('utilYtd', 'Billable utilization, year to date', BusinessHealthModel.pct(u.billableYtd, hpw * Math.max(1, u.weeksYtd)), 'percent'))
             .target(u.targetPct, 'higher', 0.1)
             .note(u.billableYtd.setScale(0) + ' billable hours over ' + u.weeksYtd + ' weeks.');

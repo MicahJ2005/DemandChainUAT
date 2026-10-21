@@ -206,6 +206,7 @@ private class MyWorkTest {
         System.assertEquals(0, c.get('util4').value);
         System.assertEquals(4, c.get('missingTimecards').value, 'no time logged in the last 4 weeks');
         System.assert(c.get('certifications').unavailable);
+        System.assert(c.get('util4').note.contains('no Utilization Target'), 'without one, the role default is used and called out');
         System.assertEquals(1, c.get('assignments').value);
         System.assertEquals(80000, kpis(architect).get('supportedPipeline').value);
         System.assert(kpis(architect).containsKey('util4'), 'architects with a resource record also see their utilization');
@@ -227,6 +228,7 @@ private class MyWorkTest {
         pse__Schedule__c schedule = harness.newSchedule(true, weekStart, weekStart.addDays(27), harness.SCHEDULE_PATTERN_8x5);
         pse__Assignment__c assignment = harness.newAssignment(true, proj.Id, me.Id, schedule.Id);
         harness.newTimecardHeader(true, me.Id, proj.Id, assignment.Id, null, weekStart, weekStart.addDays(6), 0, 8, 8, 8, 8, 8, 0);
+        update new Contact(Id = me.Id, pse__Utilization_Target__c = 50);
         Test.startTest();
         BusinessHealthModel.HealthPage consultant = BusinessHealthController.getPage('my-consultant', Date.today(), null, null);
         BusinessHealthModel.HealthPage pm = BusinessHealthController.getPage('my-pm', Date.today(), null, null);
@@ -238,6 +240,13 @@ private class MyWorkTest {
         System.assertEquals(tc.pse__Billable__c ? 40 : 0, c.get('lastWeekBillable').value);
         System.assertEquals(tc.pse__Status__c == 'Saved' ? 1 : 0, c.get('savedTimecards').value);
         System.assertEquals(1, kpis(pm).get('activeProjects').value);
+
+        // Measured against the Utilization Target on the resource record, in percent and in weekly hours.
+        Decimal hpw = BusinessHealthContext.buildForUser(Date.today(), UserInfo.getUserId()).hoursPerWeek();
+        System.assertEquals(50, c.get('util4').target);
+        System.assertEquals(50, c.get('scheduled4').target);
+        System.assertEquals((hpw * 50 / 100).setScale(1), c.get('lastWeekBillable').target);
+        System.assert(c.get('util4').note.contains('Utilization Target on your resource record'), c.get('util4').note);
     }
 
     @IsTest

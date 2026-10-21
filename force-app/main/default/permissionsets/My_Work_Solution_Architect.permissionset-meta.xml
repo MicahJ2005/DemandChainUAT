@@ -57,6 +57,11 @@
         <field>Business_Health_Insight__c.Error_Message__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contact.pse__Utilization_Target__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>My Work - Solution Architect</label>
     <objectPermissions>

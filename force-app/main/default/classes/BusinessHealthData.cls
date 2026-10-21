@@ -294,7 +294,7 @@ public with sharing class BusinessHealthData {
     public static List<Contact> activeResources(BusinessHealthContext ctx) {
         return (List<Contact>) ctx.query(
             'SELECT Id, Name, pse__Resource_Role__c, pse__External_Resource__c, DCS_Billable_Goal__c, pse__Default_Cost_Rate__c,' +
-                ' pse__Practice__r.Name, pse__Start_Date__c' +
+                ' pse__Practice__r.Name, pse__Start_Date__c, pse__Utilization_Target__c' +
                 ' FROM Contact WHERE pse__Is_Resource__c = true AND pse__Is_Resource_Active__c = true' +
                 ctx.practiceClause('pse__Practice__c') +
                 ' ORDER BY Name'
@@ -309,6 +309,11 @@ public with sharing class BusinessHealthData {
     public static Decimal weeklyGoal(Contact c) {
         Decimal g = nz(c.DCS_Billable_Goal__c);
         return g > 80 ? (g / 52).setScale(1) : g;
+    }
+
+    /** True when the resource Contact carries its own Utilization Target (blank or 0 means not set). */
+    public static Boolean hasUtilizationTarget(Contact c) {
+        return c.pse__Utilization_Target__c != null && c.pse__Utilization_Target__c > 0;
     }
 
     /** Billable resources: internal or external, with a billable goal. */
@@ -402,9 +407,9 @@ public with sharing class BusinessHealthData {
 
     /**
      * @description Internal delivery resources - the utilization denominator: active
-     * employees (not subcontractors) with a billable goal, or who logged at least
-     * DELIVERY_MIN_QUARTER_HOURS billable hours in the 3 months before as-of. Billable
-     * goals are sparsely populated, so the goal alone would miss people who bill.
+     * employees (not subcontractors) with a billable goal or a Utilization Target, or who
+     * logged at least DELIVERY_MIN_QUARTER_HOURS billable hours in the 3 months before
+     * as-of. Goals are sparsely populated, so they alone would miss people who bill.
      */
     public static Map<Id, Contact> internalBillable(List<Contact> resources, List<TimecardFact> tcs, Date asOf) {
         Date since = asOf.addMonths(-3);
@@ -416,7 +421,8 @@ public with sharing class BusinessHealthData {
         }
         Map<Id, Contact> result = new Map<Id, Contact>();
         for (Contact c : resources) {
-            if (!c.pse__External_Resource__c && (weeklyGoal(c) > 0 || nz(recentBillable.get(c.Id)) >= DELIVERY_MIN_QUARTER_HOURS)) {
+            if (!c.pse__External_Resource__c &&
+                (weeklyGoal(c) > 0 || hasUtilizationTarget(c) || nz(recentBillable.get(c.Id)) >= DELIVERY_MIN_QUARTER_HOURS)) {
                 result.put(c.Id, c);
             }
         }

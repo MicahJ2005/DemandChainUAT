@@ -396,6 +396,14 @@ public with sharing class BusinessHealthContext {
         return fallback;
     }
 
+    /**
+     * @description A resource's billable utilization target (percent): the Utilization
+     * Target on their resource Contact, else (blank or 0) the target for their role.
+     */
+    public Decimal resourceTarget(Contact c) {
+        return BusinessHealthData.hasUtilizationTarget(c) ? c.pse__Utilization_Target__c : roleTarget(c.pse__Resource_Role__c);
+    }
+
     public List<String> strategicSkills() {
         List<String> skills = new List<String>();
         String raw = String.isBlank(goals.Strategic_Skills__c)

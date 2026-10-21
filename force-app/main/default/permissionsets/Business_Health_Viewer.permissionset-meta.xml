@@ -318,6 +318,11 @@
         <field>Business_Health_Goal_Set__c.Write_Off_Threshold__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contact.pse__Utilization_Target__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <objectPermissions>
         <allowCreate>false</allowCreate>

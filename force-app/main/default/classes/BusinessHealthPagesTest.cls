@@ -54,7 +54,7 @@ private class BusinessHealthPagesTest {
 
         insert new List<Contact>{
             new Contact(LastName = 'Veteran', pse__Is_Resource__c = true, pse__Is_Resource_Active__c = true, pse__Resource_Role__c = 'Consultant',
-                DCS_Billable_Goal__c = 40, pse__Default_Cost_Rate__c = 60, pse__Start_Date__c = today.addYears(-3)),
+                DCS_Billable_Goal__c = 40, pse__Default_Cost_Rate__c = 60, pse__Start_Date__c = today.addYears(-3), pse__Utilization_Target__c = 90),
             new Contact(LastName = 'New Hire', pse__Is_Resource__c = true, pse__Is_Resource_Active__c = true, pse__Resource_Role__c = 'Senior Consultant',
                 DCS_Billable_Goal__c = 40, pse__Default_Cost_Rate__c = 70, pse__Start_Date__c = today.addDays(-70)),
             new Contact(LastName = 'Benched', pse__Is_Resource__c = true, pse__Is_Resource_Active__c = true, DCS_Billable_Goal__c = 40,
@@ -181,6 +181,25 @@ private class BusinessHealthPagesTest {
         // Veteran, New Hire and Benched have billable goals; the subcontractor is external.
         System.assertEquals(3, table(page, 'byPerson').rows.size());
         System.assertEquals(3, table(page, 'byRole').rows.size(), 'Consultant, Senior Consultant and No role set');
+
+        // Targets come from each person's Utilization Target, else their role's default.
+        Decimal seniorDefault = BusinessHealthContext.build(Date.today(), null).roleTarget('Senior Consultant');
+        Map<Object, Object> personTarget = new Map<Object, Object>();
+        for (Map<String, Object> row : table(page, 'byPerson').rows) {
+            personTarget.put(row.get('name'), row.get('target'));
+        }
+        System.assertEquals(90, personTarget.get('Veteran'));
+        System.assertEquals(seniorDefault, personTarget.get('New Hire'));
+        for (Map<String, Object> row : table(page, 'byRole').rows) {
+            if (row.get('role') == 'Consultant') {
+                System.assertEquals(90, row.get('target'), 'a role\'s target is its people\'s average');
+            }
+        }
+        Boolean flagged = false;
+        for (String gap : page.dataGaps) {
+            flagged |= gap.startsWith('2 delivery resources have no Utilization Target');
+        }
+        System.assert(flagged, page.dataGaps);
     }
 
     @IsTest

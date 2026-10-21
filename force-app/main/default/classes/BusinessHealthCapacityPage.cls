@@ -2,7 +2,7 @@
  * @group BusinessHealth
  *
  * @description Utilization & Capacity: billable utilization by role and by person
- * against role targets, bench, forecast utilization for the next 8 weeks (from PSA
+ * against each person's Utilization Target (resource Contact), bench, forecast utilization for the next 8 weeks (from PSA
  * assignment schedules), open demand (unfilled resource requests) vs available
  * capacity, and subcontractor mix. Together these answer: hire, use subcontractors,
  * or push sales?
@@ -255,7 +255,7 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             byRole.get(role).add(p);
         }
         BusinessHealthModel.Table roleTable = new BusinessHealthModel.Table('byRole', 'Utilization by role',
-            'Targets by role come from Business Health Settings (delivery roles run higher than architects and leaders).')
+            'Target is the average of each person\'s Utilization Target on their resource record (role default where blank).')
             .col('role', 'Role', 'text')
             .col('headcount', 'People', 'number')
             .col('util4', 'Last 4 wks', 'percent')
@@ -269,14 +269,17 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             Decimal rb4 = 0;
             Decimal rb13 = 0;
             Decimal rs8 = 0;
+            Decimal targetSum = 0;
             for (Person p : byRole.get(role)) {
                 rb4 += p.billable4;
                 rb13 += p.billable13;
                 rs8 += p.scheduled8;
+                targetSum += ctx.resourceTarget(p.c);
             }
             Integer rn = byRole.get(role).size();
             Decimal u13 = BusinessHealthModel.pct(rb13, rn * hpw * PAST_WEEKS);
-            Decimal target = ctx.roleTarget(role);
+            // Everyone shares the same standard week, so the capacity-weighted target is the plain average.
+            Decimal target = (targetSum / rn).setScale(1);
             roleTable.rows.add(
                 new Map<String, Object>{
                     'role' => role,
@@ -317,7 +320,7 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
             Decimal u13 = BusinessHealthModel.pct(p.billable13, hpw * PAST_WEEKS);
             Decimal f8 = BusinessHealthModel.pct(p.scheduled8, hpw * FUTURE_WEEKS);
             Decimal f4 = BusinessHealthModel.pct(p.scheduled4, hpw * 4);
-            Decimal target = ctx.roleTarget(p.c.pse__Resource_Role__c);
+            Decimal target = ctx.resourceTarget(p.c);
             String flag = f4 != null && f4 < BENCH_THRESHOLD ? 'Bench risk' : (f8 != null && f8 > OVERALLOCATED_THRESHOLD ? 'Over-allocated' : '');
             personTable.rows.add(
                 new Map<String, Object>{
@@ -351,6 +354,15 @@ public with sharing class BusinessHealthCapacityPage implements BusinessHealthPa
                 ' points below recent actuals. Either work is ending without replacements, or assignment schedules are not being kept current.');
         }
         page.dataGaps.add('Forecast depends on PSA assignment schedules. Work without a scheduled assignment is invisible here.');
+        Integer noTarget = 0;
+        for (Person p : people.values()) {
+            if (!BusinessHealthData.hasUtilizationTarget(p.c)) {
+                noTarget++;
+            }
+        }
+        if (noTarget > 0) {
+            page.dataGaps.add(noTarget + ' delivery resources have no Utilization Target on their resource record, so their role default is used.');
+        }
         return page;
     }
 
